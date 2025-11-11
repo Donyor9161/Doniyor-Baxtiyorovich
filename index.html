@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bosh Sahifa</title>
     <style>
+        header {
+            border: solid black;
+            border-radius: 10px;
+            padding: 10px 10px 10px 10px;
+            box-shadow: 1px 1px 4px rgba(200,0,240,0.1);
+
+        }
         body{
         background-image: url("thomos.jpg");
         background-repeat: no-repeat;
@@ -33,6 +40,10 @@
         font-size: 40px;
         text-align: center;
        }
+       .ftext:hover{
+        color: brown;
+        cursor: pointer;
+       }
     </style>
 </head>
 <body>
@@ -41,11 +52,12 @@
             <button onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
             <button onclick="window.location.href='aloqa.html'">Bog'lanish</button>
         </div>
-        </header>
+    </header>
     <main>
-        <h1>ⲆONYLOGIC</h1>
+    
     </main>
-    <footer></footer>
+    <footer>
+        <p class="ftext" style="color: black;" onclick="window.location.href='index.html'"><u>ⲆONYLOGIC</u></p>
+    </footer>
     </body>
 </html>
-
