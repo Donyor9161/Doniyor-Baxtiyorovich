@@ -6,28 +6,44 @@
     <title>Bosh Sahifa</title>
     <style>
         body{
-            background-image: url("BodyFon.jpg");
-            background-repeat: no-repeat;
-            background-size: contain;
+        background-image: url("thomos.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
         }
-        footer{
-            background-color:blanchedalmond;
-            
+        .navbar {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
         }
-        .hdlog{
-            border-radius: 100px 100px;
-            width: 90px;
-            height: 90px;
-        }
+       .navbar button{
+        background-color: blue;
+        color: white;
+        width: auto;
+        height:auto;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 100px;
+        cursor: pointer;
+       }
+       .navbar button:hover{
+        background-color: black;
+       }
+       main{
+        font-size: 40px;
+        text-align: center;
+       }
     </style>
 </head>
 <body>
     <header>
-        <img class="hdlog" src="LOGO D.PNG">
-        <h1>DONYLOGIC</h1>
-    </header>
+        <div class="navbar">
+            <button onclick="window.location.href='dasturchi.html'">Men haqimda</button>
+            <button onclick="window.location.href='aloqa.html'">Bog'lanish</button>
+        </div>
+        </header>
     <main>
-        <button onclick="window.location.href='dasturchi.html'">Dasturchilar</button>
+        <h1>ⲆONYLOGIC</h1>
     </main>
     <footer></footer>
     </body>
