@@ -11,6 +11,11 @@
     <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
     <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
         body {
             background-image: url("MORE.jpg");
             min-height: 100vh;
@@ -18,74 +23,98 @@
             background-repeat: no-repeat;
             background-size: cover;
         }
-        #as{
+        #Glava{
+            background-color: transparent;
             display: flex;
-            flex-direction:column;
+            box-shadow: 1px 1px 7px white;
+            width: auto;
+            height:70px;
             align-items: center;
+            padding: 12px 30px;
+            justify-content: space-between;
         }
-        #as button{
-            background-color:bisque;
-            height: 4.9vh;
-            width: 14vh;
-            transition: 0.5s;
-            border-radius: 8px;
-            border: solid 2px black;
-            margin: 1vh 0.6vw;
+        #Btns{
+            display: flex;
+            gap: 18px;
         }
-        #as button:hover{
-            background-color: bisque;
+        button{
+            font-size: 18px;
+            font-family: Verdana;
+            background-color: transparent;
+            padding: 25px 1px;
+            border: none;
             cursor: pointer;
-            box-shadow: 1px 3px 6px black;
+            transition: 0.1s;
+            font-weight: 600;
+            gap: 35px;
         }
-        #as button:active{
-            background: linear-gradient(to right, red, blue);
-            background-color: black;
-            transform: rotate(0deg) scale(0.9999);
-            box-shadow: 0 0 0;
+        button:hover{
+            text-shadow: 0 0 20px #3388ff, 0 0 20px #3388ff, 
+            0 0 20px #3388ff;
+            color: #3388ff;
         }
-        h1 {
-            color: blue;
-            letter-spacing: 3px;
-            word-spacing: 1px;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            opacity: 1;
-            font-weight: 300;
-            text-shadow: 2px 2px 7px black;
+        #Discrept{
+            margin-top: 25px;
+            margin-left: 25px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2px;
+        }
+        details{
+            font-weight: 600;
+            font-size: 17px;
+        }
+        summary:hover{
+            color: white;
+            text-shadow: 1px 1px 5px white;
             cursor: pointer;
-            transition: 0.8s;
-            font-weight: 400;
-
-        }
-        h1:hover{
-            color: aquamarine;
-
-        }
-        #tezmat{
-            align-items: center;
-            color: blue;
-            font-weight: 500;
-            font-size: 100%;
-            margin:3% 40%;
-        
         }
         a{
+            text-decoration: none;
             color:black;
             transition: 0.3s;
         }
         a:hover{
-            color: white;
+            color: #3388ff;
+            text-shadow: 0 0 20px #3388ff, 0 0 20px #3388ff;
+            cursor: pointer;
+            text-decoration: underline;
         }
+        h1:hover{
+            text-shadow:0 0 20px #3388ff, 0 0 20px #3388ff;
+            cursor: pointer;
+            
+        }
+        #bgVideo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   /* videoni ekran o'lchamiga moslaydi */
+            z-index: -1;         /* elementlar videoning ustida turadi */
+        }
+
     </style>
 </head>
 <body>
-    <div id="as">
-    <h1><b>Ⲇ</b>ONYLOGIC</h1>
-        <button onclick="window.location.href='aloqa.html'">Aloqa</button>
-        <button onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
+    <header>
+    <div id="Glava">
+    <h1 style="color: white; font-weight:600; font-family:serif; transition: 0.2s;" onclick="window.location.href='index.html'">DONYLOGIC</h1>
+        <div id="Btns">
+            <button onclick="window.location.href='aloqa.html'">Aloqa</button>
+            <button onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
+        </div>    
     </div>
-    <div id="tezmat">
+    </header>
+    <main>
+        <video autoplay muted lop id="bgVideo">
+            <source src="Abstract_Blue.mp4" type="video/mp4">
+        </video>
+    <div id="Discrept">
     <details>
-        <summary>TezkorQuiz</summary>
+        <summary>Tezkor Quiz</summary>
         <p><a href="https://tezkorquiz.uz/" target="_blank">Raqamli testlarda maksimal qulaylik.</a></p>
     </details>
     <details>
@@ -93,8 +122,8 @@
         <p><a href="javascript:matrix()">Matritsa ko'paytirish</a></p>
     </details>
     <details>
-        <summary>3D Matritsani "Maksimov" & "Doniyor Baxtiyorov" U-H-F usuli orqali ko'paytirsakchi?</summary>
-        <p><a href="javascript:threematrix()">3D Matritsani "Maksimov" & "Doniyor Baxtiyorov U-H-F" usuli orqali ko'paytirish</a></p>
+        <summary>3D Matritsani "Maksimov" usuli orqali ko'paytirsakchi?</summary>
+        <p><a href="javascript:threematrix()">3D Matritsa ko'paytirish</a></p>
     </details>
     </div>
         <script>
@@ -265,6 +294,8 @@
         }
         
     </script>
+    </main>
+    
 </body>
 </html>
 
