@@ -10,6 +10,9 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
     <style>
         *{
             padding: 0;
@@ -101,7 +104,19 @@
             object-fit: cover;   /* videoni ekran o'lchamiga moslaydi */
             z-index: -1;         /* elementlar videoning ustida turadi */
         }
-
+        #foot{
+            font-family:'Segoe UI';
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            padding: 10px;
+            text-shadow: 0px 0px 5px #ffb200;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
@@ -547,9 +562,17 @@
             }
         }
         </script>
-    </main>
-    
-</body>
+        </main>
+        <footer>
+            <div id="foot">
+                <div>
+                    <p>Yangilandi: 00:06 01.12.2025</p>
+                </div>
+                <div>
+                    <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
+                </div>
+            </div>
+        </footer>
+    </body>
 </html>
-
 
