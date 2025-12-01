@@ -16,10 +16,14 @@
             margin: 0;
             box-sizing: border-box;
         }
+        body{
+            min-height: 100vh;
+            width: 100%;
+        }
         #Glava{
             background-color: transparent;
             display: flex;
-            box-shadow: 0 0 20px #3388ff, 0 0 20px #3388ff;
+            box-shadow: 0 0 20px #FFB200, 0 0 20px #FFB200;
             width: auto;
             height:70px;
             align-items: center;
@@ -40,11 +44,11 @@
             transition: 0.1s;
             font-weight: 600;
             gap: 35px;
+            color: white;
         }
         button:hover{
-            text-shadow: 0 0 20px #3388ff, 0 0 20px #3388ff, 
-            0 0 20px #3388ff;
-            color: #3388ff;
+            text-shadow: 0 0 20px #FFB200, 0 0 20px #FFB200, 
+            0 0 20px #FFB200;
         }
         #Discrept{
             margin-top: 25px;
@@ -58,26 +62,35 @@
             font-weight: 600;
             font-size: 17px;
         }
+        summary{
+            color: white;
+        }
         summary:hover{
             color: white;
-            text-shadow: 1px 1px 5px white;
+            text-shadow: 0px 0px 20px #FFB200,
+            0px 0px 20px #FFB200, 0px 0px 20px #FFB200;
             cursor: pointer;
         }
         a{
             text-decoration: none;
-            color:black;
+            color:#FFB200;
             transition: 0.3s;
         }
         a:hover{
-            color: #3388ff;
-            text-shadow: 0 0 20px #3388ff, 0 0 20px #3388ff;
+            color: #FFB200;
+            text-shadow: 0 0 20px #FFB200, 0 0 20px #DAA520;
             cursor: pointer;
             text-decoration: underline;
         }
+        h1{
+            color: white; 
+            font-weight:600; 
+            font-family:serif; 
+            transition: 0.2s;
+        }
         h1:hover{
-            text-shadow:0 0 20px #3388ff, 0 0 20px #3388ff;
+            text-shadow:0 0 20px #FFB200, 0 0 20px #FFB200, 0 0 20px #FFB200;
             cursor: pointer;
-            
         }
         #bgVideo {
             position: fixed;
@@ -94,7 +107,7 @@
 <body>
     <header>
     <div id="Glava">
-    <h1 style="color: white; font-weight:600; font-family:serif; transition: 0.2s;" onclick="window.location.href='index.html'">DONYLOGIC</h1>
+    <h1 onclick="window.location.href='index.html'">DONYLOGIC</h1>
         <div id="Btns">
             <button onclick="window.location.href='aloqa.html'">Aloqa</button>
             <button onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
@@ -103,7 +116,7 @@
     </header>
     <main>
         <video autoplay muted lop id="bgVideo">
-            <source src="Abstract_Blue.mp4" type="video/mp4">
+            <source src="Abstract_Neon.mp4" type="video/mp4">
         </video>
     <div id="Discrept">
     <details>
@@ -291,6 +304,4 @@
     
 </body>
 </html>
-
-
 
