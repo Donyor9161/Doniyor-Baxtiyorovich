@@ -129,7 +129,11 @@
     </details>
     <details>
         <summary>3D Matritsani "Maksimov" usuli orqali ko'paytirsakchi?</summary>
-        <p><a href="javascript:threematrix()">3D Matritsa ko'paytirish</a></p>
+        <p><a href="javascript:mthreematrix()">3D Matritsa ko'paytirish</a></p>
+    </details>
+    <details>
+        <summary>3D Matritsani "G'anihojayev" usuli orqali ko'paytirsakchi?</summary>
+        <p><a href="javascript:gthreematrix()">3D Matritsa ko'paytirish</a></p>
     </details>
     </div>
         <script>
@@ -163,7 +167,7 @@
         }
         matritsa();
         }
-        function threematrix(){
+        function mthreematrix(){
             let a111 = Number(prompt('A matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:'));
             let a112 = Number(prompt('A matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:'));
             let a113 = Number(prompt('A matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
@@ -297,6 +301,175 @@
             console.log('Uchinchi qavat: ', Uch);
         }
         thematritsa();    
+        }
+        function gthreematrix(){
+            let a111 = Number(prompt('A matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:'));
+            let a112 = Number(prompt('A matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:'));
+            let a113 = Number(prompt('A matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let a121 = Number(prompt('A matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:'));
+            let a122 = Number(prompt('A matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:'));
+            let a123 = Number(prompt('A matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let a131 = Number(prompt('A matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:'));
+            let a132 = Number(prompt('A matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:'));
+            let a133 = Number(prompt('A matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let U = [
+                [a111, a112, a113],
+                [a121, a122, a123],
+                [a131, a132, a133]
+            ];
+            /*birinhci qavat tugadi*/
+            let a211 = Number(prompt('A matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:'));
+            let a212 = Number(prompt('A matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:'));
+            let a213 = Number(prompt('A matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let a221 = Number(prompt('A matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:'));
+            let a222 = Number(prompt('A matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:'));
+            let a223 = Number(prompt('A matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let a231 = Number(prompt('A matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:'));
+            let a232 = Number(prompt('A matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:'));
+            let a233 = Number(prompt('A matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let H = [
+                [a211, a212, a213],
+                [a221, a222, a223],
+                [a231, a232, a233]
+            ];
+            /*ikkinchi qavat ham tugadi*/
+            let a311 = Number(prompt('A matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:'));
+            let a312 = Number(prompt('A matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:'));
+            let a313 = Number(prompt('A matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let a321 = Number(prompt('A matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:'));
+            let a322 = Number(prompt('A matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:'));
+            let a323 = Number(prompt('A matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let a331 = Number(prompt('A matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:'));
+            let a332 = Number(prompt('A matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:'));
+            let a333 = Number(prompt('A matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let F = [
+                [a311, a312, a313],
+                [a321, a322, a323],
+                [a331, a332, a333]
+            ];
+            /*uhcunchi qavat ham tugadi*/
+        /*Ikkinchi matrix*/
+            let b111 = Number(prompt('B matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:')); 
+            let b112 = Number(prompt('B matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:')); 
+            let b113 = Number(prompt('B matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let b121 = Number(prompt('B matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:')); 
+            let b122 = Number(prompt('B matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:')); 
+            let b123 = Number(prompt('B matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let b131 = Number(prompt('B matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:')); 
+            let b132 = Number(prompt('B matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:')); 
+            let b133 = Number(prompt('B matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            /*1-qavat tugadi*/
+            let b211 = Number(prompt('B matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:')); 
+            let b212 = Number(prompt('B matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:')); 
+            let b213 = Number(prompt('B matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let b221 = Number(prompt('B matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:')); 
+            let b222 = Number(prompt('B matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:')); 
+            let b223 = Number(prompt('B matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let b231 = Number(prompt('B matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:')); 
+            let b232 = Number(prompt('B matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:')); 
+            let b233 = Number(prompt('B matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            /*2-qavat tugadi*/
+            let b311 = Number(prompt('B matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:')); 
+            let b312 = Number(prompt('B matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:')); 
+            let b313 = Number(prompt('B matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
+            let b321 = Number(prompt('B matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:')); 
+            let b322 = Number(prompt('B matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:')); 
+            let b323 = Number(prompt('B matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
+            let b331 = Number(prompt('B matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:')); 
+            let b332 = Number(prompt('B matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:')); 
+            let b333 = Number(prompt('B matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            //vekotorni kiritish
+            let Vektor = Number(prompt('Vektorni Birinchi elementini kiriting: '));
+            let Vektor2 = Number(prompt('Vektorni Ikkinchi elementini kiriting: '));
+            let Vektor3 = Number(prompt('Vektorni Uchinchi elementini kiriting: '));
+            let mtb = Vektor * b111;
+            let mtb2 = Vektor * b112;
+            let mtb3 = Vektor * b113;
+            let mtb4 = Vektor * b121;
+            let mtb5 = Vektor * b122;
+            let mtb6 = Vektor * b123;
+            let mtb7 = Vektor * b131;
+            let mtb8 = Vektor * b132;
+            let mtb9 = Vektor * b133;
+            //birinchi qavatni vektorni birinhci elementiga kopaytirdik
+            let mti = Vektor * b211;
+            let mti2 = Vektor * b212;
+            let mti3 = Vektor * b213;
+            let mti4 = Vektor * b221;
+            let mti5 = Vektor * b222;
+            let mti6 = Vektor * b223;
+            let mti7 = Vektor * b231;
+            let mti8 = Vektor * b232;
+            let mti9 = Vektor * b233;
+            //ikkinchi qavatni vektorni ikkinchi elementiga kopaytirdik
+            let mtu = Vektor * b311;
+            let mtu2 = Vektor * b312;
+            let mtu3 = Vektor * b313;
+            let mtu4 = Vektor * b321;
+            let mtu5 = Vektor * b322;
+            let mtu6 = Vektor * b323;
+            let mtu7 = Vektor * b331;
+            let mtu8 = Vektor * b332;
+            let mtu9 = Vektor * b333;
+            //uchinchi qavatni vektorni uchunchi elementiga kopaytirdik
+            /*B matritsaning mos elementlari yig'indisini hisoblash..!*/
+            let Maksimov11 = mtb+mti+mtu;
+            let Maksimov12 = mtb2+mti2+mtu2;
+            let Maksimov13 = mtb3+mti3+mtu3;
+            let Maksimov21 = mtb4+mti4+mtu4;
+            let Maksimov22 = mtb5+mti5+mtu5;
+            let Maksimov23 = mtb6+mti6+mtu6;
+            let Maksimov31 = mtb7+mti7+mtu7;
+            let Maksimov32 = mtb8+mti8+mtu8;
+            let Maksimov33 = mtb9+mti9+mtu9;
+            let Maksimov = [
+                [Maksimov11, Maksimov12, Maksimov13],
+                [Maksimov21, Maksimov22, Maksimov23],
+                [Maksimov31, Maksimov32, Maksimov33]
+            ]
+            
+        let Bir = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        let Ikki = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        let Uch = [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 0]
+        ];
+        function thematritsa(){ /*U H F*/
+            for(let i = 0; i < 3; i++){
+                for(let j = 0; j < 3; j++){
+                    for(let k = 0; k < 3; k++){
+                        Bir[i][j] += U[i][k]*Maksimov[k][j];
+                    }
+                }
+            }
+            console.log('Birinchi qavat: ', Bir);
+            for(let i = 0; i < 3; i++){
+                for(let j = 0; j < 3; j++){
+                    for(let k = 0; k < 3; k++){
+                        Ikki[i][j] += H[i][k]*Maksimov[k][j];
+                    }
+                }
+            }
+            console.log('Ikkinchi qavat: ', Ikki);
+            for(let i = 0; i < 3; i++){
+                for(let j = 0; j < 3; j++){
+                    for(let k = 0; k < 3; k++){
+                        Uch[i][j] += F[i][k]*Maksimov[k][j];
+                    }
+                }
+            }
+            console.log('Uchinchi qavat: ', Uch);
+        }
+        thematritsa();
         }
         
     </script>
