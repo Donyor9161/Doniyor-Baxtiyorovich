@@ -124,16 +124,20 @@
         <p><a href="https://sobirrr083.github.io/tezquiz/" target="_blank">Raqamli testlarda maksimal qulaylik.</a></p>
     </details>
     <details>
-        <summary>2D Matritsani ko'paytirishga nima deysiz?</summary>
+        <summary>3-3 o'lchamli Matritsani bir-biriga ko'paytirishga nima deysiz?</summary>
         <p><a href="javascript:matrix()">Matritsa ko'paytirish</a></p>
     </details>
     <details>
-        <summary>3D Matritsani "Maksimov" usuli orqali ko'paytirsakchi?</summary>
+        <summary>"Maksimov" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi?</summary>
         <p><a href="javascript:mthreematrix()">3D Matritsa ko'paytirish</a></p>
     </details>
     <details>
-        <summary>3D Matritsani "G'anihojayev" usuli orqali ko'paytirsakchi?</summary>
+        <summary>"G'anihojayev" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi?</summary>
         <p><a href="javascript:gthreematrix()">3D Matritsa ko'paytirish</a></p>
+    </details>
+    <details>
+        <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar?</summary>
+        <p><a href="javascript:up()">Matritsani darajaga oshirish</a></p>
     </details>
     </div>
         <script>
@@ -471,11 +475,80 @@
         }
         gthematritsa();
         }
-        
-    </script>
+        function up(){
+            let A = [
+                [Number(prompt("A matritsa: 1,1")), Number(prompt("A matritsa: 1,2")), Number(prompt("A matritsa: 1,3"))],
+                [Number(prompt("A matritsa: 2,1")), Number(prompt("A matritsa: 2,2")), Number(prompt("A matritsa: 2,3"))],
+                [Number(prompt("A matritsa: 3,1")), Number(prompt("A matritsa: 3,2")), Number(prompt("A matritsa: 3,3"))]
+            ];
+            let b = Number(prompt('Nechchinchi darajaga oshirasiz?'));
+            let C2 = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ];
+            let C3 = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ];
+            let C4 = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ];
+            let C5 = [
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ];
+                for(let i = 0; i < 3; i++){
+                    for(let j = 0; j < 3; j++){
+                        for(let k = 0; k < 3; k++){
+                        C2[i][j] += A[i][k]*A[k][j];
+                        }
+                    }
+                }
+                for(let i = 0; i < 3; i++){
+                    for(let j = 0; j < 3; j++){
+                        for(let k = 0; k < 3; k++){
+                        C3[i][j] += C2[i][k]*A[k][j];
+                        }
+                    }
+                }
+                for(let i = 0; i < 3; i++){
+                    for(let j = 0; j < 3; j++){
+                        for(let k = 0; k < 3; k++){
+                        C4[i][j] += C3[i][k]*A[k][j];
+                        }
+                    }
+                }
+                for(let i = 0; i < 3; i++){
+                    for(let j = 0; j < 3; j++){
+                        for(let k = 0; k < 3; k++){
+                        C5[i][j] += C4[i][k]*A[k][j];
+                        }
+                    }
+                }
+            if(b == 2){
+                console.log('Ikkinchi darajasi: ', C2);
+            }
+            else if(b == 3){
+                console.log('Uchinchi darajasi: ', C3);
+            }
+            else if(b == 4){
+                console.log('Tortinchi darajasi: ', C4);
+            }
+            else if(b == 5){
+                console.log('Beshinchi darajasi: ', C5);
+            }
+            else {
+                alert('Uzr! Hozircha faqat 2-5-darajagacha hisoblaymiz..');
+            }
+        }
+        </script>
     </main>
     
 </body>
 </html>
-
 
