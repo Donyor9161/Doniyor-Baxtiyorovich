@@ -27,7 +27,7 @@
             background-color: transparent;
             display: flex;
             box-shadow: 0 0 20px #ffb200, 0 0 20px #ffb200;
-            width: auto;
+            width: 100%;
             height:70px;
             align-items: center;
             padding: 12px 30px;
@@ -37,7 +37,7 @@
             display: flex;
             gap: 18px;
         }
-        button{
+        .asosbutton{
             font-size: 18px;
             font-family: Verdana;
             background-color: transparent;
@@ -49,7 +49,7 @@
             gap: 35px;
             color: #ffb200;
         }
-        button:hover{
+        .asosbutton:hover{
             text-shadow: 0 0 20px #ffb200, 0 0 20px #ffb200, 
             0 0 20px #ffb200;
         }
@@ -102,7 +102,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;   /* videoni ekran o'lchamiga moslaydi */
-            z-index: -1;         /* elementlar videoning ustida turadi */
+            z-index: -2;         /* elementlar videoning ustida turadi */
+        }
+        footer{
+            height: 170px;
         }
         #foot{
             font-family:'Segoe UI';
@@ -117,6 +120,88 @@
             text-shadow: 0 0 5px #ffb200;
             font-size: 11px;
         }
+        input{
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1.8px solid #ffb200;
+            box-shadow: 3px -2px 9px #ffb200, 3px -2px 9px #ffb200;
+            height: 27px;
+            min-height: 27px;
+            width: 105px;
+            min-width: 105px;
+            -webkit-appearance: none;
+            appearance: none;
+            color: #ffb200;
+        }
+        input::placeholder{
+            color:darkgrey;
+        }
+        .ab2dmatrix{
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+        }
+        .a2dmatrix{
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        #out1, #out2, #out3, #out4{
+            background-color: transparent;
+            color: white;
+            border: 1.4px solid white;
+            box-shadow: 0 0 10px #ffb200, 0 0 10px #ffb200;
+            height: 27px;
+            min-height: 27px;
+            width: 102px;
+            min-width: 102px;
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
+            text-shadow: 0 0 8px white;
+        }
+        #out1:hover, #out2:hover, #out3:hover, #out4:hover{
+            cursor: pointer;
+        }
+        #out1:active, #out2:active, #out3:active, #out4:active{
+            background-color: #ffb200;
+        }
+        .aboutlar{
+            display: flex;
+            justify-content:center;
+            flex-direction: column;
+        }
+        .amaksimov, .bmaksimov{
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+        }
+        .abirUchlik{
+            margin-top: 60px;
+        }
+        .aikkiUchlik{
+            margin-top: 33px;
+        }
+        .auchUchlik{
+            margin-top: 6px;
+        }
+        .cmaksimov{
+            margin-top: -44px;
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+        }
+        #vektors{
+            margin-top: 25px;
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+        }
+        #daraja{
+            margin-top: 12px;
+        }
+        label{
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -124,48 +209,484 @@
     <div id="Glava">
     <h1 onclick="window.location.href='index.html'">DONYLOGIC</h1>
         <div id="Btns">
-            <button onclick="window.location.href='aloqa.html'">Aloqa</button>
-            <button onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
+            <button class="asosbutton" onclick="window.location.href='aloqa.html'">Aloqa</button>
+            <button class="asosbutton" onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
         </div>    
     </div>
     </header>
     <main>
         <video autoplay muted loop playsinline id="bgVideo">
-            <source src="IMG.mp4" type="video/mp4">
+            <source src="Abstract_Neon.mp4" type="video/mp4">
         </video>
     <div id="Discrept">
-    <details>
+    <details id="tez">
         <summary>Tezkor Quiz</summary>
-        <p><a href="https://sobirrr083.github.io/tezquiz/" target="_blank">Raqamli testlarda maksimal qulaylik.</a></p>
+        <p><a href="https://tezkorquiz.uz/" target="_blank">Raqamli testlarda maksimal qulaylik.</a></p>
     </details>
     <details>
         <summary>3-3 o'lchamli Matritsani bir-biriga ko'paytirishga nima deysiz?</summary>
-        <p><a href="javascript:matrix()">Matritsa ko'paytirish</a></p>
+        <div class="ab2dmatrix">
+            <div class="a2dmatrix">
+                <div id="a2d1">
+                    <input id="a11" type="number" placeholder="A matritsa: 1-1">
+                    <input id="a12" type="number" placeholder="A matritsa: 1-2">
+                    <input id="a13" type="number" placeholder="A matritsa: 1-3">
+                </div>
+                <div id="a2d2">
+                    <input id="a21" type="number" placeholder="A matritsa: 2-1">
+                    <input id="a22" type="number" placeholder="A matritsa: 2-2">
+                    <input id="a23" type="number" placeholder="A matritsa: 2-3">
+                </div>
+                <div id="a2d3">
+                    <input id="a31" type="number" placeholder="A matritsa: 3-1">
+                    <input id="a32" type="number" placeholder="A matritsa: 3-2">
+                    <input id="a33" type="number" placeholder="A matritsa: 3-3">
+                </div>
+            </div>
+            <!--A matritsani tugatdik!-->
+            <div class="a2dmatrix">
+                <div id="b2d1">
+                    <input id="b11" type="number" placeholder="B matritsa: 1-1">
+                    <input id="b12" type="number" placeholder="B matritsa: 1-2">
+                    <input id="b13" type="number" placeholder="B matritsa: 1-3">
+                </div>
+                <div id="b2d2">
+                    <input id="b21" type="number" placeholder="B matritsa: 2-1">
+                    <input id="b22" type="number" placeholder="B matritsa: 2-2">
+                    <input id="b23" type="number" placeholder="B matritsa: 2-3">
+                </div>
+                <div id="b2d3">
+                    <input id="b31" type="number" placeholder="B matritsa: 3-1">
+                    <input id="b32" type="number" placeholder="B matritsa: 3-2">
+                    <input id="b33" type="number" placeholder="B matritsa: 3-3">
+                </div>
+            </div>
+            <!--B matritsani tugatdik!-->
+        </div>
+        <div class="aboutlar">
+            <button id="out1" onclick="matrix()">Chiqarish</button><br>
+            <div>
+            <input id="about" type="text" placeholder="0">
+            <input id="about2" type="text" placeholder="0">
+            <input id="about3" type="text" placeholder="0">
+            </div>
+            <div>
+            <input id="about4" type="text" placeholder="0">
+            <input id="about5" type="text" placeholder="0">
+            <input id="about6" type="text" placeholder="0">
+            </div>
+            <div>
+            <input id="about7" type="text" placeholder="0">
+            <input id="about8" type="text" placeholder="0">
+            <input id="about9" type="text" placeholder="0">
+            </div>
+        </div>
     </details>
     <details>
         <summary>"Maksimov" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi?</summary>
-        <p><a href="javascript:mthreematrix()">3D Matritsa ko'paytirish</a></p>
+        <div class="amaksimov">
+            <div class="abirUchlik">
+                <div>
+                <input type="number" id="maksimova111" placeholder="A 1-1-1">
+                <input type="number" id="maksimova112" placeholder="A 1-1-2">
+                <input type="number" id="maksimova113" placeholder="A 1-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova121" placeholder="A 1-2-1">
+                <input type="number" id="maksimova122" placeholder="A 1-2-2">
+                <input type="number" id="maksimova123" placeholder="A 1-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova131" placeholder="A 1-3-1">
+                <input type="number" id="maksimova132" placeholder="A 1-3-2">
+                <input type="number" id="maksimova133" placeholder="A 1-3-3">
+                </div>
+            </div>
+            <div class="aikkiUchlik">
+                <div>
+                <input type="number" id="maksimova211" placeholder="A 2-1-1">
+                <input type="number" id="maksimova212" placeholder="A 2-1-2">
+                <input type="number" id="maksimova213" placeholder="A 2-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova221" placeholder="A 2-2-1">
+                <input type="number" id="maksimova222" placeholder="A 2-2-2">
+                <input type="number" id="maksimova223" placeholder="A 2-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova231" placeholder="A 2-3-1">
+                <input type="number" id="maksimova232" placeholder="A 2-3-2">
+                <input type="number" id="maksimova233" placeholder="A 2-3-3">
+                </div>
+            </div>
+            <div class="auchUchlik">
+                <div>
+                <input type="number" id="maksimova311" placeholder="A 3-1-1">
+                <input type="number" id="maksimova312" placeholder="A 3-1-2">
+                <input type="number" id="maksimova313" placeholder="A 3-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova321" placeholder="A 3-2-1">
+                <input type="number" id="maksimova322" placeholder="A 3-2-2">
+                <input type="number" id="maksimova323" placeholder="A 3-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimova331" placeholder="A 3-3-1">
+                <input type="number" id="maksimova332" placeholder="A 3-3-2">
+                <input type="number" id="maksimova333" placeholder="A 3-3-3">
+                </div>
+            </div>   
+        </div> 
+        <div class="bmaksimov">
+            <div class="abirUchlik">
+                <div>
+                <input type="number" id="maksimovb111" placeholder="B 1-1-1">
+                <input type="number" id="maksimovb112" placeholder="B 1-1-2">
+                <input type="number" id="maksimovb113" placeholder="B 1-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb121" placeholder="B 1-2-1">
+                <input type="number" id="maksimovb122" placeholder="B 1-2-2">
+                <input type="number" id="maksimovb123" placeholder="B 1-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb131" placeholder="B 1-3-1">
+                <input type="number" id="maksimovb132" placeholder="B 1-3-2">
+                <input type="number" id="maksimovb133" placeholder="B 1-3-3">
+                </div>
+            </div>
+            <div class="aikkiUchlik">
+                <div>
+                <input type="number" id="maksimovb211" placeholder="B 2-1-1">
+                <input type="number" id="maksimovb212" placeholder="B 2-1-2">
+                <input type="number" id="maksimovb213" placeholder="B 2-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb221" placeholder="B 2-2-1">
+                <input type="number" id="maksimovb222" placeholder="B 2-2-2">
+                <input type="number" id="maksimovb223" placeholder="B 2-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb231" placeholder="B 2-3-1">
+                <input type="number" id="maksimovb232" placeholder="B 2-3-2">
+                <input type="number" id="maksimovb233" placeholder="B 2-3-3">
+                </div>
+            </div>
+            <div class="auchUchlik">
+                <div>
+                <input type="number" id="maksimovb311" placeholder="B 3-1-1">
+                <input type="number" id="maksimovb312" placeholder="B 3-1-2">
+                <input type="number" id="maksimovb313" placeholder="B 3-1-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb321" placeholder="B 3-2-1">
+                <input type="number" id="maksimovb322" placeholder="B 3-2-2">
+                <input type="number" id="maksimovb323" placeholder="B 3-2-3">
+                </div>
+                <div>
+                <input type="number" id="maksimovb331" placeholder="B 3-3-1">
+                <input type="number" id="maksimovb332" placeholder="B 3-3-2">
+                <input type="number" id="maksimovb333" placeholder="B 3-3-3">
+                </div>
+            </div> 
+        </div>
+        <button id="out2" onclick="maksimovmatrix()">Hisoblash</button><br>  
+            <div class="cmaksimov">
+                <div class="abirUchlik">
+                    <div>
+                        <input type="text" id="maksimovc111" placeholder="0">
+                        <input type="text" id="maksimovc112" placeholder="0">
+                        <input type="text" id="maksimovc113" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc121" placeholder="0">
+                        <input type="text" id="maksimovc122" placeholder="0">
+                        <input type="text" id="maksimovc123" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc131" placeholder="0">
+                        <input type="text" id="maksimovc132" placeholder="0">
+                        <input type="text" id="maksimovc133" placeholder="0">
+                    </div>
+                </div>
+                <div class="aikkiUchlik">
+                    <div>
+                        <input type="text" id="maksimovc211" placeholder="0">
+                        <input type="text" id="maksimovc212" placeholder="0">
+                        <input type="text" id="maksimovc213" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc221" placeholder="0">
+                        <input type="text" id="maksimovc222" placeholder="0">
+                        <input type="text" id="maksimovc223" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc231" placeholder="0">
+                        <input type="text" id="maksimovc232" placeholder="0">
+                        <input type="text" id="maksimovc233" placeholder="0">
+                    </div>
+                </div>    
+                <div class="auchUchlik">       
+                    <div>
+                        <input type="text" id="maksimovc311" placeholder="0">
+                        <input type="text" id="maksimovc312" placeholder="0">
+                        <input type="text" id="maksimovc313" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc321" placeholder="0">
+                        <input type="text" id="maksimovc322" placeholder="0">
+                        <input type="text" id="maksimovc323" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="maksimovc331" placeholder="0">
+                        <input type="text" id="maksimovc332" placeholder="0">
+                        <input type="text" id="maksimovc333" placeholder="0">
+                    </div>
+                </div>
+            </div>
     </details>
     <details>
         <summary>"G'anihojayev" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi?</summary>
-        <p><a href="javascript:gthreematrix()">3D Matritsa ko'paytirish</a></p>
+        <div class="amaksimov">
+            <div class="abirUchlik">
+                <div>
+                <input type="number" id="amaksimova111" placeholder="A 1-1-1">
+                <input type="number" id="amaksimova112" placeholder="A 1-1-2">
+                <input type="number" id="amaksimova113" placeholder="A 1-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova121" placeholder="A 1-2-1">
+                <input type="number" id="amaksimova122" placeholder="A 1-2-2">
+                <input type="number" id="amaksimova123" placeholder="A 1-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova131" placeholder="A 1-3-1">
+                <input type="number" id="amaksimova132" placeholder="A 1-3-2">
+                <input type="number" id="amaksimova133" placeholder="A 1-3-3">
+                </div>
+            </div>
+            <div class="aikkiUchlik">
+                <div>
+                <input type="number" id="amaksimova211" placeholder="A 2-1-1">
+                <input type="number" id="amaksimova212" placeholder="A 2-1-2">
+                <input type="number" id="amaksimova213" placeholder="A 2-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova221" placeholder="A 2-2-1">
+                <input type="number" id="amaksimova222" placeholder="A 2-2-2">
+                <input type="number" id="amaksimova223" placeholder="A 2-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova231" placeholder="A 2-3-1">
+                <input type="number" id="amaksimova232" placeholder="A 2-3-2">
+                <input type="number" id="amaksimova233" placeholder="A 2-3-3">
+                </div>
+            </div>
+            <div class="auchUchlik">
+                <div>
+                <input type="number" id="amaksimova311" placeholder="A 3-1-1">
+                <input type="number" id="amaksimova312" placeholder="A 3-1-2">
+                <input type="number" id="amaksimova313" placeholder="A 3-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova321" placeholder="A 3-2-1">
+                <input type="number" id="amaksimova322" placeholder="A 3-2-2">
+                <input type="number" id="amaksimova323" placeholder="A 3-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimova331" placeholder="A 3-3-1">
+                <input type="number" id="amaksimova332" placeholder="A 3-3-2">
+                <input type="number" id="amaksimova333" placeholder="A 3-3-3">
+                </div>
+            </div>   
+        </div> 
+        <div class="bmaksimov">
+            <div class="abirUchlik">
+                <div>
+                <input type="number" id="amaksimovb111" placeholder="B 1-1-1">
+                <input type="number" id="amaksimovb112" placeholder="B 1-1-2">
+                <input type="number" id="amaksimovb113" placeholder="B 1-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb121" placeholder="B 1-2-1">
+                <input type="number" id="amaksimovb122" placeholder="B 1-2-2">
+                <input type="number" id="amaksimovb123" placeholder="B 1-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb131" placeholder="B 1-3-1">
+                <input type="number" id="amaksimovb132" placeholder="B 1-3-2">
+                <input type="number" id="amaksimovb133" placeholder="B 1-3-3">
+                </div>
+            </div>
+            <div class="aikkiUchlik">
+                <div>
+                <input type="number" id="amaksimovb211" placeholder="B 2-1-1">
+                <input type="number" id="amaksimovb212" placeholder="B 2-1-2">
+                <input type="number" id="amaksimovb213" placeholder="B 2-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb221" placeholder="B 2-2-1">
+                <input type="number" id="amaksimovb222" placeholder="B 2-2-2">
+                <input type="number" id="amaksimovb223" placeholder="B 2-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb231" placeholder="B 2-3-1">
+                <input type="number" id="amaksimovb232" placeholder="B 2-3-2">
+                <input type="number" id="amaksimovb233" placeholder="B 2-3-3">
+                </div>
+            </div>
+            <div class="auchUchlik">
+                <div>
+                <input type="number" id="amaksimovb311" placeholder="B 3-1-1">
+                <input type="number" id="amaksimovb312" placeholder="B 3-1-2">
+                <input type="number" id="amaksimovb313" placeholder="B 3-1-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb321" placeholder="B 3-2-1">
+                <input type="number" id="amaksimovb322" placeholder="B 3-2-2">
+                <input type="number" id="amaksimovb323" placeholder="B 3-2-3">
+                </div>
+                <div>
+                <input type="number" id="amaksimovb331" placeholder="B 3-3-1">
+                <input type="number" id="amaksimovb332" placeholder="B 3-3-2">
+                <input type="number" id="amaksimovb333" placeholder="B 3-3-3">
+                </div>
+            </div> 
+        </div>
+        <div id="vektors">
+            <input id="vek1" type="number" placeholder="Vektor 1-elementi">
+            <input id="vek2" type="number" placeholder="Vektor 2-elementi">
+            <input id="vek3" type="number" placeholder="Vektor 3-elementi">
+        </div>
+        <button id="out3" onclick="ganimatrix()">Hisoblash</button><br>
+            <div class="cmaksimov">
+                <div class="abirUchlik">
+                    <div>
+                        <input type="text" id="amaksimovc111" placeholder="0">
+                        <input type="text" id="amaksimovc112" placeholder="0">
+                        <input type="text" id="amaksimovc113" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc121" placeholder="0">
+                        <input type="text" id="amaksimovc122" placeholder="0">
+                        <input type="text" id="amaksimovc123" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc131" placeholder="0">
+                        <input type="text" id="amaksimovc132" placeholder="0">
+                        <input type="text" id="amaksimovc133" placeholder="0">
+                    </div>
+                </div>
+                <div class="aikkiUchlik">
+                    <div>
+                        <input type="text" id="amaksimovc211" placeholder="0">
+                        <input type="text" id="amaksimovc212" placeholder="0">
+                        <input type="text" id="amaksimovc213" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc221" placeholder="0">
+                        <input type="text" id="amaksimovc222" placeholder="0">
+                        <input type="text" id="amaksimovc223" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc231" placeholder="0">
+                        <input type="text" id="amaksimovc232" placeholder="0">
+                        <input type="text" id="amaksimovc233" placeholder="0">
+                    </div>
+                </div>    
+                <div class="auchUchlik">       
+                    <div>
+                        <input type="text" id="amaksimovc311" placeholder="0">
+                        <input type="text" id="amaksimovc312" placeholder="0">
+                        <input type="text" id="amaksimovc313" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc321" placeholder="0">
+                        <input type="text" id="amaksimovc322" placeholder="0">
+                        <input type="text" id="amaksimovc323" placeholder="0">
+                    </div>
+                    <div>
+                        <input type="text" id="amaksimovc331" placeholder="0">
+                        <input type="text" id="amaksimovc332" placeholder="0">
+                        <input type="text" id="amaksimovc333" placeholder="0">
+                    </div>
+                </div>
+            </div>
     </details>
     <details>
         <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar? <sup style="color: red; font-size: 10px; text-shadow: 0 0 9px red;">Yangi</sup></summary> 
-        <p><a href="javascript:up()">Matritsani darajaga oshirish</a></p>
+            <div class="a2dmatrix">
+                <div id="a2d1">
+                    <input id="sa11" type="number" placeholder="A matritsa: 1-1">
+                    <input id="sa12" type="number" placeholder="A matritsa: 1-2">
+                    <input id="sa13" type="number" placeholder="A matritsa: 1-3">
+                </div>
+                <div id="a2d2">
+                    <input id="sa21" type="number" placeholder="A matritsa: 2-1">
+                    <input id="sa22" type="number" placeholder="A matritsa: 2-2">
+                    <input id="sa23" type="number" placeholder="A matritsa: 2-3">
+                </div>
+                <div id="a2d3">
+                    <input id="sa31" type="number" placeholder="A matritsa: 3-1">
+                    <input id="sa32" type="number" placeholder="A matritsa: 3-2">
+                    <input id="sa33" type="number" placeholder="A matritsa: 3-3">
+                </div>
+            </div>
+            <div id="kich">
+                <label for="daraja">2 dan 5 gacha darajani kiriting:</label>
+                <input type="number" id="daraja" placeholder="1-5 gacha">
+            </div>      
+                <button id="out4" onclick="up()">Hisoblash</button><br> 
+            <div class="a2dmatrix">
+                <div id="b2d1">
+                    <input id="ja11" type="text" placeholder="0">
+                    <input id="ja12" type="text" placeholder="0">
+                    <input id="ja13" type="text" placeholder="0">
+                </div>
+                <div id="b2d2">
+                    <input id="ja21" type="text" placeholder="0">
+                    <input id="ja22" type="text" placeholder="0">
+                    <input id="ja23" type="text" placeholder="0">
+                </div>
+                <div id="b2d3">
+                    <input id="ja31" type="text" placeholder="0">
+                    <input id="ja32" type="text" placeholder="0">
+                    <input id="ja33" type="text" placeholder="0">
+                </div>
+            </div>
     </details>
     </div>
         <script>
         function matrix(){
+        let ab2da11 = Number(document.getElementById('a11').value);
+        let ab2da12 = Number(document.getElementById('a12').value);
+        let ab2da13 = Number(document.getElementById('a13').value);
+        let ab2da21 = Number(document.getElementById('a21').value);
+        let ab2da22 = Number(document.getElementById('a22').value);
+        let ab2da23 = Number(document.getElementById('a23').value);
+        let ab2da31 = Number(document.getElementById('a31').value);
+        let ab2da32 = Number(document.getElementById('a32').value);
+        let ab2da33 = Number(document.getElementById('a33').value);
+        //birinchi matrix tugadi
+        let ab2db11 = Number(document.getElementById('b11').value);
+        let ab2db12 = Number(document.getElementById('b12').value);
+        let ab2db13 = Number(document.getElementById('b13').value);
+        let ab2db21 = Number(document.getElementById('b21').value);
+        let ab2db22 = Number(document.getElementById('b22').value);
+        let ab2db23 = Number(document.getElementById('b23').value);
+        let ab2db31 = Number(document.getElementById('b31').value);
+        let ab2db32 = Number(document.getElementById('b32').value);
+        let ab2db33 = Number(document.getElementById('b33').value);
+        //ikkinchi matrix ham tugadi!
         let A = [
-            [Number(prompt("A matritsa: 1,1")), Number(prompt("A matritsa: 1,2")), Number(prompt("A matritsa: 1,3"))],
-            [Number(prompt("A matritsa: 2,1")), Number(prompt("A matritsa: 2,2")), Number(prompt("A matritsa: 2,3"))],
-            [Number(prompt("A matritsa: 3,1")), Number(prompt("A matritsa: 3,2")), Number(prompt("A matritsa: 3,3"))]
+            [ab2da11, ab2da12, ab2da13],
+            [ab2da21, ab2da22, ab2da23],
+            [ab2da31, ab2da32, ab2da33]
         ];
         let B = [
-            [Number(prompt("B matritsa: 1,1")), Number(prompt("B matritsa: 1,2")), Number(prompt("B matritsa: 1,3"))],
-            [Number(prompt("B matritsa: 2,1")), Number(prompt("B matritsa: 2,2")), Number(prompt("B matritsa: 2,3"))],
-            [Number(prompt("B matritsa: 3,1")), Number(prompt("B matritsa: 3,2")), Number(prompt("B matritsa: 3,3"))]
+            [ab2db11, ab2db12, ab2db13],
+            [ab2db21, ab2db22, ab2db23],
+            [ab2db31, ab2db32, ab2db33]
         ];
         let C = [
             [0, 0, 0],
@@ -180,52 +701,58 @@
                     }
                 }
             }
-        console.log(A);
-        console.log(B);
-        console.log(C);
+            document.getElementById('about').value = C[0][0];
+            document.getElementById('about2').value = C[0][1];
+            document.getElementById('about3').value = C[0][2];
+            document.getElementById('about4').value = C[1][0];
+            document.getElementById('about5').value = C[1][1];
+            document.getElementById('about6').value = C[1][2];
+            document.getElementById('about7').value = C[2][0];
+            document.getElementById('about8').value = C[2][1];
+            document.getElementById('about9').value = C[2][2];
         }
         matritsa();
         }
-        function mthreematrix(){
-            let a111 = Number(prompt('A matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a112 = Number(prompt('A matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a113 = Number(prompt('A matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a121 = Number(prompt('A matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a122 = Number(prompt('A matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a123 = Number(prompt('A matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a131 = Number(prompt('A matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a132 = Number(prompt('A matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a133 = Number(prompt('A matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+        function maksimovmatrix(){
+            let a111 = Number(document.getElementById('maksimova111').value);
+            let a112 = Number(document.getElementById('maksimova112').value);
+            let a113 = Number(document.getElementById('maksimova113').value);
+            let a121 = Number(document.getElementById('maksimova121').value);
+            let a122 = Number(document.getElementById('maksimova122').value);
+            let a123 = Number(document.getElementById('maksimova123').value);
+            let a131 = Number(document.getElementById('maksimova131').value);
+            let a132 = Number(document.getElementById('maksimova132').value);
+            let a133 = Number(document.getElementById('maksimova133').value);
             let U = [
                 [a111, a112, a113],
                 [a121, a122, a123],
                 [a131, a132, a133]
             ];
             /*birinhci qavat tugadi*/
-            let a211 = Number(prompt('A matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a212 = Number(prompt('A matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a213 = Number(prompt('A matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a221 = Number(prompt('A matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a222 = Number(prompt('A matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a223 = Number(prompt('A matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a231 = Number(prompt('A matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a232 = Number(prompt('A matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a233 = Number(prompt('A matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let a211 = Number(document.getElementById('maksimova211').value);
+            let a212 = Number(document.getElementById('maksimova212').value);
+            let a213 = Number(document.getElementById('maksimova213').value);
+            let a221 = Number(document.getElementById('maksimova221').value);
+            let a222 = Number(document.getElementById('maksimova222').value);
+            let a223 = Number(document.getElementById('maksimova223').value);
+            let a231 = Number(document.getElementById('maksimova231').value);
+            let a232 = Number(document.getElementById('maksimova232').value);
+            let a233 = Number(document.getElementById('maksimova233').value);
             let H = [
                 [a211, a212, a213],
                 [a221, a222, a223],
                 [a231, a232, a233]
             ];
             /*ikkinchi qavat ham tugadi*/
-            let a311 = Number(prompt('A matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a312 = Number(prompt('A matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a313 = Number(prompt('A matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a321 = Number(prompt('A matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a322 = Number(prompt('A matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a323 = Number(prompt('A matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a331 = Number(prompt('A matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a332 = Number(prompt('A matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a333 = Number(prompt('A matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let a311 = Number(document.getElementById('maksimova311').value);
+            let a312 = Number(document.getElementById('maksimova312').value);
+            let a313 = Number(document.getElementById('maksimova313').value);
+            let a321 = Number(document.getElementById('maksimova321').value);
+            let a322 = Number(document.getElementById('maksimova322').value);
+            let a323 = Number(document.getElementById('maksimova323').value);
+            let a331 = Number(document.getElementById('maksimova331').value);
+            let a332 = Number(document.getElementById('maksimova332').value);
+            let a333 = Number(document.getElementById('maksimova333').value);
             let F = [
                 [a311, a312, a313],
                 [a321, a322, a323],
@@ -233,35 +760,35 @@
             ];
             /*uhcunchi qavat ham tugadi*/
         /*Ikkinchi matrix*/
-            let b111 = Number(prompt('B matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b112 = Number(prompt('B matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b113 = Number(prompt('B matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b121 = Number(prompt('B matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b122 = Number(prompt('B matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b123 = Number(prompt('B matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b131 = Number(prompt('B matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b132 = Number(prompt('B matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b133 = Number(prompt('B matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b111 = Number(document.getElementById('maksimovb111').value);
+            let b112 = Number(document.getElementById('maksimovb112').value);
+            let b113 = Number(document.getElementById('maksimovb113').value);
+            let b121 = Number(document.getElementById('maksimovb121').value);
+            let b122 = Number(document.getElementById('maksimovb122').value);
+            let b123 = Number(document.getElementById('maksimovb123').value);
+            let b131 = Number(document.getElementById('maksimovb131').value);
+            let b132 = Number(document.getElementById('maksimovb132').value);
+            let b133 = Number(document.getElementById('maksimovb133').value);
             /*1-qavat tugadi*/
-            let b211 = Number(prompt('B matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b212 = Number(prompt('B matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b213 = Number(prompt('B matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b221 = Number(prompt('B matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b222 = Number(prompt('B matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b223 = Number(prompt('B matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b231 = Number(prompt('B matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b232 = Number(prompt('B matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b233 = Number(prompt('B matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b211 = Number(document.getElementById('maksimovb211').value);
+            let b212 = Number(document.getElementById('maksimovb212').value);
+            let b213 = Number(document.getElementById('maksimovb213').value);
+            let b221 = Number(document.getElementById('maksimovb221').value);
+            let b222 = Number(document.getElementById('maksimovb222').value);
+            let b223 = Number(document.getElementById('maksimovb223').value);
+            let b231 = Number(document.getElementById('maksimovb231').value);
+            let b232 = Number(document.getElementById('maksimovb232').value);
+            let b233 = Number(document.getElementById('maksimovb233').value);
             /*2-qavat tugadi*/
-            let b311 = Number(prompt('B matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b312 = Number(prompt('B matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b313 = Number(prompt('B matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b321 = Number(prompt('B matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b322 = Number(prompt('B matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b323 = Number(prompt('B matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b331 = Number(prompt('B matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b332 = Number(prompt('B matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b333 = Number(prompt('B matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b311 = Number(document.getElementById('maksimovb311').value);
+            let b312 = Number(document.getElementById('maksimovb312').value);
+            let b313 = Number(document.getElementById('maksimovb313').value);
+            let b321 = Number(document.getElementById('maksimovb321').value);
+            let b322 = Number(document.getElementById('maksimovb322').value);
+            let b323 = Number(document.getElementById('maksimovb323').value);
+            let b331 = Number(document.getElementById('maksimovb331').value);
+            let b332 = Number(document.getElementById('maksimovb332').value);
+            let b333 = Number(document.getElementById('maksimovb333').value);
             /*B matritsaning mos elementlari yig'indisini hisoblash..!*/
             let Maksimov11 = b111+b211+b311;
             let Maksimov12 = b112+b212+b312;
@@ -301,7 +828,15 @@
                     }
                 }
             }
-            console.log('Birinchi qavat: ', Bir);
+            document.getElementById('maksimovc111').value = Bir[0][0];
+            document.getElementById('maksimovc112').value = Bir[0][1];
+            document.getElementById('maksimovc113').value = Bir[0][2];
+            document.getElementById('maksimovc121').value = Bir[1][0];
+            document.getElementById('maksimovc122').value = Bir[1][1];
+            document.getElementById('maksimovc123').value = Bir[1][2];
+            document.getElementById('maksimovc131').value = Bir[2][0];
+            document.getElementById('maksimovc132').value = Bir[2][1];
+            document.getElementById('maksimovc133').value = Bir[2][2];
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
@@ -309,7 +844,15 @@
                     }
                 }
             }
-            console.log('Ikkinchi qavat: ', Ikki);
+            document.getElementById('maksimovc211').value = Ikki[0][0];
+            document.getElementById('maksimovc212').value = Ikki[0][1];
+            document.getElementById('maksimovc213').value = Ikki[0][2];
+            document.getElementById('maksimovc221').value = Ikki[1][0];
+            document.getElementById('maksimovc222').value = Ikki[1][1];
+            document.getElementById('maksimovc223').value = Ikki[1][2];
+            document.getElementById('maksimovc231').value = Ikki[2][0];
+            document.getElementById('maksimovc232').value = Ikki[2][1];
+            document.getElementById('maksimovc233').value = Ikki[2][2];
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
@@ -317,50 +860,58 @@
                     }
                 }
             }
-            console.log('Uchinchi qavat: ', Uch);
+            document.getElementById('maksimovc311').value = Uch[0][0];
+            document.getElementById('maksimovc312').value = Uch[0][1];
+            document.getElementById('maksimovc313').value = Uch[0][2];
+            document.getElementById('maksimovc321').value = Uch[1][0];
+            document.getElementById('maksimovc322').value = Uch[1][1];
+            document.getElementById('maksimovc323').value = Uch[1][2];
+            document.getElementById('maksimovc331').value = Uch[2][0];
+            document.getElementById('maksimovc332').value = Uch[2][1];
+            document.getElementById('maksimovc333').value = Uch[2][2];
         }
         thematritsa();    
         }
-        function gthreematrix(){
-            let a111 = Number(prompt('A matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a112 = Number(prompt('A matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a113 = Number(prompt('A matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a121 = Number(prompt('A matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a122 = Number(prompt('A matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a123 = Number(prompt('A matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a131 = Number(prompt('A matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a132 = Number(prompt('A matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a133 = Number(prompt('A matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+        function ganimatrix(){
+            let a111 = Number(document.getElementById('amaksimova111').value);
+            let a112 = Number(document.getElementById('amaksimova112').value);
+            let a113 = Number(document.getElementById('amaksimova113').value);
+            let a121 = Number(document.getElementById('amaksimova121').value);
+            let a122 = Number(document.getElementById('amaksimova122').value);
+            let a123 = Number(document.getElementById('amaksimova123').value);
+            let a131 = Number(document.getElementById('amaksimova131').value);
+            let a132 = Number(document.getElementById('amaksimova132').value);
+            let a133 = Number(document.getElementById('amaksimova133').value);
             let U = [
                 [a111, a112, a113],
                 [a121, a122, a123],
                 [a131, a132, a133]
             ];
             /*birinhci qavat tugadi*/
-            let a211 = Number(prompt('A matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a212 = Number(prompt('A matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a213 = Number(prompt('A matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a221 = Number(prompt('A matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a222 = Number(prompt('A matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a223 = Number(prompt('A matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a231 = Number(prompt('A matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a232 = Number(prompt('A matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a233 = Number(prompt('A matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let a211 = Number(document.getElementById('amaksimova211').value);
+            let a212 = Number(document.getElementById('amaksimova212').value);
+            let a213 = Number(document.getElementById('amaksimova213').value);
+            let a221 = Number(document.getElementById('amaksimova221').value);
+            let a222 = Number(document.getElementById('amaksimova222').value);
+            let a223 = Number(document.getElementById('amaksimova223').value);
+            let a231 = Number(document.getElementById('amaksimova231').value);
+            let a232 = Number(document.getElementById('amaksimova232').value);
+            let a233 = Number(document.getElementById('amaksimova233').value);
             let H = [
                 [a211, a212, a213],
                 [a221, a222, a223],
                 [a231, a232, a233]
             ];
             /*ikkinchi qavat ham tugadi*/
-            let a311 = Number(prompt('A matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:'));
-            let a312 = Number(prompt('A matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:'));
-            let a313 = Number(prompt('A matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let a321 = Number(prompt('A matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:'));
-            let a322 = Number(prompt('A matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:'));
-            let a323 = Number(prompt('A matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let a331 = Number(prompt('A matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:'));
-            let a332 = Number(prompt('A matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:'));
-            let a333 = Number(prompt('A matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let a311 = Number(document.getElementById('amaksimova311').value);
+            let a312 = Number(document.getElementById('amaksimova312').value);
+            let a313 = Number(document.getElementById('amaksimova313').value);
+            let a321 = Number(document.getElementById('amaksimova321').value);
+            let a322 = Number(document.getElementById('amaksimova322').value);
+            let a323 = Number(document.getElementById('amaksimova323').value);
+            let a331 = Number(document.getElementById('amaksimova331').value);
+            let a332 = Number(document.getElementById('amaksimova332').value);
+            let a333 = Number(document.getElementById('amaksimova333').value);
             let F = [
                 [a311, a312, a313],
                 [a321, a322, a323],
@@ -368,39 +919,39 @@
             ];
             /*uhcunchi qavat ham tugadi*/
         /*Ikkinchi matrix*/
-            let b111 = Number(prompt('B matritsa: 1-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b112 = Number(prompt('B matritsa: 1-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b113 = Number(prompt('B matritsa: 1-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b121 = Number(prompt('B matritsa: 1-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b122 = Number(prompt('B matritsa: 1-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b123 = Number(prompt('B matritsa: 1-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b131 = Number(prompt('B matritsa: 1-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b132 = Number(prompt('B matritsa: 1-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b133 = Number(prompt('B matritsa: 1-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b111 = Number(document.getElementById('amaksimovb111').value);
+            let b112 = Number(document.getElementById('amaksimovb112').value);
+            let b113 = Number(document.getElementById('amaksimovb113').value);
+            let b121 = Number(document.getElementById('amaksimovb121').value);
+            let b122 = Number(document.getElementById('amaksimovb122').value);
+            let b123 = Number(document.getElementById('amaksimovb123').value);
+            let b131 = Number(document.getElementById('amaksimovb131').value);
+            let b132 = Number(document.getElementById('amaksimovb132').value);
+            let b133 = Number(document.getElementById('amaksimovb133').value);
             /*1-qavat tugadi*/
-            let b211 = Number(prompt('B matritsa: 2-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b212 = Number(prompt('B matritsa: 2-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b213 = Number(prompt('B matritsa: 2-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b221 = Number(prompt('B matritsa: 2-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b222 = Number(prompt('B matritsa: 2-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b223 = Number(prompt('B matritsa: 2-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b231 = Number(prompt('B matritsa: 2-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b232 = Number(prompt('B matritsa: 2-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b233 = Number(prompt('B matritsa: 2-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b211 = Number(document.getElementById('amaksimovb211').value);
+            let b212 = Number(document.getElementById('amaksimovb212').value);
+            let b213 = Number(document.getElementById('amaksimovb213').value);
+            let b221 = Number(document.getElementById('amaksimovb221').value);
+            let b222 = Number(document.getElementById('amaksimovb222').value);
+            let b223 = Number(document.getElementById('amaksimovb223').value);
+            let b231 = Number(document.getElementById('amaksimovb231').value);
+            let b232 = Number(document.getElementById('amaksimovb232').value);
+            let b233 = Number(document.getElementById('amaksimovb233').value);
             /*2-qavat tugadi*/
-            let b311 = Number(prompt('B matritsa: 3-qavat, 1-qator, 1-ustun elementini kiriting:')); 
-            let b312 = Number(prompt('B matritsa: 3-qavat, 1-qator, 2-ustun elementini kiriting:')); 
-            let b313 = Number(prompt('B matritsa: 3-qavat, 1-qator, 3-ustun elementini kiriting:'));
-            let b321 = Number(prompt('B matritsa: 3-qavat, 2-qator, 1-ustun elementini kiriting:')); 
-            let b322 = Number(prompt('B matritsa: 3-qavat, 2-qator, 2-ustun elementini kiriting:')); 
-            let b323 = Number(prompt('B matritsa: 3-qavat, 2-qator, 3-ustun elementini kiriting:'));
-            let b331 = Number(prompt('B matritsa: 3-qavat, 3-qator, 1-ustun elementini kiriting:')); 
-            let b332 = Number(prompt('B matritsa: 3-qavat, 3-qator, 2-ustun elementini kiriting:')); 
-            let b333 = Number(prompt('B matritsa: 3-qavat, 3-qator, 3-ustun elementini kiriting:'));
+            let b311 = Number(document.getElementById('amaksimovb311').value);
+            let b312 = Number(document.getElementById('amaksimovb312').value);
+            let b313 = Number(document.getElementById('amaksimovb313').value);
+            let b321 = Number(document.getElementById('amaksimovb321').value);
+            let b322 = Number(document.getElementById('amaksimovb322').value);
+            let b323 = Number(document.getElementById('amaksimovb323').value);
+            let b331 = Number(document.getElementById('amaksimovb331').value);
+            let b332 = Number(document.getElementById('amaksimovb332').value);
+            let b333 = Number(document.getElementById('amaksimovb333').value);
             //vekotorni kiritish
-            let Vektor = Number(prompt('Vektorni Birinchi elementini kiriting: '));
-            let Vektor2 = Number(prompt('Vektorni Ikkinchi elementini kiriting: '));
-            let Vektor3 = Number(prompt('Vektorni Uchinchi elementini kiriting: '));
+            let Vektor = Number(document.getElementById('vek1').value);
+            let Vektor2 = Number(document.getElementById('vek2').value);
+            let Vektor3 = Number(document.getElementById('vek3').value);
             let mtb = Vektor * b111;
             let mtb2 = Vektor * b112;
             let mtb3 = Vektor * b113;
@@ -470,7 +1021,15 @@
                     }
                 }
             }
-            console.log('Birinchi qavat: ', Bir);
+            document.getElementById('amaksimovc111').value = Bir[0][0];
+            document.getElementById('amaksimovc112').value = Bir[0][1];
+            document.getElementById('amaksimovc113').value = Bir[0][2];
+            document.getElementById('amaksimovc121').value = Bir[1][0];
+            document.getElementById('amaksimovc122').value = Bir[1][1];
+            document.getElementById('amaksimovc123').value = Bir[1][2];
+            document.getElementById('amaksimovc131').value = Bir[2][0];
+            document.getElementById('amaksimovc132').value = Bir[2][1];
+            document.getElementById('amaksimovc133').value = Bir[2][2];
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
@@ -478,7 +1037,15 @@
                     }
                 }
             }
-            console.log('Ikkinchi qavat: ', Ikki);
+            document.getElementById('amaksimovc211').value = Ikki[0][0];
+            document.getElementById('amaksimovc212').value = Ikki[0][1];
+            document.getElementById('amaksimovc213').value = Ikki[0][2];
+            document.getElementById('amaksimovc221').value = Ikki[1][0];
+            document.getElementById('amaksimovc222').value = Ikki[1][1];
+            document.getElementById('amaksimovc223').value = Ikki[1][2];
+            document.getElementById('amaksimovc231').value = Ikki[2][0];
+            document.getElementById('amaksimovc232').value = Ikki[2][1];
+            document.getElementById('amaksimovc233').value = Ikki[2][2];
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
@@ -486,17 +1053,25 @@
                     }
                 }
             }
-            console.log('Uchinchi qavat: ', Uch);
+            document.getElementById('amaksimovc311').value = Uch[0][0];
+            document.getElementById('amaksimovc312').value = Uch[0][1];
+            document.getElementById('amaksimovc313').value = Uch[0][2];
+            document.getElementById('amaksimovc321').value = Uch[1][0];
+            document.getElementById('amaksimovc322').value = Uch[1][1];
+            document.getElementById('amaksimovc323').value = Uch[1][2];
+            document.getElementById('amaksimovc331').value = Uch[2][0];
+            document.getElementById('amaksimovc332').value = Uch[2][1];
+            document.getElementById('amaksimovc333').value = Uch[2][2];
         }
         gthematritsa();
         }
         function up(){
             let A = [
-                [Number(prompt("A matritsa: 1,1")), Number(prompt("A matritsa: 1,2")), Number(prompt("A matritsa: 1,3"))],
-                [Number(prompt("A matritsa: 2,1")), Number(prompt("A matritsa: 2,2")), Number(prompt("A matritsa: 2,3"))],
-                [Number(prompt("A matritsa: 3,1")), Number(prompt("A matritsa: 3,2")), Number(prompt("A matritsa: 3,3"))]
+                [Number(document.getElementById('sa11').value), Number(document.getElementById('sa12').value), Number(document.getElementById('sa13').value)],
+                [Number(document.getElementById('sa21').value), Number(document.getElementById('sa22').value), Number(document.getElementById('sa23').value)],
+                [Number(document.getElementById('sa31').value), Number(document.getElementById('sa32').value), Number(document.getElementById('sa33').value)]
             ];
-            let b = Number(prompt('Nechchinchi darajaga oshirasiz?'));
+            let b = Number(document.getElementById('daraja').value);
             let C2 = [
                 [0, 0, 0],
                 [0, 0, 0],
@@ -546,16 +1121,48 @@
                     }
                 }
             if(b == 2){
-                console.log('Ikkinchi darajasi: ', C2);
+                document.getElementById('ja11').value = C2[0][0];
+                document.getElementById('ja12').value = C2[0][1];
+                document.getElementById('ja13').value = C2[0][2];
+                document.getElementById('ja21').value = C2[1][0];
+                document.getElementById('ja22').value = C2[1][1];
+                document.getElementById('ja23').value = C2[1][2];
+                document.getElementById('ja31').value = C2[2][0];
+                document.getElementById('ja32').value = C2[2][1];
+                document.getElementById('ja33').value = C2[2][2];
             }
             else if(b == 3){
-                console.log('Uchinchi darajasi: ', C3);
+                document.getElementById('ja11').value = C3[0][0];
+                document.getElementById('ja12').value = C3[0][1];
+                document.getElementById('ja13').value = C3[0][2];
+                document.getElementById('ja21').value = C3[1][0];
+                document.getElementById('ja22').value = C3[1][1];
+                document.getElementById('ja23').value = C3[1][2];
+                document.getElementById('ja31').value = C3[2][0];
+                document.getElementById('ja32').value = C3[2][1];
+                document.getElementById('ja33').value = C3[2][2];
             }
             else if(b == 4){
-                console.log('Tortinchi darajasi: ', C4);
+                document.getElementById('ja11').value = C4[0][0];
+                document.getElementById('ja12').value = C4[0][1];
+                document.getElementById('ja13').value = C4[0][2];
+                document.getElementById('ja21').value = C4[1][0];
+                document.getElementById('ja22').value = C4[1][1];
+                document.getElementById('ja23').value = C4[1][2];
+                document.getElementById('ja31').value = C4[2][0];
+                document.getElementById('ja32').value = C4[2][1];
+                document.getElementById('ja33').value = C4[2][2];
             }
             else if(b == 5){
-                console.log('Beshinchi darajasi: ', C5);
+                document.getElementById('ja11').value = C5[0][0];
+                document.getElementById('ja12').value = C5[0][1];
+                document.getElementById('ja13').value = C5[0][2];
+                document.getElementById('ja21').value = C5[1][0];
+                document.getElementById('ja22').value = C5[1][1];
+                document.getElementById('ja23').value = C5[1][2];
+                document.getElementById('ja31').value = C5[2][0];
+                document.getElementById('ja32').value = C5[2][1];
+                document.getElementById('ja33').value = C5[2][2];
             }
             else {
                 alert('Uzr! Hozircha faqat 2-5-darajagacha hisoblaymiz..');
@@ -566,7 +1173,7 @@
         <footer>
             <div id="foot">
                 <div>
-                    <p>Yangilandi: 00:06 01.12.2025</p>
+                    <p>Yangilandi: 03:21 03.12.2025</p>
                 </div>
                 <div>
                     <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
