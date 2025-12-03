@@ -26,7 +26,7 @@
         #Glava{
             background-color: transparent;
             display: flex;
-            box-shadow: 0 0 20px #ffb200, 0 0 20px #ffb200;
+            box-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00;
             width: 100%;
             height:70px;
             align-items: center;
@@ -47,11 +47,11 @@
             transition: 0.1s;
             font-weight: 600;
             gap: 35px;
-            color: #ffb200;
+            color: #FF8C00;
         }
         .asosbutton:hover{
-            text-shadow: 0 0 20px #ffb200, 0 0 20px #ffb200, 
-            0 0 20px #ffb200;
+            text-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00, 
+            0 0 20px #FF8C00;
         }
         #Discrept{
             margin-top: 25px;
@@ -70,18 +70,18 @@
         }
         summary:hover{
             color: white;
-            text-shadow: 0px 0px 20px #ffb200,
-            0px 0px 20px #ffb200, 0px 0px 20px #ffb200;
+            text-shadow: 0px 0px 20px #FF8C00,
+            0px 0px 20px #FF8C00, 0px 0px 20px #FF8C00;
             cursor: pointer;
         }
         a{
             text-decoration: none;
-            color:#ffb200;
+            color:#FF8C00;
             transition: 0.3s;
         }
         a:hover{
-            color: #ffb200;
-            text-shadow: 0 0 20px #ffb200, 0 0 20px #ffb200;
+            color: #FF8C00;
+            text-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00;
             cursor: pointer;
             text-decoration: underline;
         }
@@ -92,17 +92,17 @@
             transition: 0.2s;
         }
         h1:hover{
-            text-shadow:0 0 20px #ffb200, 0 0 20px #ffb200, 0 0 20px #ffb200;
+            text-shadow:0 0 20px #FF8C00, 0 0 20px #FF8C00, 0 0 20px #FF8C00;
             cursor: pointer;
         }
-        #bgVideo {
+        #fonvideo{
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;   /* videoni ekran o'lchamiga moslaydi */
-            z-index: -2;         /* elementlar videoning ustida turadi */
+            z-index: -1;         /* elementlar videoning ustida turadi */
         }
         footer{
             height: 170px;
@@ -117,20 +117,20 @@
             left: 0px;
             width: 100%;
             padding: 10px;
-            text-shadow: 0 0 5px #ffb200;
+            text-shadow: 0 0 5px #FF8C00;
             font-size: 11px;
         }
         input{
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1.8px solid #ffb200;
-            box-shadow: 3px -2px 9px #ffb200, 3px -2px 9px #ffb200;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1.8px solid #FF8C00;
+            box-shadow: 4px -2px 9px #FF8C00, 4px -2px 9px #FF8C00;
             height: 27px;
             min-height: 27px;
             width: 105px;
             min-width: 105px;
             -webkit-appearance: none;
             appearance: none;
-            color: #ffb200;
+            color: #FF8C00;
         }
         input::placeholder{
             color:darkgrey;
@@ -149,7 +149,7 @@
             background-color: transparent;
             color: white;
             border: 1.4px solid white;
-            box-shadow: 0 0 10px #ffb200, 0 0 10px #ffb200;
+            box-shadow: 0 0 10px #FF8C00, 0 0 10px #FF8C00;
             height: 27px;
             min-height: 27px;
             width: 102px;
@@ -163,7 +163,7 @@
             cursor: pointer;
         }
         #out1:active, #out2:active, #out3:active, #out4:active{
-            background-color: #ffb200;
+            background-color: #FF8C00;
         }
         .aboutlar{
             display: flex;
@@ -211,12 +211,12 @@
         <div id="Btns">
             <button class="asosbutton" onclick="window.location.href='aloqa.html'">Aloqa</button>
             <button class="asosbutton" onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
-        </div>    
+        </div>
     </div>
     </header>
     <main>
-        <video autoplay muted loop playsinline id="bgVideo">
-            <source src="Abstract_Neon.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline id="fonvideo">
+            <source src="oxirgi.mp4" type="video/mp4">
         </video>
     <div id="Discrept">
     <details id="tez">
@@ -1182,5 +1182,4 @@
         </footer>
     </body>
 </html>
-
 
