@@ -4,31 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bosh Sahifa</title>
-    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC" />
-    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
         *{
             padding: 0;
             margin: 0;
             box-sizing: border-box;
         }
-        body{
-            min-height: 100vh;
-            width: 100%;
-        }
         #Glava{
-            background-color: transparent;
+            background-color:rgba(0, 0, 0, 0.7);
             display: flex;
-            box-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00;
+            box-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
             width: 100%;
-            height:70px;
+            height:63px;
             align-items: center;
             padding: 12px 30px;
             justify-content: space-between;
@@ -47,52 +46,57 @@
             transition: 0.1s;
             font-weight: 600;
             gap: 35px;
-            color: #FF8C00;
+            color: goldenrod;
         }
         .asosbutton:hover{
-            text-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00, 
-            0 0 20px #FF8C00;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod;
         }
         #Discrept{
-            margin-top: 25px;
-            margin-left: 25px;
+            margin-top: 45px;
+            margin-left: 45px;
             display: flex;
             justify-content: center;
             flex-direction: column;
-            gap: 2px;
+            gap: 5px;
         }
         details{
             font-weight: 600;
             font-size: 17px;
+            font-family: "Saira", sans-serif;
+        }
+        details:hover{
+            text-shadow: 0 0 6px lightblue;
         }
         summary{
-            color: white;
+            color: lightblue;
         }
         summary:hover{
-            color: white;
-            text-shadow: 0px 0px 20px #FF8C00,
-            0px 0px 20px #FF8C00, 0px 0px 20px #FF8C00;
+            color: lightblue;
+            text-shadow: 0px 0px 20px lightblue,
+            0px 0px 20px lightblue, 0px 0px 20px lightblue;
             cursor: pointer;
         }
         a{
             text-decoration: none;
-            color:#FF8C00;
+            color:goldenrod;
             transition: 0.3s;
         }
         a:hover{
-            color: #FF8C00;
-            text-shadow: 0 0 20px #FF8C00, 0 0 20px #FF8C00;
+            color: goldenrod;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
             cursor: pointer;
             text-decoration: underline;
         }
         h1{
             color: white; 
             font-weight:600; 
-            font-family:serif; 
+            font-family: "Saira", sans-serif; 
             transition: 0.2s;
         }
         h1:hover{
-            text-shadow:0 0 20px #FF8C00, 0 0 20px #FF8C00, 0 0 20px #FF8C00;
+            color: lightblue;
+            text-shadow:0 0 20px lightblue, 0 0 20px lightblue, 0 0 20px lightblue;
             cursor: pointer;
         }
         #fonvideo{
@@ -105,32 +109,32 @@
             z-index: -1;         /* elementlar videoning ustida turadi */
         }
         footer{
-            height: 170px;
+            height: 100px;
         }
         #foot{
             font-family:'Segoe UI';
             display: flex;
             justify-content: space-between;
-            color: white;
+            color: lightblue;
             position: fixed;
             bottom: 0px;
             left: 0px;
             width: 100%;
-            padding: 10px;
-            text-shadow: 0 0 5px #FF8C00;
+            padding: 15px;
+            text-shadow: 0 0 5px goldenrod;
             font-size: 11px;
         }
         input{
             background-color: rgba(0, 0, 0, 0.2);
-            border: 1.8px solid #FF8C00;
-            box-shadow: 4px -2px 9px #FF8C00, 4px -2px 9px #FF8C00;
+            border: 1.8px solid goldenrod;
+            box-shadow: 4px -2px 9px goldenrod, 4px -2px 9px goldenrod;
             height: 27px;
             min-height: 27px;
             width: 105px;
             min-width: 105px;
             -webkit-appearance: none;
             appearance: none;
-            color: #FF8C00;
+            color: goldenrod;
         }
         input::placeholder{
             color:darkgrey;
@@ -147,9 +151,9 @@
         }
         #out1, #out2, #out3, #out4{
             background-color: transparent;
-            color: white;
-            border: 1.4px solid white;
-            box-shadow: 0 0 10px #FF8C00, 0 0 10px #FF8C00;
+            color: lightblue;
+            border: 1.4px solid lightblue;
+            box-shadow: 0 0 10px lightblue, 0 0 10px lightblue;
             height: 27px;
             min-height: 27px;
             width: 102px;
@@ -157,13 +161,15 @@
             display: flex;
             justify-content: center;
             margin-top: 8px;
-            text-shadow: 0 0 8px white;
+            text-shadow: 0 0 10px lightblue, 0 0 10px lightblue;
+            transition: 0.2s;
         }
         #out1:hover, #out2:hover, #out3:hover, #out4:hover{
             cursor: pointer;
         }
         #out1:active, #out2:active, #out3:active, #out4:active{
-            background-color: #FF8C00;
+            background-color: lightblue;
+            color: black;
         }
         .aboutlar{
             display: flex;
@@ -200,14 +206,29 @@
             margin-top: 12px;
         }
         label{
+            color: lightblue;
+        }
+        .markaz{
             color: white;
+            z-index: -1;
+            font-size: 65px;
+            text-shadow: 0 0 15px white, 0 0 15px white;
+            position: fixed;
+            top: 43%;
+            right: 50%;
+            transition: 0.2s;
+        }
+        .markaz:hover{
+            color: lightblue;
+            text-shadow: 0 0 15px lightblue, 0 0 15px lightblue;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <header>
     <div id="Glava">
-    <h1 onclick="window.location.href='index.html'">DONYLOGIC</h1>
+    <h1 onclick="window.location.href='index.html'">ⲆONYLOGIC</h1>
         <div id="Btns">
             <button class="asosbutton" onclick="window.location.href='aloqa.html'">Aloqa</button>
             <button class="asosbutton" onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
@@ -215,9 +236,10 @@
     </div>
     </header>
     <main>
-        <video autoplay muted loop playsinline id="fonvideo">
+        <video autoplay muted loop playsinline poster="poster.jpg" id="fonvideo">
             <source src="oxirgi.mp4" type="video/mp4">
         </video>
+    <div id="mainor">
     <div id="Discrept">
     <details id="tez">
         <summary>Tezkor Quiz</summary>
@@ -614,7 +636,7 @@
             </div>
     </details>
     <details>
-        <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar? <sup style="color: red; font-size: 10px; text-shadow: 0 0 9px red;">Yangi</sup></summary> 
+        <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar?</summary> 
             <div class="a2dmatrix">
                 <div id="a2d1">
                     <input id="sa11" type="number" placeholder="A matritsa: 1-1">
@@ -656,6 +678,9 @@
             </div>
     </details>
     </div>
+        <div class="markaz">
+            <p>Ⲇ</p>
+        </div>
         <script>
         function matrix(){
         let ab2da11 = Number(document.getElementById('a11').value);
@@ -983,19 +1008,19 @@
             let mtu9 = Vektor3 * b333;
             //uchinchi qavatni vektorni uchunchi elementiga kopaytirdik
             /*B matritsaning mos elementlari yig'indisini hisoblash..!*/
-            let Maksimov11 = mtb+mti+mtu;
-            let Maksimov12 = mtb2+mti2+mtu2;
-            let Maksimov13 = mtb3+mti3+mtu3;
-            let Maksimov21 = mtb4+mti4+mtu4;
-            let Maksimov22 = mtb5+mti5+mtu5;
-            let Maksimov23 = mtb6+mti6+mtu6;
-            let Maksimov31 = mtb7+mti7+mtu7;
-            let Maksimov32 = mtb8+mti8+mtu8;
-            let Maksimov33 = mtb9+mti9+mtu9;
-            let Maksimov = [
-                [Maksimov11, Maksimov12, Maksimov13],
-                [Maksimov21, Maksimov22, Maksimov23],
-                [Maksimov31, Maksimov32, Maksimov33]
+            let Gani11 = mtb+mti+mtu;
+            let Gani12 = mtb2+mti2+mtu2;
+            let Gani13 = mtb3+mti3+mtu3;
+            let Gani21 = mtb4+mti4+mtu4;
+            let Gani22 = mtb5+mti5+mtu5;
+            let Gani23 = mtb6+mti6+mtu6;
+            let Gani31 = mtb7+mti7+mtu7;
+            let Gani32 = mtb8+mti8+mtu8;
+            let Gani33 = mtb9+mti9+mtu9;
+        let Gani = [
+            [Gani11, Gani12, Gani13],
+            [Gani21, Gani22, Gani23],
+            [Gani31, Gani32, Gani33]
             ]
             
         let Bir = [
@@ -1017,7 +1042,7 @@
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Bir[i][j] += U[i][k]*Maksimov[k][j];
+                        Bir[i][j] += U[i][k]*Gani[k][j];
                     }
                 }
             }
@@ -1033,7 +1058,7 @@
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Ikki[i][j] += H[i][k]*Maksimov[k][j];
+                        Ikki[i][j] += H[i][k]*Gani[k][j];
                     }
                 }
             }
@@ -1049,7 +1074,7 @@
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Uch[i][j] += F[i][k]*Maksimov[k][j];
+                        Uch[i][j] += F[i][k]*Gani[k][j];
                     }
                 }
             }
@@ -1169,11 +1194,12 @@
             }
         }
         </script>
+        </div>
         </main>
         <footer>
             <div id="foot">
                 <div>
-                    <p>Yangilandi: 00:17 05.12.2025</p>
+                    <p>Yangilandi: 01:10 06.12.2025</p>
                 </div>
                 <div>
                     <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
@@ -1182,6 +1208,3 @@
         </footer>
     </body>
 </html>
-
-
-
