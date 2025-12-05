@@ -3,74 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bog'lanish</title>
-   <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC" />
-    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <title>Aloqa</title>
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="ⲆONYLOGIC">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style>
-       h1 {
-            color: blue;
-            text-shadow: 1px 1px 8px;
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background: linear-gradient(to right, cyan, red);
+        }
+        #Glava{
+            background-color:rgba(0, 0, 0, 0.5);
+            display: flex;
+            box-shadow: 0 0 20px white, 0 0 20px white;
+            width: 100%;
+            height:63px;
+            align-items: center;
+            padding: 12px 30px;
+            justify-content: space-between;
+        }
+        #Btns{
+            display: flex;
+            gap: 18px;
+        }
+        .asosbutton{
+            font-size: 18px;
+            font-family: Verdana;
+            background-color: transparent;
+            padding: 25px 1px;
+            border: none;
             cursor: pointer;
-            text-align: center;
+            transition: 0.1s;
+            font-weight: 600;
+            gap: 35px;
+            color: cyan;
+        }
+        .asosbutton:hover{
+            text-shadow: 0 0 20px cyan, 0 0 20px cyan, 
+            0 0 20px cyan;
+        }
+        h1{
+            color: white; 
+            font-weight:600; 
+            font-family: "Saira", sans-serif; 
+            transition: 0.2s;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
         }
         h1:hover{
-            color: black;
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
             cursor: pointer;
         }
-        div {
+        footer{
+            height: 100px;
+        }
+        #foot{
+            font-family:'Segoe UI';
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items:center;
+            justify-content: space-between;
+            color: white;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            padding: 15px;
+            text-shadow: 0 0 5px white;
+            font-size: 11px;
         }
-        div button {
-        border:solid 3px white;
-        border-radius: 50px;
-        text-shadow: 1px 1px 8px blue;
-        width: auto;
-        background-color:blue;
-        padding: 8px 20px;
-        display: inline-flex;
+        .markaz{
+            color: white;
+            z-index: -1;
+            font-size: 65px;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            position: fixed;
+            top: 43%;
+            right: 50%;
+            transition: 0.2s;
         }
-        div button:hover{
-            background-color:azure;
-            color: blue;
+        .markaz:hover{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
             cursor: pointer;
         }
-        body {
-            background-image: url('NATURE.jpg');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            min-height: 100vh;
-            width: 100%;
+        .aloqamt{
+            display: flex;
+            justify-content: center;
+            font-family: "Saira", sans-serif;
+            border: 1px solid cyan;
+            box-shadow: 0 0 8px cyan;
+            
+        }
+        #hush{
+            font-family:'Dancing Script';
         }
     </style>
-</head>
+    </head>
     <body>
-        <header>
+    <header>
+        <div id="Glava">
             <h1 onclick="window.location.href='index.html'">ⲆONYLOGIC</h1>
-            <div>
-                <button onclick="window.location.href='https://t.me/Doniyorweb'">Telegramim</button>
-                <button onclick="window.location.href='https://www.instagram.com/doniyorweb?igsh=MTZ1ZjF6N21yODNjMg%3D%3D&utm_source=qr'">Instagramim</button>
+            <div id="Btns">
+                <button class="asosbutton" onclick="window.location.href='aloqa.html'">Aloqa</button>
+                <button class="asosbutton" onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
             </div>
-        </header>
-        <main>
-        </main>
-        <footer>
-
-        </footer>
+        </div>
+    </header>
+    <main>
+        <div class="markaz">
+            <p>Ⲇ</p>
+        </div>
+        <div class="aloqamt">
+            <p>Assalomu alaykum! Dasturchi bilan aloqa sahifasiga <span id="hush">XUSH KELIBSIZ!</span></p>
+        </div>
+    </main>
+    <footer>
+        <div id="foot">
+            <div>
+                <p>Yangilandi: 01:14 06.12.2025</p>
+            </div>
+            <div>
+                <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
+            </div>
+        </div>
+    </footer>
     </body>
 </html>
-
-
-
-
-
-
-
-
