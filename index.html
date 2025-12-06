@@ -28,7 +28,7 @@
             background-color:rgba(0, 0, 0, 0.8);
             display: flex;
             box-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
-            width: 100wv;
+            width: 100vw;
             height: 8vh;
             align-items: center;
             padding: 2px 8px;
@@ -36,11 +36,11 @@
             justify-content: space-between;
         }
         #Btns{
-            display: flex;
             gap: 10px;
+            flex-wrap: nowrap;
         }
         .asosbutton{
-            font-size: 2.32vh;
+            font-size: 2.1vh;
             background-color: transparent;
             padding: 25px 1px;
             border: none;
@@ -51,6 +51,11 @@
             color: goldenrod;
         }
         .asosbutton:hover{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        .asosbutton:active{
             text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
             0 0 20px goldenrod, 0 0 20px goldenrod;
             color: goldenrod;
@@ -70,10 +75,20 @@
         details:hover{
             text-shadow: 0 0 6px lightblue;
         }
+        details:active{
+            text-shadow: 0 0 6px lightblue;
+        }
         summary{
             color: cyan;
+            display: inline-block;
         }
         summary:hover{
+            color: cyan;
+            text-shadow: 0px 0px 20px cyan,
+            0px 0px 20px cyan, 0px 0px 20px cyan;
+            cursor: pointer;
+        }
+        summary:active{
             color: cyan;
             text-shadow: 0px 0px 20px cyan,
             0px 0px 20px cyan, 0px 0px 20px cyan;
@@ -90,6 +105,12 @@
             cursor: pointer;
             text-decoration: underline;
         }
+        a:active{
+            color: goldenrod;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            cursor: pointer;
+            text-decoration: underline;
+        }
         h1{
             color: white; 
             font-weight:630; 
@@ -97,6 +118,11 @@
             transition: 0.2s;
         }
         h1:hover{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        h1:active{
             color: cyan;
             text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
             cursor: pointer;
@@ -114,7 +140,6 @@
             height: 100px;
         }
         #foot{
-            font-family:'Segoe UI';
             display: flex;
             justify-content: space-between;
             color: white;
@@ -129,11 +154,11 @@
         input{
             background-color: rgba(0, 0, 0, 0.2);
             border: 1.8px solid goldenrod;
-            box-shadow: 4px -2px 9px goldenrod, 4px -2px 9px goldenrod;
+            box-shadow: 0 0 10px goldenrod, 0 0 10px goldenrod;
             height: 27px;
             min-height: 27px;
-            width: 105px;
-            min-width: 105px;
+            width: 120px;
+            min-width: 120px;
             -webkit-appearance: none;
             appearance: none;
             color: goldenrod;
@@ -226,6 +251,11 @@
             transition: 0.2s;
         }
         .markaz:hover{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
+        .markaz:active{
             color: cyan;
             text-shadow: 0 0 15px cyan, 0 0 15px cyan;
             cursor: pointer;
@@ -1244,7 +1274,7 @@
         <footer>
             <div id="foot">
                 <div>
-                    <p>Yangilandi: 23:07 06.12.2025</p>
+                    <p>Yangilandi: 23:54 06.12.2025</p>
                 </div>
                 <div>
                     <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
