@@ -21,33 +21,34 @@
             padding: 0;
             margin: 0;
             box-sizing: border-box;
-        }
-        body{
-            background: linear-gradient(to right, cyan, red);
-            background-repeat: no-repeat;
             font-family: "Saira", sans-serif;
-            background-size:auto;
+        }
+       body{
+            background-image: url("CHCH.jpg");
+            background-repeat: no-repeat;
+            background-size:cover;
+            background-position: center center;
             min-height: 100vh;
-            width: 100vw;
-
+            width: 100%;
+            color: white;
+            background-attachment: fixed;
         }
         #Glava{
-            background-color:rgba(0, 0, 0, 0.5);
+            background-color:rgba(0, 0, 0, 0.8);
             display: flex;
             box-shadow: 0 0 20px white, 0 0 20px white;
-            width: 100%;
-            height:63px;
+            width: 100vw;
+            height: 8vh;
             align-items: center;
-            padding: 12px 30px;
+            padding: 2px 8px;
+            margin: 0;
             justify-content: space-between;
         }
         #Btns{
-            display: flex;
-            gap: 18px;
+            gap: 10px;
         }
         .asosbutton{
-            font-size: 18px;
-            font-family: Verdana;
+            font-size: 2.1vh;
             background-color: transparent;
             padding: 25px 1px;
             border: none;
@@ -55,19 +56,30 @@
             transition: 0.1s;
             font-weight: 600;
             gap: 35px;
-            color: cyan;
+            color: goldenrod;
         }
         .asosbutton:hover{
-            text-shadow: 0 0 20px cyan, 0 0 20px cyan, 
-            0 0 20px cyan;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        .asosbutton:active{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
         }
         h1{
             color: white; 
-            font-weight:600;  
+            font-weight:630; 
+            font-family: "Saira", sans-serif; 
             transition: 0.2s;
-            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
         }
         h1:hover{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        h1:active{
             color: cyan;
             text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
             cursor: pointer;
@@ -76,7 +88,6 @@
             height: 100px;
         }
         #foot{
-            font-family:'Segoe UI';
             display: flex;
             justify-content: space-between;
             color: white;
@@ -84,15 +95,15 @@
             bottom: 0px;
             left: 0px;
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             text-shadow: 0 0 5px white;
-            font-size: 11px;
+            font-size: 1.23vh;
         }
         .markaz{
             color: white;
-            z-index: -1;
+            z-index: 1;
             font-size: 65px;
-            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            text-shadow: 0 0 15px white, 0 0 15px white;
             position: fixed;
             top: 50%;
             left: 50%;
@@ -104,18 +115,24 @@
             text-shadow: 0 0 15px cyan, 0 0 15px cyan;
             cursor: pointer;
         }
+        .markaz:active{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
         .aloqamt{
             display: flex;
-            justify-content: center;
+            justify-content:center;
             flex-direction: column;
-            text-align: center;
             font-family: "Saira", sans-serif;
-            border: 1px solid cyan;
-            box-shadow: 0 0 8px cyan;
-            text-align:center;
+            text-align: center;
         }
         #hush{
             font-family:'Dancing Script';
+            color: goldenrod;
+        }
+        a{
+            text-decoration: none;
         }
     </style>
     </head>
@@ -124,7 +141,6 @@
         <div id="Glava">
             <h1 onclick="window.location.href='index.html'">ⲆONYLOGIC</h1>
             <div id="Btns">
-                <button class="asosbutton" onclick="window.location.href='aloqa.html'">Aloqa</button>
                 <button class="asosbutton" onclick="window.location.href='menhaqimda.html'">Men haqimda</button>
             </div>
         </div>
@@ -136,7 +152,8 @@
         <div class="aloqamt">
             <p>Assalomu alaykum! Dasturchi bilan aloqa sahifasiga <span id="hush">XUSH KELIBSIZ!</span></p>
             <table>
-                <a href="https://t.me/doniyorweb">telegram</a>
+                <a href="https://t.me/doniyorweb">Telegram</a>
+                <a href="https://www.instagram.com/doniyorweb?igsh=MTZ1ZjF6N21yODNjMg%3D%3D&utm_source=qr">Instagram</a>
                 <p>+998990329161</p>
             </table>
         </div>
@@ -144,7 +161,7 @@
     <footer>
         <div id="foot">
             <div>
-                <p>Yangilandi: 09:45 06.12.2025</p>
+                <p>Yangilandi: 00:27 06.12.2025</p>
             </div>
             <div>
                 <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
@@ -153,4 +170,3 @@
     </footer>
     </body>
 </html>
-
