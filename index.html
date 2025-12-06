@@ -71,10 +71,10 @@
             font-size: 1.98vh;
         }
         details:hover{
-            text-shadow: 0 0 6px lightblue;
+            text-shadow: 0 0 6px cyan;
         }
         details:active{
-            text-shadow: 0 0 6px lightblue;
+            text-shadow: 0 0 6px cyan;
         }
         summary{
             color: cyan;
@@ -82,15 +82,14 @@
         }
         summary:hover{
             color: cyan;
-            text-shadow: 0px 0px 20px cyan,
-            0px 0px 20px cyan, 0px 0px 20px cyan;
+            text-shadow:0px 0px 9px cyan,0px 0px 9px cyan;
             cursor: pointer;
         }
         summary:active{
-            color: cyan;
-            text-shadow: 0px 0px 20px cyan,
-            0px 0px 20px cyan, 0px 0px 20px cyan;
-            cursor: pointer;
+            color: red;
+            text-shadow: 0px 0px 20px red,
+            0px 0px 20px red, 0px 0px 20px red;
+            
         }
         a{
             text-decoration: none;
@@ -180,15 +179,15 @@
             color: cyan;
             border: 1.4px solid white;
             box-shadow: 0 0 10px white, 0 0 10px white;
-            height: 27px;
-            min-height: 27px;
-            width: 102px;
-            min-width: 102px;
-            display: flex;
-            justify-content: center;
+            height: 38px;
+            min-height: 38px;
+            width: 130px;
+            min-width: 130px;
             margin-top: 8px;
             text-shadow: 0 0 10px white, 0 0 10px white;
             transition: 0.2s;
+            display: inline-block;
+            text-align: center;
         }
         #out1:hover, #out2:hover, #out3:hover, #out4:hover{
             cursor: pointer;
@@ -262,7 +261,8 @@
             color: red;
             font-family: "Crushed", sans-serif;
             font-weight:bold;
-            box-shadow: 0 0 4px red;
+            text-shadow: 0 0 3px red;
+            
         }
     </style>
 </head>
@@ -287,7 +287,7 @@
         <p><a href="https://tezkorquiz.uz/" target="_blank">Raqamli testlarda maksimal qulaylik.</a></p>
     </details>
     <details>
-        <summary>3-3 o'lchamli Matritsani bir-biriga ko'paytirishga nima deysiz? <span>DECIMAL +</span></summary>
+        <summary>3-3 o'lchamli Matritsani bir-biriga ko'paytirishga nima deysiz? <span>New</span></summary>
         <div class="ab2dmatrix">
             <div class="a2dmatrix">
                 <div id="a2d1">
@@ -327,7 +327,7 @@
             <!--B matritsani tugatdik!-->
         </div>
         <div class="aboutlar">
-            <button id="out1" onclick="matrix()">Hisoblash</button><br>
+            <button id="out1" onclick="matrix()">Hisoblash <span> Decimal+</span></button><br>
             <div>
             <input id="about" type="text" placeholder="0">
             <input id="about2" type="text" placeholder="0">
@@ -346,7 +346,7 @@
         </div>
     </details>
     <details>
-        <summary>"Maksimov" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi? <span>DECIMAL +</span></summary>
+        <summary>"Maksimov" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi? <span>New</span></summary>
         <div class="amaksimov">
             <div class="abirUchlik">
                 <div>
@@ -453,7 +453,7 @@
                 </div>
             </div> 
         </div>
-        <button id="out2" onclick="maksimovmatrix()">Hisoblash</button><br>  
+        <button id="out2" onclick="maksimovmatrix()">Hisoblash <span> Decimal+</span></button><br>  
             <div class="cmaksimov">
                 <div class="abirUchlik">
                     <div>
@@ -509,7 +509,7 @@
             </div>
     </details>
     <details>
-        <summary>"G'anihojayev" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi? <span>DECIMAL +</span></summary>
+        <summary>"G'anihojayev" usuli orqali 3-3-3 o'lchamli matritsalarni bir-biriga ko'paytirsakchi? <span>New</span></summary>
         <div class="amaksimov">
             <div class="abirUchlik">
                 <div>
@@ -621,7 +621,7 @@
             <input id="vek2" type="text" placeholder="Vektor 2-elementi">
             <input id="vek3" type="text" placeholder="Vektor 3-elementi">
         </div>
-        <button id="out3" onclick="ganimatrix()">Hisoblash</button><br>
+        <button id="out3" onclick="ganimatrix()">Hisoblash <span> Decimal+</span></button><br>
             <div class="cmaksimov">
                 <div class="abirUchlik">
                     <div>
@@ -677,7 +677,7 @@
             </div>
     </details>
     <details>
-        <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar? <span>DECIMAL +</span></summary> 
+        <summary>Balki.. sizni matritsaning darajasini hisoblash qiziqtirar? <span>New</span></summary> 
             <div class="a2dmatrix">
                 <div id="a2d1">
                     <input id="sa11" type="text" placeholder="A matritsa: 1-1">
@@ -699,7 +699,7 @@
                 <label for="daraja">2 dan 5 gacha darajani kiriting:</label>
                 <input type="number" id="daraja" placeholder="2-5 gacha">
             </div>      
-                <button id="out4" onclick="up()">Hisoblash</button><br> 
+                <button id="out4" onclick="up()">Hisoblash <span> Decimal+</span></button><br> 
             <div class="a2dmatrix">
                 <div id="b2d1">
                     <input id="ja11" type="text" placeholder="0">
@@ -1278,7 +1278,7 @@
         <footer>
             <div id="foot">
                 <div>
-                    <p style="font-family: 'MuseoModerno', sans-serif;">Yangilandi: 00:25 06.12.2025</p>
+                    <p style="font-family: 'MuseoModerno', sans-serif;">Yangilandi: 01:33 06.12.2025</p>
                 </div>
                 <div>
                     <i style="font-family:'Dancing Script';">Doniyor Baxtiyorovich</i>
