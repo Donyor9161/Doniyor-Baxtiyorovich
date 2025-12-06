@@ -22,8 +22,13 @@
             margin: 0;
             box-sizing: border-box;
         }
-        body{
+       body{
             background: linear-gradient(to right, cyan, red);
+            background-repeat: no-repeat;
+            font-family: "Saira", sans-serif;
+            background-size:auto;
+            min-height: 100vh;
+            width: 100vw;
         }
         #Glava{
             background-color:rgba(0, 0, 0, 0.5);
@@ -91,7 +96,7 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: 50%, 50%;
             transition: 0.2s;
         }
         .markaz:hover{
@@ -102,11 +107,9 @@
         .aloqamt{
             display: flex;
             justify-content: center;
-            flex-direction: column;
             font-family: "Saira", sans-serif;
             border: 1px solid cyan;
             box-shadow: 0 0 8px cyan;
-            text-align: center;
             
         }
         #hush{
@@ -144,7 +147,3 @@
     </footer>
     </body>
 </html>
-
-
-
-
