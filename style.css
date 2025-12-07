@@ -1,0 +1,248 @@
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Saira", sans-serif;
+        }
+        #Glava{
+            background-color:rgba(0, 0, 0, 0.8);
+            display: flex;
+            box-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            width: 100vw;
+            height: 8vh;
+            align-items: center;
+            padding: 2px 8px;
+            margin: 0;
+            justify-content: space-between;
+        }
+        #Btns{
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        .asosbutton{
+            font-size: 2.1vh;
+            background-color: transparent;
+            padding: 25px 1px;
+            border: none;
+            cursor: pointer;
+            transition: 0.1s;
+            font-weight: 600;
+            gap: 35px;
+            color: goldenrod;
+        }
+        .asosbutton:hover{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        .asosbutton:active{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        #Discrept{
+            margin-top: 16px;
+            margin-left: 16px;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+        }
+        details{
+            font-weight: 650;
+            font-size: 1.98vh;
+        }
+        details:hover{
+            text-shadow: 0 0 6px cyan;
+        }
+        details:active{
+            text-shadow: 0 0 6px cyan;
+        }
+        summary{
+            color: cyan;
+            display: list-item;
+        }
+        summary:hover{
+            color: cyan;
+            text-shadow:0px 0px 9px cyan,0px 0px 9px cyan;
+            cursor: pointer;
+        }
+        summary:active{
+            color: red;
+            text-shadow: 0px 0px 20px red,
+            0px 0px 20px red, 0px 0px 20px red;
+            
+        }
+        a{
+            text-decoration: none;
+            color:goldenrod;
+            transition: 0.3s;
+        }
+        a:hover{
+            color: goldenrod;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        a:active{
+            color: goldenrod;
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        h1{
+            color: white; 
+            font-weight:600; 
+            font-family: "Saira", sans-serif; 
+            transition: 0.2s;
+        }
+        h1:hover{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        h1:active{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        #fonvideo{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;   /* videoni ekran o'lchamiga moslaydi */
+            z-index: -1;      /* elementlar videoning ustida turadi */
+        }
+        footer{
+            height: 100px;
+        }
+        #foot{
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            padding: 12px;
+            text-shadow: 0 0 5px white;
+            font-size: 1.23vh;
+        }
+        input{
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1.8px solid goldenrod;
+            box-shadow: 0 0 10px goldenrod, 0 0 10px goldenrod;
+            height: 27px;
+            min-height: 27px;
+            width: 120px;
+            min-width: 120px;
+            -webkit-appearance: none;
+            appearance: none;
+            color: goldenrod;
+        }
+        input::placeholder{
+            color:darkgrey;
+        }
+        .ab2dmatrix{
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .a2dmatrix{
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+        #out1, #out2, #out3, #out4{
+            background-color: transparent;
+            color: cyan;
+            border: 1.4px solid white;
+            box-shadow: 0 0 10px white, 0 0 10px white;
+            height: 38px;
+            min-height: 38px;
+            width: 130px;
+            min-width: 130px;
+            margin-top: 8px;
+            text-shadow: 0 0 10px white, 0 0 10px white;
+            transition: 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+        #out1:hover, #out2:hover, #out3:hover, #out4:hover{
+            cursor: pointer;
+        }
+        #out1:active, #out2:active, #out3:active, #out4:active{
+            background-color: white;
+            color: black;
+        }
+        .aboutlar{
+            display: flex;
+            justify-content:center;
+            flex-direction: column;
+        }
+        .amaksimov, .bmaksimov{
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .abirUchlik{
+            margin-top: 60px;
+            
+        }
+        .aikkiUchlik{
+            margin-top: 33px;
+        }
+        .auchUchlik{
+            margin-top: 6px;
+        }
+        .cmaksimov{
+            margin-top: -44px;
+            display:flex;
+            justify-content: left;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        #vektors{
+            margin-top: 25px;
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+        }
+        #daraja{
+            margin-top: 12px;
+        }
+        label{
+            color: cyan;
+        }
+        .markaz{
+            color: white;
+            z-index: -1;
+            font-size: 65px;
+            text-shadow: 0 0 15px white, 0 0 15px white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: 0.2s;
+        }
+        .markaz:hover{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
+        .markaz:active{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
+        span{
+            color: red;
+            font-family: "Crushed", sans-serif;
+            font-weight:bold;
+            text-shadow: 0 0 3px red;
+            
+        }

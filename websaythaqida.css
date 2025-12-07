@@ -1,0 +1,136 @@
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Saira", sans-serif;
+        }
+        body{
+            background: linear-gradient(to right,red, cyan);
+            background-repeat: no-repeat;
+            background-size:cover;
+            min-height: 100vh;
+            min-width: 100vw;
+        }
+        #Glava{
+            background-color:rgba(0, 0, 0, 0.8);
+            display: flex;
+            box-shadow: 0 0 20px white, 0 0 20px white;
+            width: 100vw;
+            height: 8vh;
+            align-items: center;
+            padding: 2px 8px;
+            margin: 0;
+            justify-content: space-between;
+        }
+        #Btns{
+            gap: 10px;
+        }
+        .asosbutton{
+            font-size: 2.1vh;
+            background-color: transparent;
+            padding: 25px 1px;
+            border: none;
+            cursor: pointer;
+            transition: 0.1s;
+            font-weight: 600;
+            gap: 35px;
+            color: goldenrod;
+        }
+        .asosbutton:hover{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        .asosbutton:active{
+            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
+            0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: goldenrod;
+        }
+        h1{
+            color: white; 
+            font-weight:630; 
+            font-family: "Saira", sans-serif; 
+            transition: 0.2s;
+        }
+        h1:hover{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        h1:active{
+            color: cyan;
+            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            cursor: pointer;
+        }
+        details{
+            font-weight: 650;
+            font-size: 1.98vh;
+            margin-top: 16px;
+            margin-left: 16px;
+        }
+        summary{
+            color: cyan;
+            display: list-item;
+        }
+        summary:hover{
+            cursor: pointer;
+        }
+        summary:active{
+            color: red;
+            text-shadow: 0px 0px 20px red,
+            0px 0px 20px red, 0px 0px 20px red;
+        }
+        footer{
+            height: 100px;
+        }
+        #foot{
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            padding: 12px;
+            text-shadow: 0 0 5px white;
+            font-size: 1.23vh;
+        }
+        .markaz{
+            color: white;
+            z-index: 1;
+            font-size: 65px;
+            text-shadow: 0 0 15px white, 0 0 15px white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: 0.2s;
+        }
+        .markaz:hover{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
+        .markaz:active{
+            color: cyan;
+            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
+            cursor: pointer;
+        }
+        .aloqamt{
+            display: flex;
+            justify-content:center;
+            flex-direction: column;
+            font-family: "Saira", sans-serif;
+            text-align: center;
+        }
+        #hush{
+            font-family:'Dancing Script';
+            color: goldenrod;
+        }
+        a{
+            text-decoration: none;
+        }
+        .vse{
+            color:red;
+            text-transform: uppercase;
+        }
