@@ -24,7 +24,7 @@
             font-family: "Saira", sans-serif;
         }
         body{
-            background: linear-gradient(to right, cyan, red);
+            background: linear-gradient(to right,red, cyan);
             background-repeat: no-repeat;
             background-size:cover;
             min-height: 100vh;
@@ -81,6 +81,24 @@
             text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
             cursor: pointer;
         }
+        details{
+            font-weight: 650;
+            font-size: 1.98vh;
+            margin-top: 16px;
+            margin-left: 16px;
+        }
+        summary{
+            color: cyan;
+            display: list-item;
+        }
+        summary:hover{
+            cursor: pointer;
+        }
+        summary:active{
+            color: red;
+            text-shadow: 0px 0px 20px red,
+            0px 0px 20px red, 0px 0px 20px red;
+        }
         footer{
             height: 100px;
         }
@@ -131,6 +149,10 @@
         a{
             text-decoration: none;
         }
+        .vse{
+            color:red;
+            text-transform: uppercase;
+        }
     </style>
     </head>
     <body>
@@ -154,7 +176,7 @@
                 <p>"DonyLogic" nomi, oddiy, orzulari katta 1-kurs talaba tomonidan o'ylab topildi [12.2024];<br>
                     O'sha payti Bu logo va nom qanday g'oya ustiga qurilishi noma'lum bo'lgan, ammo talaba, logo va nom muhimligini oldindan bilgan va nom va logo paydo bo'ldi<br>
                     "DonyLogic" ko'p martoba ideal logoni izladi shu bilan almashtirdi ham, oxiri [10-2025] sanasida oxirgi ideal logo paydo bo'ldi [Ⲇ], shu bilan nom WEBda o'zini domeniga ega bo'lishi kerak edi chunki, domen nomini band qilish uchun.<br>
-                    Darvoqe hozir "DonyLogic" ning g'oyasi sir. Aytib o'tishim mumkin bo'lgani: "DonyLogic" IT sohasiga hissa qo'shadi!<br>
+                    Darvoqe hozir "DonyLogic" ning g'oyasi <span class="vse">sir</span> Aytib o'tishim mumkin bo'lgani: "DonyLogic" IT sohasiga hissa qo'shadi!<br>
                     Ammo hozirda OTM domlalarining takliflarini inobatga olgan holda Web sayt hozirda Shunchaki matritsalarni ko’paytirishga va ular bilan ammalar bajarishga qaratildi..</p>
         </details>
     </main>
