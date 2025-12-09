@@ -201,7 +201,7 @@ function matrix(){
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Ikki[i][j] = Ikki[i][j].plus(F[i][k].times(Maksimov[k][j]));
+                        Ikki[i][j] = Ikki[i][j].plus(H[i][k].times(Maksimov[k][j]));
                     }
                 }
             }
@@ -217,7 +217,7 @@ function matrix(){
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Uch[i][j] = Uch[i][j].plus(H[i][k].times(Maksimov[k][j]));
+                        Uch[i][j] = Uch[i][j].plus(F[i][k].times(Maksimov[k][j]));
                     }
                 }
             }
@@ -407,7 +407,7 @@ function matrix(){
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Ikki[i][j] = Ikki[i][j].plus(F[i][k].times(Gani[k][j]));
+                        Ikki[i][j] = Ikki[i][j].plus(H[i][k].times(Gani[k][j]));
                     }
                 }
             }
@@ -423,7 +423,7 @@ function matrix(){
             for(let i = 0; i < 3; i++){
                 for(let j = 0; j < 3; j++){
                     for(let k = 0; k < 3; k++){
-                        Uch[i][j] = Uch[i][j].plus(H[i][k].times(Gani[k][j]));
+                        Uch[i][j] = Uch[i][j].plus(F[i][k].times(Gani[k][j]));
                     }
                 }
             }
@@ -548,3 +548,4 @@ function matrix(){
         }
 
 }
+
