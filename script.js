@@ -234,7 +234,7 @@ function matrix(){
         thematritsa();    
         }
         function ganimatrix(){
-        let a111 = new Decimal(document.getElementById('maksimova111').value || "0");
+        let a111 = new Decimal(document.getElementById('amaksimova111').value || "0");
         let a112 = new Decimal(document.getElementById('amaksimova112').value || "0");
         let a113 = new Decimal(document.getElementById('amaksimova113').value || "0");
         let a121 = new Decimal(document.getElementById('amaksimova121').value || "0");
@@ -546,4 +546,5 @@ function matrix(){
         else {
             alert('Uzr! Hozircha faqat 2-5-darajagacha hisoblaymiz..');
         }
+
 }
