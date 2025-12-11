@@ -114,7 +114,7 @@ body{
             cursor: pointer;
         }
         footer{
-            height: 50px;
+            height: 70px;
             color: white;
             bottom: 0;
             left: 0;
@@ -250,3 +250,4 @@ body{
             text-shadow: 0 0 3px red;
             
         }
+
