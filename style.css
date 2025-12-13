@@ -5,13 +5,34 @@
     font-family: "Saira", sans-serif;
 }
 body{
-    background-color:black;
     position: relative;
+    background-image: url('yershari.jpg');
+    width: 100vw;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment:fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main{
+        flex: 1;
+}
+footer{
+        color: white;
+        width: 100%;
+        padding: 22px;
+        display: flex;
+        justify-content:space-between;
+        align-items: center;
+        text-shadow: 0 0 5px white;
+        font-size: 1.23vh;
+        background-color: rgba(25, 25, 25, 1.0);
 }
 #Glava{
     background-color:black;
     display: flex;
-    box-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+    box-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be;
     width: 100vw;
     height: 8vh;
     align-items: center;
@@ -35,17 +56,17 @@ body{
     transition: 0.1s;
     font-weight: 600;
     gap: 35px;
-    color: goldenrod;
+    color: white;
 }
         .asosbutton:hover{
-            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
-            0 0 20px goldenrod, 0 0 20px goldenrod;
-            color: goldenrod;
+            text-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be, 
+            0 0 20px #2a52be, 0 0 20px #2a52be;
+            color: #2a52be;
         }
         .asosbutton:active{
-            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod, 
-            0 0 20px goldenrod, 0 0 20px goldenrod;
-            color: goldenrod;
+            text-shadow: 0 0 20px red, 0 0 20px red, 
+            0 0 20px red, 0 0 20px red;
+            color: red;
         }
         #Discrept{
             margin-top: 69px;
@@ -60,18 +81,18 @@ body{
             font-size: 1.98vh;
         }
         details:hover{
-            text-shadow: 0 0 6px cyan;
+            text-shadow: 0 0 6px #2a52be;
         }
         details:active{
-            text-shadow: 0 0 6px cyan;
+            text-shadow: 0 0 6px red;
         }
         summary{
-            color: cyan;
+            color: white;
             display: list-item;
         }
         summary:hover{
-            color: cyan;
-            text-shadow:0px 0px 9px cyan,0px 0px 9px cyan;
+            color: #2a52be;
+            text-shadow:0px 0px 9px #2a52be,0px 0px 9px #2a52be;
             cursor: pointer;
         }
         summary:active{
@@ -82,18 +103,18 @@ body{
         }
         a{
             text-decoration: none;
-            color:goldenrod;
+            color:white;
             transition: 0.3s;
         }
         a:hover{
-            color: goldenrod;
-            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: #2a52be;
+            text-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be;
             cursor: pointer;
             text-decoration: underline;
         }
         a:active{
-            color: goldenrod;
-            text-shadow: 0 0 20px goldenrod, 0 0 20px goldenrod;
+            color: red;
+            text-shadow: 0 0 20px red, 0 0 20px red;
             cursor: pointer;
             text-decoration: underline;
         }
@@ -104,47 +125,26 @@ body{
             transition: 0.2s;
         }
         h1:hover{
-            color: cyan;
-            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            color: #2a52be;
+            text-shadow:0 0 20px #2a52be, 0 0 20px #2a52be, 0 0 20px #2a52be;
             cursor: pointer;
         }
         h1:active{
-            color: cyan;
-            text-shadow:0 0 20px cyan, 0 0 20px cyan, 0 0 20px cyan;
+            color: red;
+            text-shadow:0 0 20px red, 0 0 20px red, 0 0 20px red;
             cursor: pointer;
-        }
-        footer{
-            height: 70px;
-            color: white;
-            bottom: 0;
-            left: 0;
-            position: absolute;
-        }
-        #fixed{
-            display: flex;
-            justify-content: space-between;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 12px;
-            text-shadow: 0 0 5px white;
-            font-size: 1.23vh;
-            position: fixed;
-            background-color: rgba(0, 0, 0, 0.5);
         }
         input{
             background-color: rgba(0, 0, 0, 0.2);
-            border: 1.8px solid goldenrod;
-            box-shadow: 0 0 10px goldenrod, 0 0 10px goldenrod;
+            border: 1.8px solid white;
+            box-shadow: 0 0 10px white, 0 0 10px white;
             height: 27px;
             min-height: 27px;
             width: 120px;
             min-width: 120px;
             -webkit-appearance: none;
             appearance: none;
-            color: goldenrod;
+            color: white;
         }
         input::placeholder{
             color:darkgrey;
@@ -162,7 +162,7 @@ body{
         }
         #out1, #out2, #out3, #out4{
             background-color: transparent;
-            color: cyan;
+            color: white;
             border: 1.4px solid white;
             box-shadow: 0 0 10px white, 0 0 10px white;
             height: 38px;
@@ -220,7 +220,7 @@ body{
             margin-top: 12px;
         }
         label{
-            color: cyan;
+            color: red;
         }
         .markaz{
             color: white;
@@ -233,16 +233,6 @@ body{
             transform: translate(-50%, -50%);
             transition: 0.2s;
         }
-        .markaz:hover{
-            color: cyan;
-            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
-            cursor: pointer;
-        }
-        .markaz:active{
-            color: cyan;
-            text-shadow: 0 0 15px cyan, 0 0 15px cyan;
-            cursor: pointer;
-        }
         span{
             color: red;
             font-family: "Crushed", sans-serif;
@@ -250,4 +240,3 @@ body{
             text-shadow: 0 0 3px red;
             
         }
-
