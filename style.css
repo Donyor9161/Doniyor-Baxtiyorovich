@@ -138,20 +138,24 @@ footer{
             background-color: rgba(0, 0, 0, 0.2);
             border: 1.8px solid white;
             box-shadow: 0 0 10px white, 0 0 10px white;
-            height: 27px;
-            min-height: 27px;
-            width: 120px;
-            min-width: 120px;
+            height: 25px;
+            min-height: 25px;
+            width: 55px;
+            min-width: 55px;
             -webkit-appearance: none;
             appearance: none;
             color: white;
+        }
+        .cmaksimov input{
+            width: 70px;
+            min-width: 70px;
         }
         input::placeholder{
             color:darkgrey;
         }
         .ab2dmatrix{
             display:flex;
-            justify-content: left;
+            justify-content:left;
             gap: 20px;
             flex-wrap: wrap;
         }
@@ -170,6 +174,7 @@ footer{
             width: 130px;
             min-width: 130px;
             margin-top: 8px;
+            margin-left: 15px;
             text-shadow: 0 0 10px white, 0 0 10px white;
             transition: 0.2s;
             display: inline-block;
@@ -187,31 +192,36 @@ footer{
             justify-content:center;
             flex-direction: column;
         }
-        .amaksimov, .bmaksimov{
+        .amaksimov{
+            margin-top: 25px;
+            margin-left: 15px;
             display:flex;
-            justify-content: left;
-            gap: 20px;
             flex-wrap: wrap;
+            flex-direction:row;
+            row-gap: 10px;
+            column-gap: 15px;
         }
-        .abirUchlik{
-            margin-top: 60px;
-            
-        }
-        .aikkiUchlik{
-            margin-top: 33px;
-        }
-        .auchUchlik{
-            margin-top: 6px;
+        .bmaksimov{
+            margin-top: 1px;
+            margin-left: 15px;
+            display:flex;
+            row-gap: 10px;
+            flex-wrap: wrap;
+            flex-direction:row;
+            column-gap: 15px;
         }
         .cmaksimov{
-            margin-top: -44px;
+            margin-top: 15px;
+            margin-left: 15px;
             display:flex;
-            justify-content: left;
-            gap: 20px;
+            row-gap: 10px;
             flex-wrap: wrap;
+            flex-direction:row;
+            column-gap: 15px;
         }
         #vektors{
             margin-top: 25px;
+            margin-left: 15px;
             display: flex;
             flex-direction: row;
             gap: 12px;
