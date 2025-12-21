@@ -4,12 +4,5 @@
     <loc>https://www.donylogic.uz/</loc>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://www.donylogic.uz/aloqa.html</loc>
-    <priority>0.8</priority>
-  </url>
-<url>
-    <loc>https://www.donylogic.uz/menhaqimda.html</loc>
-    <priority>0.8</priority>
-  </url>
 </urlset>
+
