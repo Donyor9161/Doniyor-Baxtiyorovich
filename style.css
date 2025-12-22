@@ -2,250 +2,76 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "Saira", sans-serif;
-
-}
-html{
-    overflow-y: scroll;
 }
 body{
-    background-color: black;
-    min-height: 100vh;
-    width: 100%;
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    min-width: 100vw;
+    background-image: url("yershari.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
 }
-main{
-    flex: 1;
+main {
+  flex: 1;
+}
+#logo{
+    font-family: "Saira", sans-serif;
+    color:white;
+    animation: logoanim 1.5s ease forwards;
+    letter-spacing: 3px;
+}
+@keyframes logoanim{
+    from{
+        opacity: 0;
+        text-shadow: 0 0 0px white;
+    }
+    to{
+        opacity: 1;
+        text-shadow:0 0 3px white;
+    }
+}
+
+#navbar{
+    display: flex;
+    gap: 15px;
+    flex-wrap: nowrap;
+    animation: logoanim 1.5s ease forwards;
+    font-weight: 400;
+    font-family: "saira", sans-serif;
+
+}
+header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px;
+    background: fixed;
+}
+header a{
+    text-decoration: none;
+    color: white;
+    font-family: "saira", sans-serif;
+    font-size: 15px;
 }
 footer{
-        color: white;
-        width: 100%;
-        padding: 22px;
-        display: flex;
-        justify-content:space-between;
-        align-items: center;
-        text-shadow: 0 0 5px white;
-        font-size: 1.23vh;
-        background-color: rgba(25, 25, 25, 1.0);
-}
-#Glava{
-    background-color:black;
-    display: flex;
-    box-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be;
-    width: 100%;
-    height: 8vh;
-    align-items: center;
-    padding: 2px 8px;
-    margin: 0;
-    justify-content: space-between;
-    top: 0;
-    left: 0;
-    position: fixed;
-}
-#Btns{
-    gap: 10px;
-    flex-wrap: nowrap;
-}
-.asosbutton{
-    font-size: 2.1vh;
-    background-color: transparent;
-    padding: 25px 1px;
-    border: none;
-    cursor: pointer;
-    transition: 0.1s;
-    font-weight: 600;
-    gap: 35px;
+    text-align: center;
+    padding: 10px;
+    background-color: rgb(100, 100, 100);
     color: white;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    
 }
-        .asosbutton:hover{
-            text-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be, 
-            0 0 20px #2a52be, 0 0 20px #2a52be;
-            color: #2a52be;
-        }
-        .asosbutton:active{
-            text-shadow: 0 0 20px red, 0 0 20px red, 
-            0 0 20px red, 0 0 20px red;
-            color: red;
-        }
-        #Discrept{
-            margin-top: 69px;
-            margin-left: 16px;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            gap: 5px;
-        }
-        details{
-            font-weight: 650;
-            font-size: 1.98vh;
-        }
-        details:hover{
-            text-shadow: 0 0 6px #2a52be;
-        }
-        details:active{
-            text-shadow: 0 0 6px red;
-        }
-        summary{
-            color: white;
-            display: list-item;
-        }
-        summary:hover{
-            color: #2a52be;
-            text-shadow:0px 0px 9px #2a52be,0px 0px 9px #2a52be;
-            cursor: pointer;
-        }
-        summary:active{
-            color: red;
-            text-shadow: 0px 0px 20px red,
-            0px 0px 20px red, 0px 0px 20px red;
-            
-        }
-        a{
-            text-decoration: none;
-            color:white;
-            transition: 0.3s;
-        }
-        a:hover{
-            color: #2a52be;
-            text-shadow: 0 0 20px #2a52be, 0 0 20px #2a52be;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        a:active{
-            color: red;
-            text-shadow: 0 0 20px red, 0 0 20px red;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        h1{
-            color: white; 
-            font-weight:600; 
-            font-family: "Saira", sans-serif; 
-            transition: 0.2s;
-        }
-        h1:hover{
-            color: #2a52be;
-            text-shadow:0 0 20px #2a52be, 0 0 20px #2a52be, 0 0 20px #2a52be;
-            cursor: pointer;
-        }
-        h1:active{
-            color: red;
-            text-shadow:0 0 20px red, 0 0 20px red, 0 0 20px red;
-            cursor: pointer;
-        }
-        input{
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1.8px solid white;
-            box-shadow: 0 0 10px white, 0 0 10px white;
-            height: 25px;
-            min-height: 25px;
-            width: 55px;
-            min-width: 55px;
-            -webkit-appearance: none;
-            appearance: none;
-            color: white;
-        }
-        .cmaksimov input{
-            width: 70px;
-            min-width: 70px;
-        }
-        input::placeholder{
-            color:darkgrey;
-        }
-        .ab2dmatrix{
-            display:flex;
-            justify-content:left;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .a2dmatrix{
-            display: flex;
-            flex-direction: column;
-            margin-top: 10px;
-        }
-        #out1, #out2, #out3, #out4{
-            background-color: transparent;
-            color: white;
-            border: 1.4px solid white;
-            box-shadow: 0 0 10px white, 0 0 10px white;
-            height: 38px;
-            min-height: 38px;
-            width: 130px;
-            min-width: 130px;
-            margin-top: 8px;
-            margin-left: 15px;
-            text-shadow: 0 0 10px white, 0 0 10px white;
-            transition: 0.2s;
-            display: inline-block;
-            text-align: center;
-        }
-        #out1:hover, #out2:hover, #out3:hover, #out4:hover{
-            cursor: pointer;
-        }
-        #out1:active, #out2:active, #out3:active, #out4:active{
-            background-color: white;
-            color: black;
-        }
-        .aboutlar{
-            display: flex;
-            justify-content:center;
-            flex-direction: column;
-        }
-        .amaksimov{
-            margin-top: 25px;
-            margin-left: 15px;
-            display:flex;
-            flex-wrap: wrap;
-            flex-direction:row;
-            row-gap: 10px;
-            column-gap: 15px;
-        }
-        .bmaksimov{
-            margin-top: 1px;
-            margin-left: 15px;
-            display:flex;
-            row-gap: 10px;
-            flex-wrap: wrap;
-            flex-direction:row;
-            column-gap: 15px;
-        }
-        .cmaksimov{
-            margin-top: 15px;
-            margin-left: 15px;
-            display:flex;
-            row-gap: 10px;
-            flex-wrap: wrap;
-            flex-direction:row;
-            column-gap: 15px;
-        }
-        #vektors{
-            margin-top: 25px;
-            margin-left: 15px;
-            display: flex;
-            flex-direction: row;
-            gap: 12px;
-        }
-        #daraja{
-            margin-top: 12px;
-        }
-        label{
-            color: red;
-        }
-        .markaz{
-            color: white;
-            z-index: -1;
-            font-size: 65px;
-            text-shadow: 0 0 15px white, 0 0 15px white;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        span{
-            color: red;
-            font-family: "Crushed", sans-serif;
-            font-weight:bold;
-            text-shadow: 0 0 3px red;
-            
-        }
+footer a{
+    text-decoration: none;
+    color: white;
+    font-size: 1em;
+}
+#social{
+    display: flex;
+    justify-content: center;
+    gap: 10px; 
+}
