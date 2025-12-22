@@ -40,7 +40,8 @@ main {
     animation: logoanim 1.5s ease forwards;
     font-weight: 400;
     font-family: "saira", sans-serif;
-
+    flex-wrap: wrap;
+    justify-content: center;
 }
 header{
     display: flex;
@@ -48,6 +49,7 @@ header{
     align-items: center;
     padding: 7px;
     background: fixed;
+    flex-wrap: wrap;
 }
 header a{
     text-decoration: none;
