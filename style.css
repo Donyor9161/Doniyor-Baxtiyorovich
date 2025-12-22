@@ -10,7 +10,7 @@ body{
     min-width: 100vw;
     background-image: url("yershari.jpg");
     background-attachment: fixed;
-    background-position: center;
+    background-position: left;
     background-size: cover;
 }
 main {
@@ -19,8 +19,8 @@ main {
 #logo{
     font-family: "Saira", sans-serif;
     color:white;
-    animation: logoanim 1.5s ease forwards;
-    letter-spacing: 3px;
+    animation: logoanim 3s ease forwards;
+    letter-spacing: 3.2px;
 }
 @keyframes logoanim{
     from{
@@ -29,7 +29,7 @@ main {
     }
     to{
         opacity: 1;
-        text-shadow:0 0 3px white;
+        text-shadow:0 0 3px black;
     }
 }
 
@@ -37,7 +37,7 @@ main {
     display: flex;
     gap: 15px;
     flex-wrap: nowrap;
-    animation: logoanim 1.5s ease forwards;
+    animation: logoanim 3s ease forwards;
     font-weight: 400;
     font-family: "saira", sans-serif;
     flex-wrap: wrap;
@@ -47,15 +47,30 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 7px;
+    padding: 6px;
     background: fixed;
     flex-wrap: wrap;
+    height: 8vh;
+    width: 100%;
 }
 header a{
     text-decoration: none;
     color: white;
     font-family: "saira", sans-serif;
     font-size: 15px;
+}
+main #markaz{
+    font-size: 4.2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    left: 50%;
+    color: white;
+    text-shadow: 0 0 8px black, 0 0 12px black;
+    transform: translateX(-50%, -50%);
+    position: fixed;
+    z-index: -3;
 }
 footer{
     text-align: center;
