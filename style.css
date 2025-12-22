@@ -66,9 +66,9 @@ main #markaz{
     align-items: center;
     top: 50%;
     left: 50%;
-    color: white;
+    color:white;
     text-shadow: 0 0 8px black, 0 0 12px black;
-    transform: translateX(-50%, -50%);
+    transform: translate(-50%, -50%);
     position: fixed;
     z-index: -3;
 }
