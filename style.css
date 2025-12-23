@@ -8,7 +8,7 @@ body{
     flex-direction: column;
     min-height: 100vh;
     min-width: 100vw;
-    background-image: url("yershari.jpg");
+    background-color: black;
     background-attachment: fixed;
     background-position: left;
     background-size: cover;
@@ -94,4 +94,17 @@ footer a{
     display: flex;
     justify-content: center;
     gap: 10px; 
+}
+.qor{
+    position: fixed;
+    top: -10px;
+    color: white;
+    animation: yogish linear infinite;
+    font-size: 25px;
+}
+@keyframes yogish {
+    to{
+        transform: translateY(110vh);
+    }
+    
 }
