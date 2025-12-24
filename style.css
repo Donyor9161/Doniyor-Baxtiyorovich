@@ -13,10 +13,11 @@ body{
     background-attachment: fixed;
     background-position: left;
     background-size: cover;
+    cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="10" width="10"><circle cx="5" cy="5" r="5" fill="black"/></svg>') 5 5, auto;
 }
 .blur{
-    backdrop-filter: blur(3px);
-    transition: 1s;
+    backdrop-filter: blur(9px);
+    transition: 3s;
 }
 main {
   flex: 1;
@@ -49,7 +50,7 @@ main {
     opacity: 0;
 }
 .jsanim{
-    animation: logoanim ease forwards;
+    animation: logoanim 3s ease forwards;
 }
 header{
     display: flex;
@@ -79,6 +80,27 @@ main #markaz{
     transform: translate(-50%, -50%);
     position: fixed;
     z-index: -4;
+}
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    height: 100vh;
+    width: 100vw;
+    opacity: 1;
+    z-index: 10;
+    font-size: 1.1em;
+    font-family: "saira", sans-serif;
+}
+.loaderend{
+    transition: 2s;
+    opacity: 0;
+    pointer-events: none;
 }
 details{
     color: white;
@@ -123,5 +145,28 @@ footer a{
   to{
     transform: translateY(220vh);
   }
+}
+.menu{
+    top: 50%;
+    left: 50%;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    padding: 35px;
+    background-color: transparent;
+    color: red;
+    border: 2px solid white;
+    z-index: 6;
+    transition: 2s;
+    pointer-events: none;
+}
+.cmd{
+    top: 0;
+    left: 0;
+    background-color: rgba(1, 1, 1, 0.9);
+    position: fixed;
+    z-index: 7;
+    height: 100vh;
+    width: 100vw;
+    pointer-events: auto;
 }
 
