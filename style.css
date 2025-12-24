@@ -49,6 +49,9 @@ main {
     justify-content: center;
     opacity: 0;
 }
+#navbar a{
+    cursor: pointer;
+}
 .jsanim{
     animation: logoanim 3s ease forwards;
 }
