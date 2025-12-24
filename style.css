@@ -5,6 +5,7 @@
 }
 body{
     display: flex;
+    background-image: url("yershari.jpg");
     flex-direction: column;
     min-height: 100vh;
     min-width: 100vw;
@@ -13,14 +14,18 @@ body{
     background-position: left;
     background-size: cover;
 }
+.blur{
+    backdrop-filter: blur(3px);
+    transition: 1s;
+}
 main {
   flex: 1;
 }
 #logo{
     font-family: "Saira", sans-serif;
     color:white;
-    animation: logoanim 3s ease forwards;
     letter-spacing: 3.2px;
+    opacity: 0;
 }
 @keyframes logoanim{
     from{
@@ -37,11 +42,14 @@ main {
     display: flex;
     gap: 15px;
     flex-wrap: nowrap;
-    animation: logoanim 3s ease forwards;
     font-weight: 400;
     font-family: "saira", sans-serif;
     flex-wrap: wrap;
     justify-content: center;
+    opacity: 0;
+}
+.jsanim{
+    animation: logoanim ease forwards;
 }
 header{
     display: flex;
@@ -70,7 +78,10 @@ main #markaz{
     text-shadow: 0 0 8px black, 0 0 12px black;
     transform: translate(-50%, -50%);
     position: fixed;
-    z-index: -3;
+    z-index: -4;
+}
+details{
+    color: white;
 }
 footer{
     text-align: center;
@@ -96,15 +107,21 @@ footer a{
     gap: 10px; 
 }
 .qor{
-    position: fixed;
-    top: -10px;
-    color: white;
-    animation: yogish linear infinite;
-    font-size: 25px;
+  color: white;
+  position: fixed;
+  top: -120vh;
+  left: 50vw;
+  animation: yogish 9s linear infinite;
+  z-index: -4;
+    font-size: 14px;
 }
-@keyframes yogish {
-    to{
-        transform: translateY(110vh);
-    }
-    
+
+@keyframes yogish{
+  from{
+    transform: translateY(0);
+  }
+  to{
+    transform: translateY(220vh);
+  }
 }
+
