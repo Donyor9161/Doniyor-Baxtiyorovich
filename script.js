@@ -8,11 +8,17 @@ for(let i=0;i<120;i++){
 }
 setTimeout(() => {
   document.body.classList.add("blur"); // 4 sekunddan keyin blur qo‘shadi
-}, 1400);
+}, 1700);
 setTimeout(() => {
     document.getElementById("logo").classList.add("jsanim");
-}, 1700);
+}, 2000);
 setTimeout(() => {
     document.getElementById("navbar").classList.add("jsanim");
-}, 1700);
+}, 2000);
+
+window.addEventListener("load", () => {
+    const loader = document.getElementById("loader");
+    loader.classList.add("loaderend");
+    setTimeout(() => loader.style.display = "none", 1200);
+});
 
