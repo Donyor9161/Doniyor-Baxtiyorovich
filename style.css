@@ -120,7 +120,7 @@ span#C { animation-delay: 3.9s; }
 }
 
 #loader span {
-    animation: logospananim 0.27s linear infinite;
+    animation: logospananim 0.27s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes logospananim {
@@ -322,6 +322,7 @@ footer a {
     width: 100vw;
     pointer-events: auto;
 }
+
 
 
 
