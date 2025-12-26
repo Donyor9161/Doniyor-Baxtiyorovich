@@ -52,14 +52,14 @@ main {
 }
 
 span#D { animation-delay: 3.1s; }
-span#O { animation-delay: 3.3s; }
-span#N { animation-delay: 3.5s; }
-span#Y { animation-delay: 3.7s; }
-span#L { animation-delay: 3.9s; }
-span#O2 { animation-delay: 4.1s; }
-span#G { animation-delay: 4.3s; }
-span#I { animation-delay: 4.5s; }
-span#C { animation-delay: 4.7s; }
+span#O { animation-delay: 3.2s; }
+span#N { animation-delay: 3.3s; }
+span#Y { animation-delay: 3.4s; }
+span#L { animation-delay: 3.5s; }
+span#O2 { animation-delay: 3.6s; }
+span#G { animation-delay: 3.7s; }
+span#I { animation-delay: 3.8s; }
+span#C { animation-delay: 3.9s; }
 
 @keyframes danim{
     from { opacity: 0; }
@@ -120,7 +120,7 @@ span#C { animation-delay: 4.7s; }
 }
 
 #loader span {
-    animation: logospananim 0.3s linear infinite;
+    animation: logospananim 0.27s linear infinite;
 }
 
 @keyframes logospananim {
@@ -322,6 +322,7 @@ footer a {
     width: 100vw;
     pointer-events: auto;
 }
+
 
 
 
