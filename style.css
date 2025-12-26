@@ -1,9 +1,10 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
 }
-body{
+
+body {
     display: flex;
     background-image: url("yershari.jpg");
     flex-direction: column;
@@ -13,33 +14,59 @@ body{
     background-attachment: fixed;
     background-position: left;
     background-size: cover;
-    cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" height="10" width="10"><circle cx="5" cy="5" r="5" fill="black"/></svg>') 5 5, auto;
+    overflow: hidden;
 }
-.blur{
+
+.blur {
     backdrop-filter: blur(9px);
     transition: 3s;
 }
+
 main {
-  flex: 1;
+    flex: 1;
 }
-#logo{
+
+#logo {
     font-family: "Saira", sans-serif;
-    color:white;
+    color: white;
     letter-spacing: 3.2px;
-    opacity: 0;
+    
 }
-@keyframes logoanim{
-    from{
+
+@keyframes logoanim {
+    from {
         opacity: 0;
         text-shadow: 0 0 0px white;
     }
-    to{
+
+    to {
         opacity: 1;
-        text-shadow:0 0 3px black;
+        text-shadow: 0 0 3px black;
     }
 }
 
-#navbar{
+#logo span{
+    opacity: 0;
+    display: inline-block;
+    animation: danim 5.5s linear forwards;
+}
+
+span#D { animation-delay: 3.1s; }
+span#O { animation-delay: 3.3s; }
+span#N { animation-delay: 3.5s; }
+span#Y { animation-delay: 3.7s; }
+span#L { animation-delay: 3.9s; }
+span#O2 { animation-delay: 4.1s; }
+span#G { animation-delay: 4.3s; }
+span#I { animation-delay: 4.5s; }
+span#C { animation-delay: 4.7s; }
+
+@keyframes danim{
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#navbar {
     display: flex;
     gap: 15px;
     flex-wrap: nowrap;
@@ -48,14 +75,70 @@ main {
     flex-wrap: wrap;
     justify-content: center;
     opacity: 0;
+    animation: logoanim 2s ease-in 3.2s forwards;
 }
-#navbar a{
+
+#navbar a {
     cursor: pointer;
 }
-.jsanim{
-    animation: logoanim 3s ease forwards;
+
+#navbar span {
+    color: white;
+    animation: spananim 0.8s ease infinite;
 }
-header{
+
+@keyframes spananim {
+    0% {
+        color: red;
+        text-shadow: 0 0 12px red;
+
+    }
+
+    25% {
+        color: yellow;
+        text-shadow: 0 0 12px yellow;
+    }
+
+    50% {
+        color: blue;
+        text-shadow: 0 0 12px blue;
+    }
+
+    75% {
+        color: white;
+        text-shadow: 0 0 12px white;
+    }
+
+    100% {
+        color: green;
+        text-shadow: 0 0 12px green;
+    }
+}
+
+#loader span {
+    display: inline-block;
+}
+
+#loader span {
+    animation: logospananim 0.4s linear infinite;
+}
+
+@keyframes logospananim {
+    from {
+        transform: rotate(0deg);
+        text-shadow: 0 0 12px white;
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+#logospan {
+    margin-right: 4px;
+}
+
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -65,25 +148,28 @@ header{
     height: 8vh;
     width: 100%;
 }
-header a{
+
+header a {
     text-decoration: none;
     color: white;
     font-family: "saira", sans-serif;
     font-size: 15px;
 }
-main #markaz{
+
+main #markaz {
     font-size: 4.2em;
     display: flex;
     justify-content: center;
     align-items: center;
     top: 50%;
     left: 50%;
-    color:white;
+    color: white;
     text-shadow: 0 0 8px black, 0 0 12px black;
     transform: translate(-50%, -50%);
     position: fixed;
     z-index: -4;
 }
+
 #loader {
     position: fixed;
     top: 0;
@@ -99,16 +185,74 @@ main #markaz{
     z-index: 10;
     font-size: 1.1em;
     font-family: "saira", sans-serif;
+
 }
-.loaderend{
+
+#p1 {
+    animation: loaderpanim3 0.7s linear 0.4s infinite;
+}
+
+@keyframes loaderpanim1 {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#p2 {
+    animation: loaderpanim2 0.7s linear 0.2s infinite;
+}
+
+@keyframes loaderpanim2 {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#p3 {
+    animation: loaderpanim3 0.7s linear infinite;
+}
+
+@keyframes loaderpanim3 {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.loaderend {
     transition: 2s;
     opacity: 0;
     pointer-events: none;
 }
-details{
+
+details {
     color: white;
 }
-footer{
+
+footer {
     text-align: center;
     padding: 10px;
     background-color: rgb(100, 100, 100);
@@ -116,40 +260,45 @@ footer{
     font-size: 12px;
     display: flex;
     justify-content: space-between;
-    height:36px;
+    height: 36px;
     width: 100%;
     align-items: center;
-    
+
 }
-footer a{
+
+footer a {
     text-decoration: none;
     color: white;
     font-size: 1em;
 }
-#social{
+
+#social {
     display: flex;
     justify-content: center;
-    gap: 10px; 
-}
-.qor{
-  color: white;
-  position: fixed;
-  top: -120vh;
-  left: 50vw;
-  animation: yogish 9s linear infinite;
-  z-index: -4;
-    font-size: 14px;
+    gap: 10px;
 }
 
-@keyframes yogish{
-  from{
-    transform: translateY(0);
-  }
-  to{
-    transform: translateY(220vh);
-  }
+.qor {
+    color: white;
+    position: fixed;
+    top: -120vh;
+    left: 50vw;
+    animation: yogish 9s linear 4s infinite;
+    z-index: -4;
+    font-size: 11px;
 }
-.menu{
+
+@keyframes yogish {
+    from {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    to {
+        transform: translateY(220vh) rotate(360deg);
+    }
+}
+
+.menu {
     top: 50%;
     left: 50%;
     position: fixed;
@@ -162,7 +311,8 @@ footer a{
     transition: 2s;
     pointer-events: none;
 }
-.cmd{
+
+.cmd {
     top: 0;
     left: 0;
     background-color: rgba(1, 1, 1, 0.9);
@@ -172,4 +322,3 @@ footer a{
     width: 100vw;
     pointer-events: auto;
 }
-
