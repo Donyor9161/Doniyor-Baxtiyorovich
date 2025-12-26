@@ -283,7 +283,7 @@ footer a {
     position: fixed;
     top: -120vh;
     left: 50vw;
-    animation: yogish 9s linear 3.3s infinite;
+    animation: yogish 9s linear 2.8s infinite;
     z-index: -4;
     font-size: 11px;
 }
@@ -322,6 +322,7 @@ footer a {
     width: 100vw;
     pointer-events: auto;
 }
+
 
 
 
