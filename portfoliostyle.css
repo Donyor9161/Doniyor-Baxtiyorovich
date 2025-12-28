@@ -15,6 +15,7 @@
 body{
     background-color: black;
     animation: blur 1.8s ease-in 0.1s forwards;
+    opacity: 0;
 }
 @keyframes blur {
     from{
@@ -156,3 +157,4 @@ header span{
         box-shadow: 0 0 6px red, 0 0 6px red;
     }
 }
+
