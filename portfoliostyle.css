@@ -186,8 +186,8 @@ header span {
     .img {
         position: fixed;
         top: 10%;
-        right: -50%;
-        width: 168%;
+        right: -38%;
+        width: 128%;
         height: auto;
         z-index: -1;
     }
