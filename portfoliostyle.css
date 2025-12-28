@@ -185,7 +185,7 @@ header span {
 @media(max-width: 768px) and (orientation: portrait) {
     .img {
         position: fixed;
-        top: 10%;
+        top: 1%;
         right: -38%;
         width: 128%;
         height: auto;
@@ -274,3 +274,4 @@ header span {
         opacity: 0;
     }
 }
+
