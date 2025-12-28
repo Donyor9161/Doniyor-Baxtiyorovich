@@ -1,10 +1,11 @@
-*{
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     font-family: "saira", sans-serif;
 }
-.img{
+
+.img {
     position: fixed;
     top: 10%;
     right: -10%;
@@ -12,70 +13,85 @@
     height: auto;
     z-index: -1;
 }
-body{
+
+body {
     background-color: black;
-    animation: blur 1.8s ease-in 0.1s forwards;
+    animation: blur 1.8s ease-in 0.2s forwards;
     opacity: 0;
 }
+
 @keyframes blur {
-    from{
+    from {
         opacity: 0;
     }
-    to{
+
+    to {
         opacity: 1;
     }
 }
-main{
+
+main {
     padding: 10px;
 }
-b{
+
+b {
     color: yellow;
 }
-#developer h1{
+
+#developer h1 {
     display: inline-block;
     color: white;
     margin-top: 30px;
     margin-left: 121px;
     animation: h1anim 1.2s ease-in 0.1s forwards;
 }
+
 @keyframes h1anim {
-    from{
+    from {
         opacity: 0;
         transform: translateX(-70px);
     }
-    to{
+
+    to {
         opacity: 1;
     }
 }
-header span{
+
+header span {
     display: inline-block;
     color: white;
     font-size: 42px;
-    animation: h1anim 1.2s ease-in 0.1s forwards, yon 1s ease-out 2.2s infinite;
+    animation: h1anim 1.2s ease-in 0.1s forwards, yon 0.4s ease-out 2.2s 3;
 }
+
 @keyframes yon {
-    0%{
+    0% {
         opacity: 0;
     }
-    50%{
+
+    50% {
         opacity: 1;
     }
-    100%{
+
+    100% {
         opacity: 0;
     }
 }
-#salom{
+
+#salom {
     margin-top: 120px;
 }
-#salom h2{
-    display: inline-block;
+
+#salom h2 {
+    display: flex;
     justify-content: left;
     color: white;
     margin-left: 110px;
     animation: asos 1s linear 1.2s forwards;
     opacity: 0;
 }
-#salom p{
+
+#salom p {
     display: inline-block;
     justify-content: left;
     color: white;
@@ -83,81 +99,178 @@ header span{
     animation: asos 1s linear 2s forwards;
     opacity: 0;
 }
+
 @keyframes asos {
-    from{
+    from {
         opacity: 0;
         transform: translateX(-50px);
     }
-    to{
+
+    to {
         opacity: 1;
     }
 }
-#social #a1{
+
+#social #a1 {
     display: inline-block;
     justify-content: center;
     text-align: center;
     text-decoration: none;
     align-items: center;
-    font-size: 28px;
+    font-size: 19px;
     border: 2px solid white;
     border-radius: 50%;
-    width: 46px;
-    height: 46px;
+    width: 32px;
+    height: 32px;
     margin-left: 170px;
     margin-top: 25px;
     color: white;
     animation: socialanim 1.6s linear 2.2s infinite;
     opacity: 0;
 }
-#social #a2{
+
+#social #a2 {
     text-decoration: none;
-    font-size: 28px;
+    font-size: 19px;
     display: inline-block;
     justify-content: center;
     text-align: center;
     align-items: center;
     border: 2px solid white;
     border-radius: 50%;
-    width: 46px;
-    height: 46px;
+    width: 32px;
+    height: 32px;
     margin-left: 12px;
     color: white;
     animation: socialanim 1.6s linear 2.3s infinite;
     opacity: 0;
 }
-#social #a3{
+
+#social #a3 {
     text-decoration: none;
-    font-size: 28px;
+    font-size: 19px;
     display: inline-block;
     justify-content: center;
     text-align: center;
     align-items: center;
     border: 2px solid white;
     border-radius: 50%;
-    width: 46px;
-    height: 46px;
+    width: 32px;
+    height: 32px;
     margin-left: 12px;
     color: white;
     animation: socialanim 1.6s linear 2.4s infinite;
     opacity: 0;
 }
+
 @keyframes socialanim {
-    0%{
+    0% {
         opacity: 0;
         border-color: red;
         box-shadow: 0 0 6px red, 0 0 6px red;
     }
-    50%{
+
+    50% {
         border-color: white;
         opacity: 1;
     }
-    100%{
+
+    100% {
         opacity: 1;
         border-color: red;
         box-shadow: 0 0 6px red, 0 0 6px red;
     }
 }
 
+@media(max-width: 768px) {
+    .img {
+        position: fixed;
+        top: 10%;
+        right: -50%;
+        width: 168%;
+        height: auto;
+        z-index: -1;
+    }
+    #developer h1 {
+        display: inline-block;
+        color: white;
+        margin-top: 30px;
+        margin-left: 40px;
+        animation: h1anim 1.2s ease-in 0.1s forwards;
+    }
 
+    #salom {
+        margin-top: 120px;
+    }
 
+    #salom h2 {
+        display: inline-block;
+        justify-content: left;
+        color: white;
+        margin-left: 35px;
+        animation: asos 1s linear 1.2s forwards;
+        opacity: 0;
+        font-size: 18px;
+    }
 
+    #salom p {
+        display: inline-block;
+        justify-content: left;
+        color: white;
+        margin-left: 35px;
+        animation: asos 1s linear 2s forwards;
+        opacity: 0;
+    }
+
+    #social #a1 {
+        display: inline-block;
+        justify-content: center;
+        text-align: center;
+        text-decoration: none;
+        align-items: center;
+        font-size: 19px;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-left: 35px;
+        margin-top: 25px;
+        color: white;
+        animation: socialanim 1.6s linear 2.2s infinite;
+        opacity: 0;
+    }
+
+    #social #a2 {
+        text-decoration: none;
+        font-size: 19px;
+        display: inline-block;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-left: 12px;
+        color: white;
+        animation: socialanim 1.6s linear 2.3s infinite;
+        opacity: 0;
+    }
+
+    #social #a3 {
+        text-decoration: none;
+        font-size: 19px;
+        display: inline-block;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        border: 2px solid white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        margin-left: 12px;
+        color: white;
+        animation: socialanim 1.6s linear 2.4s infinite;
+        opacity: 0;
+    }
+}
