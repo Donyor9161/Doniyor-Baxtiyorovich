@@ -156,8 +156,8 @@ header a {
     font-size: 15px;
 }
 
-main #markaz {
-    font-size: 4.2em;
+main #markaz img{
+    width: 850px;
     display: flex;
     justify-content: center;
     align-items: center;
