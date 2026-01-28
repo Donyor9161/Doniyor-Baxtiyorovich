@@ -157,7 +157,7 @@ header a {
 }
 
 main #markaz img{
-    width: 850px;
+    width: 450px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -297,3 +297,4 @@ footer a {
         transform: translateY(220vh) rotate(360deg);
     }
 }
+
