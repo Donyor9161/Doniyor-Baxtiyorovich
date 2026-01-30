@@ -3,6 +3,7 @@
     margin: 0;
     box-sizing: border-box;
     font-family: "saira", sans-serif;
+    color: white;
 }
 
 body{
@@ -47,3 +48,4 @@ main{
     color: white;
     text-decoration: none;
 }
+
