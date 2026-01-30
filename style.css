@@ -2,299 +2,48 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    font-family: "saira", sans-serif;
 }
 
-body {
-    display: flex;
+body{
     background-image: url("yershari.jpg");
-    flex-direction: column;
-    min-height: 100vh;
-    min-width: 100vw;
-    background-color: black;
-    background-attachment: fixed;
-    background-position: left;
     background-size: cover;
-    overflow: hidden;
-}
-
-.blur {
-    backdrop-filter: blur(9px);
-    transition: 3s;
-}
-
-main {
-    flex: 1;
-}
-
-#logo {
-    font-family: "Saira", sans-serif;
-    color: white;
-    letter-spacing: 3.2px;
-    
-}
-
-@keyframes logoanim {
-    from {
-        opacity: 0;
-        text-shadow: 0 0 0px white;
-    }
-
-    to {
-        opacity: 1;
-        text-shadow: 0 0 3px black;
-    }
-}
-
-#logo span{
-    opacity: 0;
-    display: inline-block;
-    animation: danim 5.5s linear forwards;
-}
-
-span#D { animation-delay: 3.1s; }
-span#O { animation-delay: 3.2s; }
-span#N { animation-delay: 3.3s; }
-span#Y { animation-delay: 3.4s; }
-span#L { animation-delay: 3.5s; }
-span#O2 { animation-delay: 3.6s; }
-span#G { animation-delay: 3.7s; }
-span#I { animation-delay: 3.8s; }
-span#C { animation-delay: 3.9s; }
-
-@keyframes danim{
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-#navbar {
+    background-position: left;
+    background-attachment: fixed;
     display: flex;
-    gap: 15px;
-    flex-wrap: nowrap;
-    font-weight: 400;
-    font-family: "saira", sans-serif;
-    flex-wrap: wrap;
-    justify-content: center;
-    opacity: 0;
-    animation: logoanim 2s ease-in 3.2s forwards;
+    flex-direction: column;
 }
 
-#navbar a {
-    cursor: pointer;
+header{
+    margin: 11px 13px;
 }
 
-#navbar span {
-    color: white;
-    animation: spananim 0.8s ease infinite;
-}
-
-@keyframes spananim {
-    0% {
-        color: red;
-        text-shadow: 0 0 12px red;
-
-    }
-
-    25% {
-        color: yellow;
-        text-shadow: 0 0 12px yellow;
-    }
-
-    50% {
-        color: blue;
-        text-shadow: 0 0 12px blue;
-    }
-
-    75% {
-        color: white;
-        text-shadow: 0 0 12px white;
-    }
-
-    100% {
-        color: green;
-        text-shadow: 0 0 12px green;
-    }
-}
-
-#loader span {
-    display: inline-block;
-}
-
-#loader span {
-    animation: logospananim 0.27s ease-in infinite;
-}
-
-@keyframes logospananim {
-    from {
-        transform: rotate(0deg);
-        text-shadow: 0 0 12px white;
-    }
-
-    to {
-        transform: rotate(-360deg);
-    }
-}
-
-#logospan {
-    margin-right: 4px;
-}
-
-header {
+#mininavbar{
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px;
-    background: fixed;
-    flex-wrap: wrap;
-    height: 8vh;
-    width: 100%;
-}
-
-header a {
-    text-decoration: none;
-    color: white;
-    font-family: "saira", sans-serif;
-    font-size: 15px;
-}
-
-main #markaz img{
-    width: 450px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    top: 50%;
-    left: 50%;
-    color: white;
-    text-shadow: 0 0 8px black, 0 0 12px black;
-    transform: translate(-50%, -50%);
-    position: fixed;
-    z-index: -4;
-}
-
-#loader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    height: 100vh;
-    width: 100vw;
-    opacity: 1;
-    z-index: 10;
-    font-size: 1.1em;
-    font-family: "saira", sans-serif;
-
-}
-
-#p1 {
-    animation: loaderpanim3 0.7s linear 0.4s infinite;
-}
-
-@keyframes loaderpanim1 {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-#p2 {
-    animation: loaderpanim2 0.7s linear 0.2s infinite;
-}
-
-@keyframes loaderpanim2 {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-#p3 {
-    animation: loaderpanim3 0.7s linear infinite;
-}
-
-@keyframes loaderpanim3 {
-    0% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-.loaderend {
-    transition: 2s;
-    opacity: 0;
-    pointer-events: none;
-}
-
-details {
-    color: white;
-}
-
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: rgb(100, 100, 100);
-    color: white;
-    font-size: 12px;
-    display: flex;
-    justify-content: space-between;
-    height: 36px;
-    width: 100%;
-    align-items: center;
-
-}
-
-footer a {
-    text-decoration: none;
-    color: white;
+    gap: 10px;
     font-size: 1em;
 }
 
-#social {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+#logo img{
+    width: 220px;
+    height: auto;
 }
 
-.qor {
+#mininavbar a{
     color: white;
-    position: fixed;
-    top: -120vh;
-    left: 50vw;
-    animation: yogish 9s linear 2.2s infinite;
-    z-index: -4;
-    font-size: 11px;
+    text-decoration: none;
 }
 
-@keyframes yogish {
-    from {
-        transform: translateY(0) rotate(0deg);
-    }
-
-    to {
-        transform: translateY(220vh) rotate(360deg);
-    }
+span{
+    font-family: "Lobster Two", sans-serif;
 }
 
+main{
+    flex: 1;
+
+}
+
+#navbar a{
+    color: white;
+    text-decoration: none;
+}
