@@ -2,7 +2,6 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "saira", sans-serif;
     color: white;
 }
 
@@ -13,10 +12,28 @@ body{
     background-attachment: fixed;
     display: flex;
     flex-direction: column;
+    font-family: "saira", sans-serif;
+    animation-name: blur;
+    animation-timing-function: ease-in-out;
+    animation-duration: 2.1s;
+    animation-delay: 0.8;
 }
 
+@keyframes blur {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 header{
-    margin: 11px 13px;
+    margin: 21px 23px;
+}
+
+#navbar a{
+    color: white;
+    text-decoration: none;
 }
 
 #mininavbar{
@@ -37,15 +54,42 @@ header{
 
 span{
     font-family: "Lobster Two", sans-serif;
+    display: inline-block;
+}
+#mininavbar a:hover, span:hover{
+    transform: scale(1.05);
+    transition: 0.3s;
+    color: blue;
+    text-shadow: 1px 1px 8px blue, 1px 1px 8px blue;
 }
 
 main{
     flex: 1;
-
 }
 
-#navbar a{
-    color: white;
-    text-decoration: none;
+footer{
+    font-family:'Times New Roman', Times, serif;    
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    text-align: center;
+    padding: 13px;
+    background-color: rgb(10, 10, 10);
+    display: flex;
+    justify-content: space-between;
 }
+@media(max-width: 768px) and (orientation: portrait){
+    header{
+    margin-top: 30px;
+    }
 
+    #navbar{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    footer{
+        flex-direction: column;
+    }
+}
