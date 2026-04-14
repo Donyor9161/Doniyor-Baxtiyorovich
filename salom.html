@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DONYLOGIC - Intellektual Ring</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --easy: #22c55e;
+            --medium: #eab308;
+            --hard: #ef4444;
+            --text: #f8fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #score-board {
+            display: flex;
+            gap: 15px;
+            background: var(--card);
+            padding: 15px;
+            width: 100%;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--accent);
+            flex-wrap: wrap;
+        }
+
+        .group-score {
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent);
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: var(--card);
+            margin: 20px;
+            padding: 30px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .screen { display: none; }
+        .active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 10px;
+            color: white;
+            font-weight: bold;
+        }
+
+        button:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        .btn-blue { background: var(--accent); }
+        .btn-easy { background: var(--easy); }
+        .btn-medium { background: var(--medium); }
+        .btn-hard { background: var(--hard); }
+
+        #timer { font-size: 48px; font-weight: bold; margin: 15px; color: var(--hard); }
+        #countdown-num { font-size: 100px; color: var(--accent); }
+
+        .q-text { font-size: 24px; margin-bottom: 20px; line-height: 1.4; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        input {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: #0f172a;
+            color: white;
+            margin: 5px;
+            width: 250px;
+        }
+
+        .status-msg { font-size: 32px; font-weight: bold; padding: 20px; border-radius: 10px; }
+        .correct { background: rgba(34, 197, 94, 0.2); color: var(--easy); }
+        .wrong { background: rgba(239, 68, 68, 0.2); color: var(--hard); }
+
+        .rank-item {
+            font-size: 22px;
+            margin: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+
+<div id="score-board" style="display:none"></div>
+
+<div class="container">
+    <div id="setup-screen" class="screen active">
+        <h1>O'yinni Sozlash</h1>
+        <p>5 ta guruh nomini kiriting:</p>
+        <div id="group-inputs">
+            <input type="text" id="g1" value="Lochinlar"><br>
+            <input type="text" id="g2" value="Burgutlar"><br>
+            <input type="text" id="g3" value="Sherlar"><br>
+            <input type="text" id="g4" value="Qoplonlar"><br>
+            <input type="text" id="g5" value="Ajdarlar">
+        </div>
+        <button class="btn-blue" onclick="initGame()">O'yinni Boshlash</button>
+    </div>
+
+    <div id="countdown-screen" class="screen">
+        <h2 id="current-player-info"></h2>
+        <div id="countdown-num">3</div>
+    </div>
+
+    <div id="subject-screen" class="screen">
+        <h3>Sizga tushgan fan:</h3>
+        <h1 id="rand-subject-name" style="color: var(--accent); font-size: 45px;">...</h1>
+        <hr>
+        <p>Qiyinchilikni tanlang:</p>
+        <button class="btn-easy" onclick="pickDifficulty('easy')">EASY (+10 / -3)</button>
+        <button class="btn-medium" onclick="pickDifficulty('medium')">MEDIUM (+25 / -10)</button>
+        <button class="btn-hard" onclick="pickDifficulty('hard')">HARD (+60 / -58)</button>
+    </div>
+
+    <div id="question-screen" class="screen">
+        <div id="timer">00</div>
+        <div id="q-body" class="q-text"></div>
+        <div id="options" class="options-grid"></div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div id="status-display" class="status-msg"></div>
+        <div id="correct-info" style="margin: 15px; font-style: italic;"></div>
+        <button class="btn-blue" id="next-btn" onclick="prepareNextTurn()">Navbatdagi fanni aniqlash</button>
+    </div>
+
+    <div id="tie-screen" class="screen">
+        <h1>HAL QILUVCHI BOSQICH (TIE-BREAKER)</h1>
+        <p>Ballar teng! Fanni tanlang (Hard / 15 sek):</p>
+        <div id="tie-subjects"></div>
+    </div>
+
+    <div id="final-screen" class="screen">
+        <h1>G'OLIBLAR</h1>
+        <div id="leaderboard"></div>
+        <button class="btn-blue" onclick="location.reload()">Qayta boshlash</button>
+    </div>
+</div>
+
+<script>
+    // --- SAVOLLAR ---
+    const data = {
+        'Kompyuter': {
+            easy: [
+                {q: "Sichqonchaning o'ng tugmasi vazifasi?", a: ["Dasturni ochish", "Kontekst menyu", "O'chirish", "Yopish"], c: 1},
+                {q: "Vaqtincha o'chirilgan fayllar qayerda turadi?", a: ["Disk C", "Mening hujjatlarim", "Savatcha (Recycle)", "Desktop"], c: 2},
+                {q: "Klaviatura qanday qurilma?", a: ["Kiritish", "Chiqarish", "Xotira", "Protsessor"], c: 0},
+                {q: "Google Chrome nima?", a: ["Dasturlash tili", "Brauzer", "Operatsion tizim", "Pochta"], c: 1},
+                {q: "Caps Lock vazifasi?", a: ["O'chirish", "Katta harf", "Nusxalash", "Joy tashlash"], c: 1}
+            ],
+            medium: [
+                {q: "IP manzili necha qismdan iborat (IPv4)?", a: ["2", "3", "4", "6"], c: 2},
+                {q: "Dasturlashda 'Loop' nima?", a: ["O'zgaruvchi", "Takrorlanish", "Shart", "Xatolik"], c: 1},
+                {q: "1 Megabayt necha Kilobayt?", a: ["1000", "1024", "2048", "512"], c: 1},
+                {q: "Motherboard nima?", a: ["Asosiy plata", "Monitor", "Printer", "Klaviatura"], c: 0}
+            ],
+            hard: [
+                {q: "DNS protokoli qaysi portdan foydalanadi?", a: ["80", "443", "53", "21"], c: 2},
+                {q: "SSD ning HDD dan asosiy farqi?", a: ["Narxi", "Hajmi", "Harakatlanuvchi qism yo'qligi", "Rangi"], c: 2},
+                {q: "Ikkilik sanoq tizimida 11+1 necha bo'ladi?", a: ["12", "100", "10", "111"], c: 1}
+            ]
+        },
+        'Matematika': {
+            easy: [
+                {q: "15 * 4?", a: ["45", "60", "55", "70"], c: 1},
+                {q: "Uchburchakning nechta tomoni bor?", a: ["2", "3", "4", "5"], c: 1},
+                {q: "100 ning 10 foizi?", a: ["1", "5", "10", "20"], c: 2},
+                {q: "Eng kichik juft son?", a: ["0", "2", "4", "1"], c: 1}
+            ],
+            medium: [
+                {q: "ildiz ostida 144?", a: ["10", "11", "12", "14"], c: 2},
+                {q: "7 ning kubi?", a: ["49", "243", "343", "512"], c: 2},
+                {q: "Doiraning yuzi formulasi?", a: ["2πr", "πr²", "a*b", "2a+2b"], c: 1}
+            ],
+            hard: [
+                {q: "log2(64) nechaga teng?", a: ["4", "5", "6", "8"], c: 2},
+                {q: "Tog'ri burchakli uchburchakda gipotenuza 10, katet 6 bo'lsa, ikkinchi katet?", a: ["7", "8", "9", "5"], c: 1},
+                {q: "5! (besh faktorial)?", a: ["100", "110", "120", "150"], c: 2}
+            ]
+        },
+        'Geografiya': {
+            easy: [
+                {q: "Yerning tabiiy yo'ldoshi?", a: ["Mars", "Quyosh", "Oy", "Venera"], c: 2},
+                {q: "O'zbekistonning poytaxti?", a: ["Samarqand", "Toshkent", "Buxoro", "Andijon"], c: 1},
+                {q: "Dunyoning eng katta oroli?", a: ["Grenlandiya", "Madagaskar", "Islandiya", "Yava"], c: 0}
+            ],
+            medium: [
+                {q: "Eng ko'p aholili davlat (2025)?", a: ["Xitoy", "Hindiston", "AQSH", "Rossiya"], c: 1},
+                {q: "Vatikan qaysi shahar ichida?", a: ["Rim", "Parij", "Berlin", "Moskva"], c: 0},
+                {q: "Afrika va Osiyoni ajratib turuvchi kanal?", a: ["Panama", "Suvaysh", "Berring", "Gibraltar"], c: 1}
+            ],
+            hard: [
+                {q: "Dunyodagi eng baland sharshara?", a: ["Niagara", "Anxel", "Viktoriya", "Iguasu"], c: 1},
+                {q: "Mariana botig'i chuqurligi taxminan?", a: ["8848m", "11022m", "5000m", "15000m"], c: 1}
+            ]
+        },
+        'Jahon tarix': {
+            easy: [
+                {q: "Amir Temur nechanchi yilda tug'ilgan?", a: ["1336", "1342", "1405", "1299"], c: 0},
+                {q: "Ikkinchi jahon urushi qachon tugagan?", a: ["1918", "1941", "1945", "1953"], c: 2}
+            ],
+            medium: [
+                {q: "Birinchi jahon urushi qachon boshlangan?", a: ["1910", "1914", "1918", "1939"], c: 1},
+                {q: "Rimga kim asos solgan (afsona)?", a: ["Sezar", "Romul va Rem", "Aleksandr", "Napoleon"], c: 1}
+            ],
+            hard: [
+                {q: "Magellan qaysi davlatdan yo'lga chiqqan?", a: ["Portugaliya", "Ispaniya", "Angliya", "Fransiya"], c: 1},
+                {q: "G'arbiy Rim imperiyasi qachon qulagan?", a: ["476 y.", "1453 y.", "395 y.", "1066 y."], c: 0}
+            ]
+        }
+    };
+
+    // --- LOGIKA ---
+    let groups = [];
+    let currentPlayer = 1;
+    let currentGroupIdx = 0; // 0, 1, 2, 3, 4 (Strict Order)
+    let totalQuestionsHandled = 0;
+    let subjects = Object.keys(data);
+    let currentSub = "";
+    let currentDiff = "";
+    let timer;
+    let qIdx = { 'Kompyuter': {easy:0, medium:0, hard:0}, 'Matematika': {easy:0, medium:0, hard:0}, 'Geografiya': {easy:0, medium:0, hard:0}, 'Jahon tarix': {easy:0, medium:0, hard:0} };
+
+    function initGame() {
+        for(let i=1; i<=5; i++) {
+            groups.push({ name: document.getElementById('g'+i).value, score: 0 });
+        }
+        document.getElementById('setup-screen').classList.remove('active');
+        document.getElementById('score-board').style.display = 'flex';
+        updateScores();
+        startTurn();
+    }
+
+    function updateScores() {
+        const board = document.getElementById('score-board');
+        board.innerHTML = groups.map(g => `<div class="group-score">${g.name}: <b>${g.score}</b></div>`).join('');
+    }
+
+    function startTurn() {
+        if (totalQuestionsHandled >= 30) {
+            checkWinners();
+            return;
+        }
+
+        showScreen('countdown-screen');
+        document.getElementById('current-player-info').innerText = `${groups[currentGroupIdx].name} guruhi, ${Math.floor((totalQuestionsHandled/5)+1)}-ishtirokchi keling!`;
+        
+        let sec = 3;
+        const countDiv = document.getElementById('countdown-num');
+        countDiv.innerText = sec;
+        
+        let cd = setInterval(() => {
+            sec--;
+            countDiv.innerText = sec;
+            if(sec <= 0) {
+                clearInterval(cd);
+                selectSubject();
+            }
+        }, 1000);
+    }
+
+    function selectSubject() {
+        showScreen('subject-screen');
+        currentSub = subjects[Math.floor(Math.random() * subjects.length)];
+        document.getElementById('rand-subject-name').innerText = currentSub;
+    }
+
+    function pickDifficulty(d) {
+        currentDiff = d;
+        showScreen('question-screen');
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        let pool = data[currentSub][currentDiff];
+        // Agar savollar tugasa boshidan aylantiradi
+        let idx = qIdx[currentSub][currentDiff] % pool.length;
+        let q = pool[idx];
+        qIdx[currentSub][currentDiff]++;
+
+        document.getElementById('q-body').innerText = q.q;
+        const optContainer = document.getElementById('options');
+        optContainer.innerHTML = "";
+
+        q.a.forEach((txt, i) => {
+            let b = document.createElement('button');
+            b.innerText = txt;
+            b.className = "btn-blue";
+            b.onclick = () => finishQuestion(i, q.c);
+            optContainer.appendChild(b);
+        });
+
+        let timeLimit = (currentDiff === 'easy') ? 20 : (currentDiff === 'medium') ? 30 : 9;
+        runTimer(timeLimit, q.c);
+    }
+
+    function runTimer(sec, correctIdx) {
+        const tDiv = document.getElementById('timer');
+        tDiv.innerText = sec;
+        clearInterval(timer);
+        timer = setInterval(() => {
+            sec--;
+            tDiv.innerText = sec;
+            if(sec <= 0) {
+                clearInterval(timer);
+                finishQuestion(-1, correctIdx);
+            }
+        }, 1000);
+    }
+
+    function finishQuestion(selected, correct) {
+        clearInterval(timer);
+        totalQuestionsHandled++;
+        showScreen('result-screen');
+        
+        let pts = 0, pen = 0;
+        if(currentDiff === 'easy') { pts = 10; pen = -3; }
+        else if(currentDiff === 'medium') { pts = 25; pen = -10; }
+        else { pts = 60; pen = -58; }
+
+        const status = document.getElementById('status-display');
+        const info = document.getElementById('correct-info');
+
+        if(selected === correct) {
+            groups[currentGroupIdx].score += pts;
+            status.innerText = "TO'G'RI! +" + pts;
+            status.className = "status-msg correct";
+            info.innerText = "";
+        } else {
+            groups[currentGroupIdx].score += pen;
+            status.innerText = (selected === -1 ? "VAQT TUGADI! " : "XATO! ") + pen;
+            status.className = "status-msg wrong";
+            info.innerText = "To'g'ri javob edi: " + data[currentSub][currentDiff][(qIdx[currentSub][currentDiff]-1)%data[currentSub][currentDiff].length].a[correct];
+        }
+
+        updateScores();
+        // Qat'iy ketma-ketlik: 1->2->3->4->5->1...
+        currentGroupIdx = (currentGroupIdx + 1) % 5;
+    }
+
+    function prepareNextTurn() {
+        // Random fanni ko'rsatib keyingi odamni kutish
+        let btn = document.getElementById('next-btn');
+        btn.disabled = true;
+        let roll = 0;
+        let itv = setInterval(() => {
+            btn.innerText = subjects[Math.floor(Math.random() * subjects.length)];
+            roll++;
+            if(roll > 10) {
+                clearInterval(itv);
+                btn.innerText = "Navbatdagi fanni aniqlash";
+                btn.disabled = false;
+                startTurn();
+            }
+        }, 100);
+    }
+
+    function checkWinners() {
+        let sorted = [...groups].sort((a,b) => b.score - a.score);
+        
+        // Tie breaker (Top 3 ichida ballar teng bo'lsa)
+        let hasTie = (sorted[0].score === sorted[1].score || sorted[1].score === sorted[2].score);
+        
+        if(hasTie) {
+            runTieBreaker();
+        } else {
+            showFinal(sorted);
+        }
+    }
+
+    function runTieBreaker() {
+        showScreen('tie-screen');
+        const div = document.getElementById('tie-subjects');
+        div.innerHTML = "";
+        subjects.forEach(s => {
+            let b = document.createElement('button');
+            b.innerText = s;
+            b.className = "btn-blue";
+            b.onclick = () => {
+                currentSub = s;
+                currentDiff = 'hard';
+                showScreen('question-screen');
+                loadTieQuestion();
+            };
+            div.appendChild(b);
+        });
+    }
+
+    function loadTieQuestion() {
+        let q = data[currentSub]['hard'][0];
+        document.getElementById('q-body').innerText = "(TIE-BREAKER) " + q.q;
+        const optContainer = document.getElementById('options');
+        optContainer.innerHTML = "";
+        q.a.forEach((txt, i) => {
+            let b = document.createElement('button');
+            b.innerText = txt;
+            b.className = "btn-blue";
+            b.onclick = () => { 
+                alert(i === q.c ? "To'g'ri!" : "Xato!"); 
+                showFinal([...groups].sort((a,b) => b.score - a.score));
+            };
+            optContainer.appendChild(b);
+        });
+        runTimer(15, q.c);
+    }
+
+    function showFinal(sorted) {
+        showScreen('final-screen');
+        document.getElementById('leaderboard').innerHTML = sorted.map((g, i) => 
+            `<div class="rank-item">${i+1}-O'rin: <b>${g.name}</b> - ${g.score} ball</div>`
+        ).join('');
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
