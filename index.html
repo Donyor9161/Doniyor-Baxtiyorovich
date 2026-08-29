@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
     <!-- GGoogle analytics-->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLVESJJJZM"></script>
@@ -12,31 +11,30 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DONYLOGIC</title>
+    <title>DONYLOGIC — Kod orqali fikrlash</title>
+    <meta name="description" content="Donylogic — web dasturlash, interaktiv platformalar va aniq, tezkor raqamli yechimlar studiyasi.">
     <!-- Faviconlar -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
-<link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="stylesheet" href="style.css">
     <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">    
+    <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <!-- remixicon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 </head>
-
 <body>
-
     <header>
         <div id="navbar">
             <div id="logo">
-                    <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;">
-
+                <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
             </div>
             <div id="mininavbar">
                 <a href="#"
@@ -47,8 +45,77 @@
             </div>
         </div>
     </header>
+
     <main>
+        <!-- HERO -->
+        <section class="hero reveal">
+            <span class="eyebrow">Donylogic Studio</span>
+            <h1>G'oyalarni <em>aniq&nbsp;kod</em><br>mantig'iga aylantiramiz.</h1>
+            <p class="lead">
+                Web sahifalar, interaktiv platformalar va tezkor raqamli yechimlar —
+                har bir loyihaga aniqlik, tezlik va o'ziga xos uslub bilan yondashamiz.
+            </p>
+            <div class="hero-actions">
+                <a href="portfolio.html" class="btn btn-primary"><i class="ri-code-s-slash-line"></i> Ishlarni ko'rish</a>
+                <a href="#xizmatlar" class="btn btn-ghost" data-scroll-to="#xizmatlar"><i class="ri-compass-3-line"></i> Yo'nalishlar</a>
+            </div>
+            <div class="scroll-cue">
+                <span>Pastga suring</span>
+                <i class="ri-arrow-down-line"></i>
+            </div>
+        </section>
+
+        <!-- SIGNAL DIVIDER -->
+        <svg class="signal reveal" viewBox="0 0 1100 60" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+                <linearGradient id="signalGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#4fd8ff"/>
+                    <stop offset="100%" stop-color="#7c5cff"/>
+                </linearGradient>
+            </defs>
+            <path d="M0,30 L200,30 L230,10 L260,50 L290,30 L520,30 L550,10 L580,50 L610,30 L1100,30"/>
+            <circle cx="230" cy="10" r="3"></circle>
+            <circle cx="580" cy="50" r="3"></circle>
+        </svg>
+
+        <!-- SERVICES -->
+        <section id="xizmatlar">
+            <div class="section-head reveal">
+                <span class="eyebrow">Nima qilamiz</span>
+                <h2>Uchta yo'nalish, bitta aniq mantiq</h2>
+            </div>
+            <div class="services">
+                <article class="card reveal">
+                    <span class="num">01</span>
+                    <i class="ri-terminal-box-line"></i>
+                    <h3>Web dasturlash</h3>
+                    <p>Tezkor, moslashuvchan va SEO'ga tayyor sahifalar — noldan, sof kod bilan quramiz.</p>
+                </article>
+                <article class="card reveal">
+                    <span class="num">02</span>
+                    <i class="ri-shape-2-line"></i>
+                    <h3>UI/UX dizayn</h3>
+                    <p>Har bir loyiha uchun o'ziga xos vizual til: tipografiya, harakat va tafsilotlar.</p>
+                </article>
+                <article class="card reveal">
+                    <span class="num">03</span>
+                    <i class="ri-flashlight-line"></i>
+                    <h3>Interaktiv platformalar</h3>
+                    <p>Kvizlar, kalkulyatorlar va real vaqt effektlari bilan ishlaydigan tizimlar.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta-strip reveal">
+            <div>
+                <h2>Loyihangiz g'oyasi bormi?</h2>
+                <p>Kelib, birga mantiqiy va chiroyli yechim quramiz.</p>
+            </div>
+            <a href="salom.html" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> Bog'lanish</a>
+        </section>
     </main>
+
     <footer>
         <div id="huquqlar">
             <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
@@ -58,7 +125,7 @@
             <a href="https://tezkorquiz.uz/" target="_blank">tezkorquiz.uz</a>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 </body>
-
 </html>
-
