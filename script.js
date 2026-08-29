@@ -1,19 +1,187 @@
-for(let i=0;i<200;i++){
-    let qor = document.createElement("div");
-    qor.className = "qor";
-    qor.innerHTML = "❅";
-    qor.style.left = Math.random()*100 + "vw";
-    qor.style.height = Math.random()*30 + "vh";
-    qor.style.animationDuration = 3 + Math.random()*6 + "s";
-    document.body.appendChild(qor);
-}
-setTimeout(() => {
-  document.body.classList.add("blur");
-}, 3300);
+/* =========================================================
+   DONYLOGIC — Studio interactions
+   - custom cursor (dot + trailing ring)
+   - parallax starfield canvas
+   - magnetic buttons / nav links
+   - 3D tilt on cards
+   - scroll-reveal via IntersectionObserver
+   All effects respect prefers-reduced-motion and skip on touch devices.
+   ========================================================= */
+(() => {
+    "use strict";
 
-window.addEventListener("load", () => {
-    const loader = document.getElementById("loader");
-    loader.classList.add("loaderend");
-    setTimeout(() => loader.style.display = "none", 2100);
-});
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    const canFancy = !reduceMotion && !isTouch;
 
+    /* ---------------- starfield ---------------- */
+    function initStarfield(){
+        const canvas = document.createElement("canvas");
+        canvas.id = "starfield";
+        document.body.prepend(canvas);
+        const ctx = canvas.getContext("2d");
+
+        let w, h, stars, dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let pointer = { x: 0, y: 0 };
+        let targetPointer = { x: 0, y: 0 };
+
+        function resize(){
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            canvas.style.width = w + "px";
+            canvas.style.height = h + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const density = w < 768 ? 0.00012 : 0.00022;
+            const count = Math.round(w * h * density);
+            stars = Array.from({ length: count }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                r: Math.random() * 1.3 + 0.2,
+                baseAlpha: Math.random() * 0.5 + 0.25,
+                twinkleSpeed: Math.random() * 0.015 + 0.004,
+                phase: Math.random() * Math.PI * 2,
+                depth: Math.random() * 0.6 + 0.2 // parallax factor
+            }));
+        }
+
+        function draw(t){
+            ctx.clearRect(0, 0, w, h);
+            pointer.x += (targetPointer.x - pointer.x) * 0.04;
+            pointer.y += (targetPointer.y - pointer.y) * 0.04;
+            const dx = (pointer.x - w / 2) / w;
+            const dy = (pointer.y - h / 2) / h;
+
+            for (const s of stars){
+                const alpha = s.baseAlpha + Math.sin(t * s.twinkleSpeed + s.phase) * 0.25;
+                const px = s.x - dx * 26 * s.depth;
+                const py = s.y - dy * 26 * s.depth;
+                ctx.beginPath();
+                ctx.arc(px, py, s.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(210,232,255,${Math.max(0, alpha)})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(draw);
+        }
+
+        resize();
+        window.addEventListener("resize", resize);
+        window.addEventListener("mousemove", (e) => {
+            targetPointer.x = e.clientX;
+            targetPointer.y = e.clientY;
+        });
+        requestAnimationFrame(draw);
+    }
+
+    /* ---------------- custom cursor ---------------- */
+    function initCursor(){
+        document.body.classList.add("cursor-ready");
+        const dot = document.createElement("div");
+        dot.className = "cursor-dot";
+        const ring = document.createElement("div");
+        ring.className = "cursor-ring";
+        document.body.append(dot, ring);
+
+        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        let rx = mx, ry = my;
+
+        window.addEventListener("mousemove", (e) => {
+            mx = e.clientX;
+            my = e.clientY;
+            dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+        });
+
+        function loop(){
+            rx += (mx - rx) * 0.18;
+            ry += (my - ry) * 0.18;
+            ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+            requestAnimationFrame(loop);
+        }
+        requestAnimationFrame(loop);
+
+        const hoverables = "a, button, .btn, [onclick], .card";
+        document.addEventListener("mouseover", (e) => {
+            if (e.target.closest(hoverables)) ring.classList.add("is-active");
+        });
+        document.addEventListener("mouseout", (e) => {
+            if (e.target.closest(hoverables)) ring.classList.remove("is-active");
+        });
+    }
+
+    /* ---------------- magnetic elements ---------------- */
+    function initMagnetic(){
+        const els = document.querySelectorAll(".btn, #mininavbar a");
+        els.forEach((el) => {
+            el.addEventListener("mousemove", (e) => {
+                const r = el.getBoundingClientRect();
+                const relX = e.clientX - r.left - r.width / 2;
+                const relY = e.clientY - r.top - r.height / 2;
+                el.style.transform = `translate(${relX * 0.18}px, ${relY * 0.3}px)`;
+            });
+            el.addEventListener("mouseleave", () => {
+                el.style.transform = "translate(0,0)";
+            });
+        });
+    }
+
+    /* ---------------- card tilt ---------------- */
+    function initTilt(){
+        const cards = document.querySelectorAll(".card");
+        cards.forEach((card) => {
+            card.addEventListener("mousemove", (e) => {
+                const r = card.getBoundingClientRect();
+                const px = (e.clientX - r.left) / r.width;
+                const py = (e.clientY - r.top) / r.height;
+                const rotX = (py - 0.5) * -8;
+                const rotY = (px - 0.5) * 8;
+                card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(0)`;
+                card.style.setProperty("--mx", `${px * 100}%`);
+                card.style.setProperty("--my", `${py * 100}%`);
+            });
+            card.addEventListener("mouseleave", () => {
+                card.style.transform = "perspective(700px) rotateX(0) rotateY(0)";
+            });
+        });
+    }
+
+    /* ---------------- scroll reveal ---------------- */
+    function initReveal(){
+        const targets = document.querySelectorAll(".reveal");
+        if (!("IntersectionObserver" in window) || reduceMotion){
+            targets.forEach((t) => t.classList.add("in-view"));
+            return;
+        }
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting){
+                    entry.target.classList.add("in-view");
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.16, rootMargin: "0px 0px -60px 0px" });
+        targets.forEach((t) => io.observe(t));
+    }
+
+    /* ---------------- smooth anchor scroll for scroll-cue ---------------- */
+    function initScrollCue(){
+        document.querySelectorAll("[data-scroll-to]").forEach((el) => {
+            el.addEventListener("click", () => {
+                const target = document.querySelector(el.getAttribute("data-scroll-to"));
+                if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initStarfield();
+        initReveal();
+        initScrollCue();
+        if (canFancy){
+            initCursor();
+            initMagnetic();
+            initTilt();
+        }
+    });
+})();
