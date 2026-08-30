@@ -85,17 +85,20 @@
         document.body.append(dot, ring);
 
         let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        let dx = mx, dy = my;
         let rx = mx, ry = my;
 
         window.addEventListener("mousemove", (e) => {
             mx = e.clientX;
             my = e.clientY;
-            dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
         });
 
         function loop(){
-            rx += (mx - rx) * 0.18;
-            ry += (my - ry) * 0.18;
+            dx += (mx - dx) * 0.55;
+            dy += (my - dy) * 0.55;
+            rx += (mx - rx) * 0.16;
+            ry += (my - ry) * 0.16;
+            dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%,-50%)`;
             ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
             requestAnimationFrame(loop);
         }
@@ -225,15 +228,20 @@
         setInterval(tick, 1000);
     }
 
+    function safe(fn, label){
+        try { fn(); }
+        catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-        initStarfield();
-        initReveal();
-        initScrollCue();
-        initAgeCounter();
+        safe(initStarfield, "starfield");
+        safe(initReveal, "scroll-reveal");
+        safe(initScrollCue, "scroll-cue");
+        safe(initAgeCounter, "age-counter");
         if (canFancy){
-            initCursor();
-            initMagnetic();
-            initTilt();
+            safe(initCursor, "cursor");
+            safe(initMagnetic, "magnetic");
+            safe(initTilt, "tilt");
         }
     });
 })();
