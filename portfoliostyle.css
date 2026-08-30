@@ -45,10 +45,19 @@ html{
     z-index: -1;
 }
 
-/* Purely additive tone pass on the same element — no position,
-   size or offset touched. Safe to remove this class if unwanted. */
+/* Purely additive tone + edge-fade pass on the same element — no position,
+   size or offset touched. Fades the left/top edges into the black
+   background so the photo's rectangular boundary stops being visible. */
 .photo-tone{
     filter: saturate(1.08) contrast(1.05) brightness(0.98);
+    -webkit-mask-image:
+        linear-gradient(to right, transparent 0%, black 16%, black 100%),
+        linear-gradient(to bottom, transparent 0%, black 12%, black 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+        linear-gradient(to right, transparent 0%, black 16%, black 100%),
+        linear-gradient(to bottom, transparent 0%, black 12%, black 100%);
+    mask-composite: intersect;
 }
 
 body {
