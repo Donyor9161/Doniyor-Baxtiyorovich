@@ -1,5 +1,5 @@
 /* =========================================================
-   Doniyor Baxtiyorov — Portfolio interactions
+   Doniyor Baxtiyorov — Portfolio interactions (premium pass)
    The background photo (.img) is never targeted by this file —
    its position stays exactly as set in CSS.
    ========================================================= */
@@ -9,6 +9,95 @@
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
     const canFancy = !reduceMotion && !isTouch;
+
+    /* ---------------- letter-by-letter hero reveal ---------------- */
+    function initHeroLetters(){
+        const h1 = document.getElementById("heroName");
+        if (!h1) return;
+        const textNode = Array.from(h1.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
+        if (!textNode) return;
+
+        const letters = textNode.textContent.split("");
+        const frag = document.createDocumentFragment();
+        letters.forEach((ch, i) => {
+            const span = document.createElement("span");
+            span.className = "letter";
+            span.style.setProperty("--d", `${0.15 + i * 0.055}s`);
+            span.textContent = ch === " " ? "\u00A0" : ch;
+            frag.appendChild(span);
+        });
+        h1.replaceChild(frag, textNode);
+    }
+
+    /* ---------------- ambient scene layers + particles (single ordered insert) ---------------- */
+    function initScene(withParticles){
+        const frag = document.createDocumentFragment();
+
+        const glow = document.createElement("div");
+        glow.className = "scene-glow";
+        frag.appendChild(glow);
+
+        const grain = document.createElement("div");
+        grain.className = "grain";
+        frag.appendChild(grain);
+
+        const vignette = document.createElement("div");
+        vignette.className = "vignette";
+        frag.appendChild(vignette);
+
+        if (withParticles){
+            const host = document.createElement("div");
+            host.className = "particles";
+            const count = window.innerWidth < 640 ? 10 : 18;
+            for (let i = 0; i < count; i++){
+                const p = document.createElement("span");
+                p.className = "particle";
+                const left = Math.random() * 100;
+                const duration = 9 + Math.random() * 10;
+                const delay = Math.random() * 10;
+                const drift = (Math.random() - 0.5) * 80;
+                p.style.left = `${left}%`;
+                p.style.animationDuration = `${duration}s`;
+                p.style.animationDelay = `${delay}s`;
+                p.style.setProperty("--drift", `${drift}px`);
+                host.appendChild(p);
+            }
+            frag.appendChild(host);
+        }
+
+        document.body.prepend(frag);
+    }
+
+    /* ---------------- smooth accordion for "Batafsil" ---------------- */
+    function initAccordion(){
+        document.querySelectorAll("details").forEach((details) => {
+            const summary = details.querySelector("summary");
+            const body = details.querySelector(".details-body");
+            if (!summary || !body) return;
+
+            summary.addEventListener("click", (e) => {
+                e.preventDefault();
+                const isOpen = details.hasAttribute("open");
+
+                if (!isOpen){
+                    details.setAttribute("open", "");
+                    body.style.maxHeight = "0px";
+                    requestAnimationFrame(() => {
+                        body.style.maxHeight = body.scrollHeight + "px";
+                    });
+                } else {
+                    body.style.maxHeight = body.scrollHeight + "px";
+                    requestAnimationFrame(() => {
+                        body.style.maxHeight = "0px";
+                    });
+                    body.addEventListener("transitionend", function handler(){
+                        details.removeAttribute("open");
+                        body.removeEventListener("transitionend", handler);
+                    }, { once: true });
+                }
+            });
+        });
+    }
 
     /* ---------------- custom cursor ---------------- */
     function initCursor(){
@@ -63,10 +152,18 @@
         });
     }
 
+    function safe(fn, label){
+        try { fn(); }
+        catch (err){ console.error(`[portfolio] ${label}:`, err); }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
+        safe(() => initScene(canFancy), "scene");
+        safe(initHeroLetters, "hero-letters");
+        safe(initAccordion, "accordion");
         if (canFancy){
-            try { initCursor(); } catch (err){ console.error("[portfolio] cursor:", err); }
-            try { initMagnetic(); } catch (err){ console.error("[portfolio] magnetic:", err); }
+            safe(initCursor, "cursor");
+            safe(initMagnetic, "magnetic");
         }
     });
 })();
