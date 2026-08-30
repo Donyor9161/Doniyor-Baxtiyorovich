@@ -1,10 +1,34 @@
+/* =========================================================
+   Doniyor Baxtiyorov — Portfolio stylesheet
+   NOTE: the ".img" rules (base + media query) are kept exactly
+   as originally placed — position/offsets were not touched.
+   ========================================================= */
+
+:root{
+    --void:        #05070d;
+    --cyan:        #4fd8ff;
+    --violet:      #7c5cff;
+    --text:        #eef2f8;
+    --muted:       #9aa3b5;
+    --border:      rgba(255,255,255,0.1);
+    --border-glow: rgba(79,216,255,0.35);
+    --shadow-cyan: 0 0 22px rgba(79,216,255,0.25);
+    --ease: cubic-bezier(.16,.8,.24,1);
+}
+
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-family: "saira", sans-serif;
+    font-family: "Saira", sans-serif;
+    color: var(--text);
 }
 
+html{
+    scroll-behavior: smooth;
+}
+
+/* ---------- UNTOUCHED: original background image placement ---------- */
 .img {
     position: fixed;
     top: 10%;
@@ -19,213 +43,295 @@ body {
     animation: blur 1.8s ease-in 0.2s forwards;
     opacity: 0;
     padding-bottom: 90px;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 @keyframes blur {
-    from {
-        opacity: 0;
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---------- custom cursor ---------- */
+.cursor-dot, .cursor-ring{
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+.cursor-dot{
+    width: 6px;
+    height: 6px;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
+}
+.cursor-ring{
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--border-glow);
+    transition: width .25s var(--ease), height .25s var(--ease), background .25s var(--ease);
+}
+.cursor-ring.is-active{
+    width: 54px;
+    height: 54px;
+    background: rgba(79,216,255,0.08);
+}
+@media (hover: hover) and (pointer: fine){
+    body.cursor-ready, body.cursor-ready a, body.cursor-ready summary{
+        cursor: none;
     }
-
-    to {
-        opacity: 1;
-    }
 }
 
-main {
-    padding: 10px;
+/* ---------- content shell ----------
+   Replaces the old fixed pixel margins (121px / 110px / 40px / 35px)
+   with one fluid, responsive gutter so nothing overlaps at any width. */
+.page{
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 8vw, 121px);
 }
 
-b {
-    color: yellow;
+/* ---------- header ---------- */
+header{
+    padding-top: clamp(28px, 6vw, 44px);
 }
-
-#developer h1 {
-    display: inline-block;
+#developer{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.eyebrow{
+    font-family: "Space Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 0.72em;
+    color: var(--cyan);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    animation: asos 1s linear 0.4s forwards;
+    opacity: 0;
+}
+.eyebrow::before{
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
+}
+#developer h1{
+    display: inline-flex;
+    align-items: baseline;
     color: white;
-    margin-top: 30px;
-    margin-left: 121px;
+    font-size: clamp(2.3rem, 6.5vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin: 0;
     animation: h1anim 1.2s ease-in 0.1s forwards;
 }
 
 @keyframes h1anim {
-    from {
-        opacity: 0;
-        transform: translateX(-70px);
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; transform: translateX(-70px); }
+    to   { opacity: 1; }
 }
 
-header span {
+.dot{
     display: inline-block;
-    color: white;
-    font-size: 42px;
+    font-size: 1em;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     animation: h1anim 1.2s ease-in 0.1s forwards, yon 0.4s ease-out 2.2s 3;
 }
 
 @keyframes yon {
-    0% {
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
 }
 
-#salom {
-    margin-top: 120px;
-}
-
-#salom h2 {
+/* ---------- main sections ---------- */
+main{
     display: flex;
-    justify-content: left;
+    flex-direction: column;
+    gap: clamp(40px, 8vw, 64px);
+    padding: clamp(48px, 8vw, 96px) 0 40px;
+}
+
+#salom{
+    max-width: 620px;
+}
+#salom h2{
     color: white;
-    margin-left: 110px;
+    font-size: clamp(1.25rem, 3vw, 1.6rem);
+    font-weight: 600;
+    line-height: 1.55;
     animation: asos 1s linear 1.2s forwards;
     opacity: 0;
 }
-
-#salom p {
-    display: inline-block;
-    justify-content: left;
-    color: white;
-    margin-left: 110px;
+#salom p{
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.75;
     animation: asos 1s linear 2s forwards;
     opacity: 0;
 }
 
 @keyframes asos {
-    from {
-        opacity: 0;
-        transform: translateX(-50px);
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; transform: translateX(-50px); }
+    to   { opacity: 1; }
 }
 
-summary:hover{
-    cursor: pointer;
-    color: red;
+b {
+    color: var(--cyan);
+    font-weight: 700;
 }
 
-#haqimda {
-    display: inline-block;
-    justify-content: left;
-    color: red;
-    margin-left: 110px;
+/* ---------- "batafsil" details ---------- */
+#haqimda{
+    max-width: 620px;
     animation: opac 1.9s linear 3.6s forwards;
     opacity: 0;
 }
 
 @keyframes opac {
-    0% {
-        opacity: 0;
-    }
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
 
-    100% {
-        opacity: 1;
-        color: white;
-    }
+summary{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--text);
+    list-style: none;
+    padding: 4px 0;
+    transition: color .25s var(--ease);
+}
+summary::-webkit-details-marker{
+    display: none;
+}
+summary::before{
+    content: "+";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    font-size: 0.9em;
+    color: var(--cyan);
+    transition: transform .25s var(--ease), border-color .25s var(--ease);
+}
+details[open] summary::before{
+    content: "–";
+    transform: rotate(180deg);
+    border-color: var(--border-glow);
+}
+summary:hover{
+    cursor: pointer;
+    color: var(--cyan);
+}
+details p{
+    margin-top: 14px;
+    padding-left: 28px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
 }
 
 .GICLogos {
     width: auto;
     height: 9px;
+    vertical-align: middle;
 }
-
 .GICLogo {
     width: auto;
     height: 13px;
+    vertical-align: middle;
 }
 
+/* ---------- social links ---------- */
 #social {
     display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+#social a {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    text-align: center;
-    gap: 20px;
-    margin-top: 40px;
-}
-#social #a1 {
-    text-align: center;
+    width: 44px;
+    height: 44px;
     text-decoration: none;
-    font-size: 19px;
-    border: 2px solid white;
+    font-size: 20px;
+    border: 1px solid var(--border);
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
     color: white;
-    animation: socialanim 3.7s linear 0.9s infinite;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(6px);
+    transition: border-color .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
+    animation: socialanim 3.7s linear infinite;
     opacity: 0;
 }
+#social #a1{ animation-delay: 0.9s; }
+#social #a2{ animation-delay: 1s; }
+#social #a3{ animation-delay: 1.1s; }
+#social #a4{ animation-delay: 1.2s; }
 
-#social #a2 {
-    text-decoration: none;
-    font-size: 19px;
-    text-align: center;
-    border: 2px solid white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    color: white;
-    animation: socialanim 3.7s linear 1s infinite;
-    opacity: 0;
-}
-
-#social #a3 {
-    text-decoration: none;
-    font-size: 19px;
-    text-align: center;
-    border: 2px solid white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    color: white;
-    animation: socialanim 3.7s linear 1.1s infinite;
-    opacity: 0;
-}
-
-#social #a4 {
-    text-decoration: none;
-    font-size: 19px;
-    text-align: center;
-    border: 2px solid white;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    color: white;
-    animation: socialanim 3.7s linear 1.2s infinite;
-    opacity: 0;
+#social a:hover{
+    border-color: var(--cyan);
+    box-shadow: var(--shadow-cyan);
+    transform: translateY(-3px);
 }
 
 @keyframes socialanim {
-    0% {
-        opacity: 0;
-        border-color: red;
-        box-shadow: 0 0 6px red, 0 0 6px red;
-    }
+    0%   { opacity: 0; border-color: var(--violet); box-shadow: 0 0 6px rgba(124,92,255,0.5); }
+    50%  { border-color: white; opacity: 1; }
+    100% { opacity: 1; border-color: var(--violet); box-shadow: 0 0 6px rgba(124,92,255,0.5); }
+}
 
-    50% {
-        border-color: white;
-        opacity: 1;
-    }
+/* ---------- footer ---------- */
+footer{
+    position: relative;
+    z-index: 1;
+    padding: 24px clamp(20px, 8vw, 121px) 0;
+    color: var(--muted);
+    font-size: 0.82em;
+}
 
-    100% {
-        opacity: 1;
-        border-color: red;
-        box-shadow: 0 0 6px red, 0 0 6px red;
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+    *{
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
     }
 }
 
+/* ---------- touch devices: no custom cursor ---------- */
+@media (hover: none), (pointer: coarse){
+    body.cursor-ready, body.cursor-ready a, body.cursor-ready summary{
+        cursor: auto;
+    }
+    .cursor-dot, .cursor-ring{
+        display: none;
+    }
+}
+
+/* ---------- responsive ---------- */
 @media(max-width: 768px) and (orientation: portrait) {
+    /* UNTOUCHED: original background image placement for portrait */
     .img {
         position: fixed;
         top: 1%;
@@ -234,45 +340,12 @@ summary:hover{
         height: auto;
         z-index: -1;
     }
+}
 
-    #developer h1 {
-        display: inline-block;
-        color: white;
-        margin-top: 30px;
-        margin-left: 40px;
-        animation: h1anim 1.2s ease-in 0.1s forwards;
-    }
-
-    #salom {
-        margin-top: 120px;
-    }
-
-    #salom h2 {
-        display: inline-block;
-        justify-content: left;
-        color: white;
-        margin-left: 35px;
-        animation: asos 1s linear 1.2s forwards;
-        opacity: 0;
+@media(max-width: 640px){
+    #social a{
+        width: 42px;
+        height: 42px;
         font-size: 18px;
     }
-
-    #salom p {
-        display: inline-block;
-        justify-content: left;
-        color: white;
-        margin-left: 35px;
-        animation: asos 1s linear 2s forwards;
-        opacity: 0;
-    }
-
-    #haqimda {
-        display: inline-block;
-        justify-content: left;
-        color: red;
-        margin-left: 35px;
-        animation: opac 1.9s linear 3.6s forwards;
-        opacity: 0;
-    }
 }
-    
