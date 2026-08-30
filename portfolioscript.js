@@ -33,10 +33,7 @@
     function initScene(withParticles){
         const frag = document.createDocumentFragment();
 
-        const glow = document.createElement("div");
-        glow.className = "scene-glow";
-        frag.appendChild(glow);
-
+        
         const grain = document.createElement("div");
         grain.className = "grain";
         frag.appendChild(grain);
