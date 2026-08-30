@@ -33,7 +33,9 @@
     function initScene(withParticles){
         const frag = document.createDocumentFragment();
 
-       
+        const glow = document.createElement("div");
+        glow.className = "scene-glow";
+        frag.appendChild(glow);
 
         const grain = document.createElement("div");
         grain.className = "grain";
@@ -97,14 +99,29 @@
         });
     }
 
-    /* ---------------- custom cursor ---------------- */
+    /* ---------------- custom cursor + spotlight + comet trail ---------------- */
     function initCursor(){
         document.body.classList.add("cursor-ready");
+
         const dot = document.createElement("div");
         dot.className = "cursor-dot";
         const ring = document.createElement("div");
         ring.className = "cursor-ring";
-        document.body.append(dot, ring);
+        const spotlight = document.createElement("div");
+        spotlight.className = "spotlight";
+        document.body.append(spotlight, dot, ring);
+
+        const palette = ["var(--cyan)", "var(--violet)", "var(--magenta)", "var(--gold)"];
+        const trailCount = 6;
+        const trail = Array.from({ length: trailCount }, (_, i) => {
+            const t = document.createElement("div");
+            t.className = "trail-dot";
+            t.style.background = palette[i % palette.length];
+            t.style.opacity = String(0.5 - i * 0.07);
+            t.style.width = t.style.height = `${4 - i * 0.4}px`;
+            document.body.appendChild(t);
+            return { el: t, x: 0, y: 0 };
+        });
 
         let mx = window.innerWidth / 2, my = window.innerHeight / 2;
         let dx = mx, dy = my;
@@ -122,6 +139,19 @@
             ry += (my - ry) * 0.16;
             dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%,-50%)`;
             ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+
+            document.documentElement.style.setProperty("--mx", `${mx}px`);
+            document.documentElement.style.setProperty("--my", `${my}px`);
+
+            let leadX = dx, leadY = dy;
+            trail.forEach((t) => {
+                t.x += (leadX - t.x) * 0.45;
+                t.y += (leadY - t.y) * 0.45;
+                t.el.style.transform = `translate(${t.x}px, ${t.y}px)`;
+                leadX = t.x;
+                leadY = t.y;
+            });
+
             requestAnimationFrame(loop);
         }
         requestAnimationFrame(loop);
@@ -132,6 +162,17 @@
         });
         document.addEventListener("mouseout", (e) => {
             if (e.target.closest(hoverables)) ring.classList.remove("is-active");
+        });
+
+        const rippleColors = ["var(--cyan)", "var(--violet)", "var(--magenta)", "var(--gold)"];
+        document.addEventListener("click", (e) => {
+            const r = document.createElement("div");
+            r.className = "ripple";
+            r.style.left = `${e.clientX}px`;
+            r.style.top = `${e.clientY}px`;
+            r.style.setProperty("--rc", rippleColors[Math.floor(Math.random() * rippleColors.length)]);
+            document.body.appendChild(r);
+            r.addEventListener("animationend", () => r.remove());
         });
     }
 
