@@ -1,7 +1,7 @@
 /* =========================================================
    DONYLOGIC — Studio stylesheet
    Palette: void black / deep navy + electric cyan + violet glow
-   Type: Saira (display+body) / Lobster Two (accent) / Space Mono (labels)
+   Type: Saira (display+body) / Space Mono (labels)
    ========================================================= */
 
 :root{
@@ -167,7 +167,6 @@ header{
     transition: width .3s var(--ease);
 }
 span{
-    font-family: "Lobster Two", sans-serif;
     display: inline-block;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     -webkit-background-clip: text;
@@ -243,6 +242,7 @@ main{
     letter-spacing: -1px;
 }
 .hero h1 em{
+    font-style: normal;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     -webkit-background-clip: text;
     background-clip: text;
@@ -355,8 +355,8 @@ main{
 .corner-br{ bottom: 10px; right: 10px; border-left: none; border-top: none; border-bottom-right-radius: 5px; }
 
 .brand-legal{
-    font-family: "Lobster Two", sans-serif;
     font-size: 1.15rem;
+    font-weight: 700;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     -webkit-background-clip: text;
     background-clip: text;
