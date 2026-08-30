@@ -189,7 +189,7 @@
         const secondsEl = document.getElementById("ageSeconds");
         if (!daysEl) return;
 
-        const FOUNDING = new Date(2026, 10, 15, 0, 0, 0); // 15-noyabr 2026, 00:00 (local)
+        const FOUNDING = new Date(2025, 10, 15, 0, 0, 0); // 15-noyabr 2025, 00:00 (local)
         let lastSecond = null;
 
         function pad(n){ return String(n).padStart(2, "0"); }
