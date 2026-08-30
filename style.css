@@ -243,8 +243,6 @@ main{
     letter-spacing: -1px;
 }
 .hero h1 em{
-    font-style: normal;
-    font-family: "Lobster Two", sans-serif;
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     -webkit-background-clip: text;
     background-clip: text;
