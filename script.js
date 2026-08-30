@@ -174,10 +174,62 @@
         });
     }
 
+    /* ---------------- founding-date stopwatch ----------------
+       Counts up from FOUNDING as "Donylogic™ Studios yoshi".
+       If FOUNDING is still in the future, counts down instead and
+       switches automatically the moment it passes — no manual edits needed. */
+    function initAgeCounter(){
+        const caption   = document.getElementById("ageCaption");
+        const daysEl    = document.getElementById("ageDays");
+        const hoursEl   = document.getElementById("ageHours");
+        const minutesEl = document.getElementById("ageMinutes");
+        const secondsEl = document.getElementById("ageSeconds");
+        if (!daysEl) return;
+
+        const FOUNDING = new Date(2026, 10, 15, 0, 0, 0); // 15-noyabr 2026, 00:00 (local)
+        let lastSecond = null;
+
+        function pad(n){ return String(n).padStart(2, "0"); }
+
+        function tick(){
+            const now = new Date();
+            const diffMs = now - FOUNDING;
+            const isFuture = diffMs < 0;
+            const abs = Math.abs(diffMs);
+
+            const totalSeconds = Math.floor(abs / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            caption.textContent = isFuture
+                ? "tashkil topishiga qoldi"
+                : "Donylogic™ Studios yoshi";
+
+            daysEl.textContent = days;
+            hoursEl.textContent = pad(hours);
+            minutesEl.textContent = pad(minutes);
+            secondsEl.textContent = pad(seconds);
+
+            if (seconds !== lastSecond){
+                lastSecond = seconds;
+                secondsEl.classList.remove("pulse");
+                // force reflow so the animation can restart every second
+                void secondsEl.offsetWidth;
+                secondsEl.classList.add("pulse");
+            }
+        }
+
+        tick();
+        setInterval(tick, 1000);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
         initStarfield();
         initReveal();
         initScrollCue();
+        initAgeCounter();
         if (canFancy){
             initCursor();
             initMagnetic();
