@@ -3,7 +3,7 @@
    ========================================================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-    getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult,
+    getAuth, GoogleAuthProvider, signInWithPopup,
     signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
@@ -45,26 +45,26 @@ const donationsTotalEl  = document.getElementById("donationsTotal");
 let currentUser = null;
 let allComments = [];
 
-/* ---------------- auth: redirect flow (no popup window to manage) ---------------- */
-googleLoginBtn?.addEventListener("click", () => {
-    signInWithRedirect(auth, provider).catch((err) => {
+/* ---------------- auth: popup flow ---------------- */
+let justLoggedIn = false;
+
+googleLoginBtn?.addEventListener("click", async () => {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        if (result?.user){
+            justLoggedIn = true;
+        }
+    } catch (err){
         console.error("[fikrlar] login xatosi:", err);
-        alert("Kirishda xatolik yuz berdi. Birozdan so'ng qayta urinib ko'ring.");
-    });
+        if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request"){
+            alert("Kirishda xatolik yuz berdi. Konsolni (F12) tekshiring yoki qayta urinib ko'ring.");
+        }
+    }
 });
 
 logoutBtn?.addEventListener("click", async () => {
     try { await signOut(auth); }
     catch (err){ console.error("[fikrlar] chiqish xatosi:", err); }
-});
-
-let justLoggedIn = false;
-getRedirectResult(auth).then((result) => {
-    if (result && result.user){
-        justLoggedIn = true;
-    }
-}).catch((err) => {
-    console.error("[fikrlar] redirect natijasi xato:", err);
 });
 
 onAuthStateChanged(auth, (user) => {
