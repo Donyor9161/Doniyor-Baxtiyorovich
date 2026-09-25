@@ -29,6 +29,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+console.info("[donylogic] comments.js (popup login versiyasi) yuklandi ✅");
+
 /* ---------------- DOM refs ---------------- */
 const googleLoginBtn = document.getElementById("googleLoginBtn");
 const userProfile    = document.getElementById("userProfile");
@@ -49,13 +51,15 @@ let allComments = [];
 let justLoggedIn = false;
 
 googleLoginBtn?.addEventListener("click", async () => {
+    console.info("[donylogic] Google login bosildi, popup ochilmoqda...");
     try {
         const result = await signInWithPopup(auth, provider);
         if (result?.user){
+            console.info("[donylogic] Login muvaffaqiyatli:", result.user.displayName);
             justLoggedIn = true;
         }
     } catch (err){
-        console.error("[fikrlar] login xatosi:", err);
+        console.error("[fikrlar] login xatosi:", err.code, err.message);
         if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request"){
             alert("Kirishda xatolik yuz berdi. Konsolni (F12) tekshiring yoki qayta urinib ko'ring.");
         }
