@@ -228,24 +228,20 @@
         setInterval(tick, 1000);
     }
 
-    /* ---------------- studio-style splash intro (once per session) ---------------- */
+    /* ---------------- studio-style splash intro ---------------- */
     function initSplash(){
         const splash = document.getElementById("splash");
         if (!splash) return;
 
-        if (sessionStorage.getItem("donylogic_intro_seen")){
+        if (reduceMotion){
             splash.remove();
             return;
         }
-        sessionStorage.setItem("donylogic_intro_seen", "1");
 
         splash.addEventListener("click", () => splash.remove());
         splash.addEventListener("animationend", (e) => {
             if (e.animationName === "splashOut") splash.remove();
         });
-
-        // reduced-motion: skip the show, just remove it immediately
-        if (reduceMotion) splash.remove();
     }
 
     function safe(fn, label){
