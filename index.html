@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=5">
     <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
     <header>
         <div id="navbar">
             <div id="logo">
-                <img src="DONY LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
+                <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
             </div>
             <div id="mininavbar">
                 <a href="#"
@@ -49,7 +49,7 @@
         <!-- HERO -->
         <section class="hero reveal">
             <span class="eyebrow">Yakka dasturchi</span>
-            <h1>Bu yerda <em>Donylogic™</em><br>mavjud.</h1>
+            <h1>Bu yerda <em>Donylogic</em><br>mavjud.</h1>
             <p class="lead">
                 Men — yolg'iz o'zim ishlaydigan dasturchiman. Bu sahifa shunchaki
                 Donylogic borligini va nima bilan shug'ullanishimni bildirish uchun —
@@ -79,11 +79,43 @@
                 <div class="age-pill"><span id="ageSeconds" class="age-seconds">00</span><small>soniya</small></div>
             </div>
         </aside>
+
+        <!-- FIKRLAR -->
+        <section id="fikrlar" class="reveal">
+            <div class="section-head">
+                <span class="eyebrow">Fikr-mulohaza</span>
+                <h2>Fikringizni qoldiring</h2>
+            </div>
+
+            <div class="comments-shell">
+                <div id="authBox" class="auth-box">
+                    <button id="googleLoginBtn" class="btn btn-ghost">
+                        <i class="ri-google-fill"></i> Google bilan kirish
+                    </button>
+                    <div id="userProfile" class="user-profile" hidden>
+                        <img id="userAvatar" class="user-avatar" alt="">
+                        <span id="userName" class="user-name"></span>
+                        <button id="logoutBtn" class="logout-btn" title="Chiqish"><i class="ri-logout-box-r-line"></i></button>
+                    </div>
+                </div>
+
+                <form id="commentForm" class="comment-form" hidden>
+                    <textarea id="commentText" maxlength="500" placeholder="Fikringizni shu yerga yozing..." rows="3" required></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> Yuborish</button>
+                </form>
+
+                <p id="commentsHint" class="comments-hint">Fikr qoldirish uchun avval Google bilan kiring.</p>
+
+                <div id="commentsList" class="comments-list">
+                    <p class="comments-loading">Fikrlar yuklanmoqda...</p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
         <div id="huquqlar">
-            <p>© 2025-26 Donylogic™ Studios. Barcha huquqlar himoyalangan.</p>
+            <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
         </div>
         <div id="quizlink">
             <p>Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan.</p>
@@ -92,5 +124,6 @@
     </footer>
 
     <script src="script.js?v=4"></script>
+    <script type="module" src="comments.js?v=1"></script>
 </body>
 </html>
