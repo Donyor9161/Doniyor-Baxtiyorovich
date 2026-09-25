@@ -30,6 +30,10 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
+    <div id="splash" class="splash">
+        <img src="DONYLOGIC LOGO.svg" alt="Donylogic" class="splash-logo">
+    </div>
+
     <header>
         <div id="navbar">
             <div id="logo">
@@ -109,6 +113,41 @@
                 <div id="commentsList" class="comments-list">
                     <p class="comments-loading">Fikrlar yuklanmoqda...</p>
                 </div>
+            </div>
+        </section>
+
+        <!-- JONLI HISOBLAGICH -->
+        <section class="live-stat reveal">
+            <span class="eyebrow">Jonli statistika</span>
+            <div class="live-stat-row">
+                <span class="live-stat-number" id="registeredCount">0</span>
+                <span class="live-stat-label">kishi Google orqali ro'yxatdan o'tdi</span>
+            </div>
+        </section>
+
+        <!-- DONAT -->
+        <section id="donat" class="reveal">
+            <div class="section-head">
+                <span class="eyebrow">Qo'llab-quvvatlash</span>
+                <h2>Loyihani qo'llab-quvvatlang</h2>
+            </div>
+            <div class="donate-shell">
+                <p class="donate-lead">Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!</p>
+
+                <div class="donate-cards">
+                    <div class="donate-card">
+                        <span class="donate-bank">HUMO</span>
+                        <span class="donate-number">9860 0801 6545 3699</span>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="9860080165453699"><i class="ri-file-copy-line"></i> Nusxalash</button>
+                    </div>
+                    <div class="donate-card">
+                        <span class="donate-bank">VISA</span>
+                        <span class="donate-number">4916 9912 0004 9554</span>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="4916991200049554"><i class="ri-file-copy-line"></i> Nusxalash</button>
+                    </div>
+                </div>
+
+                <p class="donate-total">Jami donat qilingan: <strong id="donationsTotal">—</strong></p>
             </div>
         </section>
     </main>
