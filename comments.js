@@ -3,7 +3,7 @@
    ========================================================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-    getAuth, GoogleAuthProvider, signInWithPopup,
+    getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously,
     signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
@@ -42,6 +42,7 @@ const commentText    = document.getElementById("commentText");
 const commentsHint   = document.getElementById("commentsHint");
 const commentsList   = document.getElementById("commentsList");
 const registeredCountEl = document.getElementById("registeredCount");
+const visitsCountEl     = document.getElementById("visitsCount");
 const donationsTotalEl  = document.getElementById("donationsTotal");
 
 let currentUser = null;
@@ -72,8 +73,22 @@ logoutBtn?.addEventListener("click", async () => {
 });
 
 onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    if (user){
+    if (!user){
+        // hech kim login qilmagan — tashrifni hisoblash uchun sezilmas anonim kirish
+        signInAnonymously(auth).catch((err) => {
+            console.error("[hisoblagich] anonim kirishda xato:", err);
+        });
+        return; // onAuthStateChanged anonim user bilan qayta chaqiriladi
+    }
+
+    if (user.isAnonymous){
+        currentUser = null;
+        googleLoginBtn.hidden = false;
+        userProfile.hidden = true;
+        commentForm.hidden = true;
+        commentsHint.hidden = false;
+    } else {
+        currentUser = user;
         googleLoginBtn.hidden = true;
         userProfile.hidden = false;
         userAvatar.src = user.photoURL || "";
@@ -89,14 +104,31 @@ onAuthStateChanged(auth, (user) => {
         });
 
         maybePruneOldComments();
-    } else {
-        googleLoginBtn.hidden = false;
-        userProfile.hidden = true;
-        commentForm.hidden = true;
-        commentsHint.hidden = false;
     }
+
+    countVisitOnce();
     renderComments();
 });
+
+/* ---------------- visits (everyone, logged in or not) ---------------- */
+function countVisitOnce(){
+    if (sessionStorage.getItem("donylogic_visit_counted")) return;
+    sessionStorage.setItem("donylogic_visit_counted", "1");
+    incrementCounter("visits");
+}
+
+async function incrementCounter(statId){
+    const ref = doc(db, "stats", statId);
+    try {
+        await runTransaction(db, async (tx) => {
+            const snap = await tx.get(ref);
+            const current = snap.exists() ? (snap.data().count || 0) : 0;
+            tx.set(ref, { count: current + 1 });
+        });
+    } catch (err){
+        console.error(`[hisoblagich] ${statId} yangilashda xato:`, err);
+    }
+}
 
 /* ---------------- unique-user registration + live counter ---------------- */
 async function registerUniqueUser(uid){
@@ -145,6 +177,13 @@ try {
         animateCount(registeredCountEl, count);
     });
 } catch (err){ console.error("[hisoblagich] o'qishda xatolik:", err); }
+
+try {
+    onSnapshot(doc(db, "stats", "visits"), (snap) => {
+        const count = snap.exists() ? (snap.data().count || 0) : 0;
+        animateCount(visitsCountEl, count);
+    });
+} catch (err){ console.error("[hisoblagich] tashriflarni o'qishda xatolik:", err); }
 
 try {
     onSnapshot(doc(db, "stats", "donations"), (snap) => {
