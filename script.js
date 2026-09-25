@@ -228,12 +228,33 @@
         setInterval(tick, 1000);
     }
 
+    /* ---------------- studio-style splash intro (once per session) ---------------- */
+    function initSplash(){
+        const splash = document.getElementById("splash");
+        if (!splash) return;
+
+        if (sessionStorage.getItem("donylogic_intro_seen")){
+            splash.remove();
+            return;
+        }
+        sessionStorage.setItem("donylogic_intro_seen", "1");
+
+        splash.addEventListener("click", () => splash.remove());
+        splash.addEventListener("animationend", (e) => {
+            if (e.animationName === "splashOut") splash.remove();
+        });
+
+        // reduced-motion: skip the show, just remove it immediately
+        if (reduceMotion) splash.remove();
+    }
+
     function safe(fn, label){
         try { fn(); }
         catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+        safe(initSplash, "splash");
         safe(initStarfield, "starfield");
         safe(initReveal, "scroll-reveal");
         safe(initScrollCue, "scroll-cue");
