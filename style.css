@@ -921,6 +921,15 @@ footer p{
     color: var(--muted);
     font-size: 0.92rem;
 }
+.live-stat-row-secondary{
+    margin-top: 26px;
+}
+.live-stat-number-sm{
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
 
 /* ---------- donate ---------- */
 .donate-shell{
