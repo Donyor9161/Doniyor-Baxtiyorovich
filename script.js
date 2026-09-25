@@ -85,20 +85,18 @@
         document.body.append(dot, ring);
 
         let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-        let dx = mx, dy = my;
         let rx = mx, ry = my;
 
         window.addEventListener("mousemove", (e) => {
             mx = e.clientX;
             my = e.clientY;
+            // dot tracks the real cursor 1:1 — zero lag
+            dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
         });
 
         function loop(){
-            dx += (mx - dx) * 0.55;
-            dy += (my - dy) * 0.55;
-            rx += (mx - rx) * 0.16;
-            ry += (my - ry) * 0.16;
-            dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%,-50%)`;
+            rx += (mx - rx) * 0.55;
+            ry += (my - ry) * 0.55;
             ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
             requestAnimationFrame(loop);
         }
@@ -232,11 +230,6 @@
     function initSplash(){
         const splash = document.getElementById("splash");
         if (!splash) return;
-
-        if (reduceMotion){
-            splash.remove();
-            return;
-        }
 
         splash.addEventListener("click", () => splash.remove());
         splash.addEventListener("animationend", (e) => {
