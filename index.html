@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uz" data-theme="dark">
 <head>
-    <!-- Google analytics -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLVESJJJZM"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page_title">DONYLOGIC — Kod orqali fikrlash</title>
+    <title>DONYLOGIC — Kod orqali fikrlash</title>
     <meta name="description" content="Donylogic — web dasturlash, interaktiv platformalar va aniq, tezkor raqamli yechimlar studiyasi.">
     <!-- Faviconlar -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -20,13 +20,13 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=9">
-    <!-- googlefonts -->
+    <link rel="stylesheet" href="style.css?v=10">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- remixicon -->
+    <!-- Remixicon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
@@ -36,16 +36,18 @@
                 <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
             </div>
             <div id="mininavbar">
-                <a href="#" onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..')" data-i18n="nav_about">Biz haqimizda</a>
-                <a href="salom.html" data-i18n="nav_something">Bir narsalar</a>
-                <a href="portfolio.html"><span data-i18n="nav_dev">Dasturchi</span></a>
+                <a href="#" onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..')">Biz haqimizda</a>
+                <a href="salom.html">Bir narsalar</a>
+                <a href="portfolio.html"><span>Dasturchi</span></a>
             </div>
-            <!-- TASHQI BOSHQARUV TUGMALARI (Til va Rejim) -->
-            <div id="navControls" style="display: flex; gap: 10px; align-items: center; margin-left: 15px;">
-                <button id="langToggleBtn" class="btn btn-ghost" title="Tilni almashtirish" style="padding: 6px 10px; font-size: 14px;">
-                    <i class="ri-global-line"></i> <span id="currentLangText">UZ</span>
-                </button>
-                <button id="themeToggleBtn" class="btn btn-ghost" title="Rejimni almashtirish" style="padding: 6px 10px; font-size: 16px;">
+            
+            <!-- BOSHQARUV TUGMALARI (Tarjima va Tun/Kun rejimi) -->
+            <div id="navControls" style="display: flex; gap: 8px; align-items: center; margin-left: 15px;">
+                <!-- Dinamik Google Tarjimon (UZ, RU, EN) -->
+                <div id="google_translate_element" style="display: inline-block;"></div>
+
+                <!-- Tun va Kun rejimi tugmasi -->
+                <button id="themeToggleBtn" class="btn btn-ghost" title="Rejimni almashtirish" style="padding: 6px 12px; font-size: 16px; cursor: pointer;">
                     <i class="ri-moon-line" id="themeIcon"></i>
                 </button>
             </div>
@@ -55,22 +57,22 @@
     <main>
         <!-- HERO -->
         <section class="hero reveal">
-            <span class="eyebrow" data-i18n="hero_eyebrow">Yakka dasturchi</span>
-            <h1 data-i18n-html="hero_title">Bu yerda <em>Donylogic</em><br>mavjud.</h1>
-            <p class="lead" data-i18n="hero_lead">
+            <span class="eyebrow">Yakka dasturchi</span>
+            <h1>Bu yerda <em>Donylogic</em><br>mavjud.</h1>
+            <p class="lead">
                 Men — yolg'iz o'zim ishlaydigan dasturchiman. Bu sahifa shunchaki
                 Donylogic borligini va nima bilan shug'ullanishimni bildirish uchun —
                 ortiqcha va'dalarsiz, faqat kod va aniq izlar.
             </p>
             <div class="hero-actions">
-                <a href="portfolio.html" class="btn btn-primary"><i class="ri-code-s-slash-line"></i> <span data-i18n="hero_btn">Ishlarimni ko'rish</span></a>
+                <a href="portfolio.html" class="btn btn-primary"><i class="ri-code-s-slash-line"></i> Ishlarimni ko'rish</a>
             </div>
         </section>
 
         <!-- STUDIYA IJTIMOIY TARMOQLARI -->
         <section class="socials-section reveal" style="margin: 40px 0; text-align: center;">
-            <span class="eyebrow" data-i18n="socials_eyebrow">Biz bilan bog'laning</span>
-            <h2 style="margin-bottom: 20px;" data-i18n="socials_title">Studiya ijtimoiy tarmoqlari</h2>
+            <span class="eyebrow">Biz bilan bog'laning</span>
+            <h2 style="margin-bottom: 20px;">Studiya ijtimoiy tarmoqlari</h2>
             <div class="social-icons-grid" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <a href="https://t.me/donylogic_studios" target="_blank" class="btn btn-ghost" style="display: flex; align-items: center; gap: 8px;">
                     <i class="ri-telegram-fill" style="color: #0088cc; font-size: 20px;"></i> Telegram
@@ -90,34 +92,34 @@
             <span class="corner corner-tr"></span>
             <span class="corner corner-bl"></span>
             <span class="corner corner-br"></span>
-            <span class="eyebrow" data-i18n="badge_eyebrow">Rasmiy nomi</span>
+            <span class="eyebrow">Rasmiy nomi</span>
             <strong class="brand-legal">Donylogic™ Studios</strong>
-            <p class="age-caption" id="ageCaption" data-i18n="badge_caption">yoshi</p>
+            <p class="age-caption" id="ageCaption">yoshi</p>
             <div class="age-timer">
-                <div class="age-pill"><span id="ageDays">0</span><small data-i18n="time_days">kun</small></div>
+                <div class="age-pill"><span id="ageDays">0</span><small>kun</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageHours">00</span><small data-i18n="time_hours">soat</small></div>
+                <div class="age-pill"><span id="ageHours">00</span><small>soat</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageMinutes">00</span><small data-i18n="time_minutes">daqiqa</small></div>
+                <div class="age-pill"><span id="ageMinutes">00</span><small>daqiqa</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageSeconds" class="age-seconds">00</span><small data-i18n="time_seconds">soniya</small></div>
+                <div class="age-pill"><span id="ageSeconds" class="age-seconds">00</span><small>soniya</small></div>
             </div>
         </aside>
 
         <!-- FIKRLAR -->
         <section id="fikrlar" class="reveal">
             <div class="section-head">
-                <span class="eyebrow" data-i18n="comments_eyebrow">Fikr-mulohaza</span>
-                <h2 data-i18n="comments_title">Fikringizni qoldiring</h2>
+                <span class="eyebrow">Fikr-mulohaza</span>
+                <h2>Fikringizni qoldiring</h2>
             </div>
 
             <div class="comments-shell">
                 <div id="authBox" class="auth-box">
                     <button id="googleLoginBtn" class="btn btn-ghost">
-                        <i class="ri-google-fill"></i> <span data-i18n="auth_google">Google bilan kirish</span>
+                        <i class="ri-google-fill"></i> Google bilan kirish
                     </button>
                     <button id="githubLoginBtn" class="btn btn-ghost">
-                        <i class="ri-github-fill"></i> <span data-i18n="auth_github">GitHub bilan kirish</span>
+                        <i class="ri-github-fill"></i> GitHub bilan kirish
                     </button>
                     <div id="userProfile" class="user-profile" hidden>
                         <img id="userAvatar" class="user-avatar" alt="">
@@ -127,70 +129,82 @@
                 </div>
 
                 <form id="commentForm" class="comment-form" hidden>
-                    <textarea id="commentText" maxlength="500" data-i18n-placeholder="comment_placeholder" placeholder="Fikringizni shu yerga yozing..." rows="3" required></textarea>
-                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> <span data-i18n="comment_send">Yuborish</span></button>
+                    <textarea id="commentText" maxlength="500" placeholder="Fikringizni shu yerga yozing..." rows="3" required></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> Yuborish</button>
                 </form>
 
-                <p id="commentsHint" class="comments-hint" data-i18n="comments_hint">Fikr qoldirish uchun avval Google bilan kiring.</p>
+                <p id="commentsHint" class="comments-hint">Fikr qoldirish uchun avval Google bilan kiring.</p>
 
                 <div id="commentsList" class="comments-list">
-                    <p class="comments-loading" data-i18n="comments_loading">Fikrlar yuklanmoqda...</p>
-                    <!-- Eslatma: comments.js ichida har bir fikrga ko'rsatish uchun views (ko'rishlar soni) elementi qo'shib qo'yilishi kerak. Misol: <span class="comment-views"><i class="ri-eye-line"></i> <span class="view-count">12</span></span> -->
+                    <p class="comments-loading">Fikrlar yuklanmoqda...</p>
                 </div>
             </div>
         </section>
 
         <!-- JONLI HISOBLAGICH -->
         <section class="live-stat reveal">
-            <span class="eyebrow" data-i18n="stat_eyebrow">Jonli statistika</span>
+            <span class="eyebrow">Jonli statistika</span>
             <div class="live-stat-row">
                 <span class="live-stat-number" id="registeredCount">0</span>
-                <span class="live-stat-label" data-i18n="stat_registered">kishi Google orqali ro'yxatdan o'tdi</span>
+                <span class="live-stat-label">kishi Google orqali ro'yxatdan o'tdi</span>
             </div>
             <div class="live-stat-row live-stat-row-secondary">
                 <span class="live-stat-number live-stat-number-sm" id="visitsCount">0</span>
-                <span class="live-stat-label" data-i18n="stat_visits">marta saytga tashrif buyurildi</span>
+                <span class="live-stat-label">marta saytga tashrif buyurildi</span>
             </div>
         </section>
 
         <!-- DONAT -->
         <section id="donat" class="reveal">
             <div class="section-head">
-                <span class="eyebrow" data-i18n="donate_eyebrow">Qo'llab-quvvatlash</span>
-                <h2 data-i18n="donate_title">Loyihani qo'llab-quvvatlang</h2>
+                <span class="eyebrow">Qo'llab-quvvatlash</span>
+                <h2>Loyihani qo'llab-quvvatlang</h2>
             </div>
             <div class="donate-shell">
-                <p class="donate-lead" data-i18n="donate_lead">Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!</p>
+                <p class="donate-lead">Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!</p>
 
                 <div class="donate-cards">
                     <div class="donate-card">
                         <span class="donate-bank">HUMO</span>
                         <span class="donate-number">9860 0801 6545 3699</span>
-                        <button class="btn btn-ghost donate-copy" data-copy-card="9860080165453699"><i class="ri-file-copy-line"></i> <span data-i18n="donate_copy">Nusxalash</span></button>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="9860080165453699"><i class="ri-file-copy-line"></i> Nusxalash</button>
                     </div>
                     <div class="donate-card">
                         <span class="donate-bank">VISA</span>
                         <span class="donate-number">4916 9912 0004 9554</span>
-                        <button class="btn btn-ghost donate-copy" data-copy-card="4916991200049554"><i class="ri-file-copy-line"></i> <span data-i18n="donate_copy">Nusxalash</span></button>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="4916991200049554"><i class="ri-file-copy-line"></i> Nusxalash</button>
                     </div>
                 </div>
 
-                <p class="donate-total"><span data-i18n="donate_total_text">Jami donat qilingan:</span> <strong id="donationsTotal">—</strong></p>
+                <p class="donate-total">Jami donat qilingan: <strong id="donationsTotal">—</strong></p>
             </div>
         </section>
     </main>
 
     <footer>
         <div id="huquqlar">
-            <p data-i18n="footer_rights">© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
+            <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
         </div>
         <div id="quizlink">
-            <p data-i18n="footer_disclaimer">Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan.</p>
+            <p>Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan.</p>
             <a href="https://tezkorquiz.uz/" target="_blank">tezkorquiz.uz</a>
         </div>
     </footer>
 
-    <script src="script.js?v=8"></script>
-    <script type="module" src="comments.js?v=6"></script>
+    <!-- GOOGLE TRANSLATE AVTO-DINAMIK SKRIPTI -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'uz',
+                includedLanguages: 'uz,ru,en',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <script src="script.js?v=10"></script>
+    <script type="module" src="comments.js?v=8"></script>
 </body>
 </html>
