@@ -1,245 +1,146 @@
-/* =========================================================
-   DONYLOGIC — Studio interactions
-   - custom cursor (dot + trailing ring)
-   - parallax starfield canvas
-   - magnetic buttons / nav links
-   - 3D tilt on cards
-   - scroll-reveal via IntersectionObserver
-   All effects respect prefers-reduced-motion and skip on touch devices.
-   ========================================================= */
-(() => {
-    "use strict";
+// --- TUN / KUN REJIMI (DARK / LIGHT MODE) ---
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
-    const canFancy = !reduceMotion && !isTouch;
+// Saqlangan rejimni tekshirish
+const savedTheme = localStorage.getItem('donylogic_theme') || 'dark';
+htmlEl.setAttribute('data-theme', savedTheme);
+updateThemeIcon(savedTheme);
 
-    /* ---------------- starfield ---------------- */
-    function initStarfield(){
-        const canvas = document.createElement("canvas");
-        canvas.id = "starfield";
-        document.body.prepend(canvas);
-        const ctx = canvas.getContext("2d");
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = htmlEl.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        htmlEl.setAttribute('data-theme', newTheme);
+        localStorage.setItem('donylogic_theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+}
 
-        let w, h, stars, dpr = Math.min(window.devicePixelRatio || 1, 2);
-        let pointer = { x: 0, y: 0 };
-        let targetPointer = { x: 0, y: 0 };
-
-        function resize(){
-            w = window.innerWidth;
-            h = window.innerHeight;
-            canvas.width = w * dpr;
-            canvas.height = h * dpr;
-            canvas.style.width = w + "px";
-            canvas.style.height = h + "px";
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-            const density = w < 768 ? 0.00012 : 0.00022;
-            const count = Math.round(w * h * density);
-            stars = Array.from({ length: count }, () => ({
-                x: Math.random() * w,
-                y: Math.random() * h,
-                r: Math.random() * 1.3 + 0.2,
-                baseAlpha: Math.random() * 0.5 + 0.25,
-                twinkleSpeed: Math.random() * 0.015 + 0.004,
-                phase: Math.random() * Math.PI * 2,
-                depth: Math.random() * 0.6 + 0.2 // parallax factor
-            }));
-        }
-
-        function draw(t){
-            ctx.clearRect(0, 0, w, h);
-            pointer.x += (targetPointer.x - pointer.x) * 0.04;
-            pointer.y += (targetPointer.y - pointer.y) * 0.04;
-            const dx = (pointer.x - w / 2) / w;
-            const dy = (pointer.y - h / 2) / h;
-
-            for (const s of stars){
-                const alpha = s.baseAlpha + Math.sin(t * s.twinkleSpeed + s.phase) * 0.25;
-                const px = s.x - dx * 26 * s.depth;
-                const py = s.y - dy * 26 * s.depth;
-                ctx.beginPath();
-                ctx.arc(px, py, s.r, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(210,232,255,${Math.max(0, alpha)})`;
-                ctx.fill();
-            }
-            requestAnimationFrame(draw);
-        }
-
-        resize();
-        window.addEventListener("resize", resize);
-        window.addEventListener("mousemove", (e) => {
-            targetPointer.x = e.clientX;
-            targetPointer.y = e.clientY;
-        });
-        requestAnimationFrame(draw);
+function updateThemeIcon(theme) {
+    if (!themeIcon) return;
+    if (theme === 'light') {
+        themeIcon.className = 'ri-sun-line';
+    } else {
+        themeIcon.className = 'ri-moon-line';
     }
+}
 
-    /* ---------------- custom cursor ---------------- */
-    function initCursor(){
-        document.body.classList.add("cursor-ready");
-        const dot = document.createElement("div");
-        dot.className = "cursor-dot";
-        const ring = document.createElement("div");
-        ring.className = "cursor-ring";
-        document.body.append(dot, ring);
 
-        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-        let rx = mx, ry = my;
-
-        window.addEventListener("mousemove", (e) => {
-            mx = e.clientX;
-            my = e.clientY;
-            // dot tracks the real cursor 1:1 — zero lag
-            dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
-        });
-
-        function loop(){
-            rx += (mx - rx) * 0.55;
-            ry += (my - ry) * 0.55;
-            ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
-            requestAnimationFrame(loop);
-        }
-        requestAnimationFrame(loop);
-
-        const hoverables = "a, button, .btn, [onclick], .card";
-        document.addEventListener("mouseover", (e) => {
-            if (e.target.closest(hoverables)) ring.classList.add("is-active");
-        });
-        document.addEventListener("mouseout", (e) => {
-            if (e.target.closest(hoverables)) ring.classList.remove("is-active");
-        });
+// --- KO'P TILLI QILISH (I18N: UZ / EN) ---
+const translations = {
+    uz: {
+        page_title: "DONYLOGIC — Kod orqali fikrlash",
+        nav_about: "Biz haqimizda",
+        nav_something: "Bir narsalar",
+        nav_dev: "Dasturchi",
+        hero_eyebrow: "Yakka dasturchi",
+        hero_title: "Bu yerda <em>Donylogic</em><br>mavjud.",
+        hero_lead: "Men — yolg'iz o'zim ishlaydigan dasturchiman. Bu sahifa shunchaki Donylogic borligini va nima bilan shug'ullanishimni bildirish uchun — ortiqcha va'dalarsiz, faqat kod va aniq izlar.",
+        hero_btn: "Ishlarimni ko'rish",
+        socials_eyebrow: "Biz bilan bog'laning",
+        socials_title: "Studiya ijtimoiy tarmoqlari",
+        badge_eyebrow: "Rasmiy nomi",
+        badge_caption: "yoshi",
+        time_days: "kun",
+        time_hours: "soat",
+        time_minutes: "daqiqa",
+        time_seconds: "soniya",
+        comments_eyebrow: "Fikr-mulohaza",
+        comments_title: "Fikringizni qoldiring",
+        auth_google: "Google bilan kirish",
+        auth_github: "GitHub bilan kirish",
+        comment_placeholder: "Fikringizni shu yerga yozing...",
+        comment_send: "Yuborish",
+        comments_hint: "Fikr qoldirish uchun avval Google bilan kiring.",
+        comments_loading: "Fikrlar yuklanmoqda...",
+        stat_eyebrow: "Jonli statistika",
+        stat_registered: "kishi Google orqali ro'yxatdan o'tdi",
+        stat_visits: "marta saytga tashrif buyurildi",
+        donate_eyebrow: "Qo'llab-quvvatlash",
+        donate_title: "Loyihani qo'llab-quvvatlang",
+        donate_lead: "Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!",
+        donate_copy: "Nusxalash",
+        donate_total_text: "Jami donat qilingan:",
+        footer_rights: "© 2025-26 Donylogic. Barcha huquqlar himoyalangan.",
+        footer_disclaimer: "Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan."
+    },
+    en: {
+        page_title: "DONYLOGIC — Thinking through Code",
+        nav_about: "About us",
+        nav_something: "Something",
+        nav_dev: "Developer",
+        hero_eyebrow: "Solo Developer",
+        hero_title: "This is where <em>Donylogic</em><br>exists.",
+        hero_lead: "I am a solo developer. This page simply exists to show that Donylogic is here and what I work on — no extra promises, just code and clear tracks.",
+        hero_btn: "View my works",
+        socials_eyebrow: "Get in touch",
+        socials_title: "Studio Social Networks",
+        badge_eyebrow: "Official Name",
+        badge_caption: "age",
+        time_days: "days",
+        time_hours: "hours",
+        time_minutes: "minutes",
+        time_seconds: "seconds",
+        comments_eyebrow: "Feedback",
+        comments_title: "Leave a comment",
+        auth_google: "Sign in with Google",
+        auth_github: "Sign in with GitHub",
+        comment_placeholder: "Write your comment here...",
+        comment_send: "Send",
+        comments_hint: "Please sign in with Google to leave a comment.",
+        comments_loading: "Loading comments...",
+        stat_eyebrow: "Live Statistics",
+        stat_registered: "people registered via Google",
+        stat_visits: "visits to the site",
+        donate_eyebrow: "Support",
+        donate_title: "Support the Project",
+        donate_lead: "If you like the project, you can optionally donate to one of the cards below. Thanks for every bit of help!",
+        donate_copy: "Copy",
+        donate_total_text: "Total donated:",
+        footer_rights: "© 2025-26 Donylogic. All rights reserved.",
+        footer_disclaimer: "Donylogic is not responsible for the content of external sites. Links are posted with the permission of their respective owners."
     }
+};
 
-    /* ---------------- magnetic elements ---------------- */
-    function initMagnetic(){
-        const els = document.querySelectorAll(".btn, #mininavbar a");
-        els.forEach((el) => {
-            el.addEventListener("mousemove", (e) => {
-                const r = el.getBoundingClientRect();
-                const relX = e.clientX - r.left - r.width / 2;
-                const relY = e.clientY - r.top - r.height / 2;
-                el.style.transform = `translate(${relX * 0.18}px, ${relY * 0.3}px)`;
-            });
-            el.addEventListener("mouseleave", () => {
-                el.style.transform = "translate(0,0)";
-            });
-        });
-    }
+const langToggleBtn = document.getElementById('langToggleBtn');
+const currentLangText = document.getElementById('currentLangText');
+let currentLang = localStorage.getItem('donylogic_lang') || 'uz';
 
-    /* ---------------- card tilt ---------------- */
-    function initTilt(){
-        const cards = document.querySelectorAll(".card");
-        cards.forEach((card) => {
-            card.addEventListener("mousemove", (e) => {
-                const r = card.getBoundingClientRect();
-                const px = (e.clientX - r.left) / r.width;
-                const py = (e.clientY - r.top) / r.height;
-                const rotX = (py - 0.5) * -8;
-                const rotY = (px - 0.5) * 8;
-                card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(0)`;
-                card.style.setProperty("--mx", `${px * 100}%`);
-                card.style.setProperty("--my", `${py * 100}%`);
-            });
-            card.addEventListener("mouseleave", () => {
-                card.style.transform = "perspective(700px) rotateX(0) rotateY(0)";
-            });
-        });
-    }
+setLanguage(currentLang);
 
-    /* ---------------- scroll reveal ---------------- */
-    function initReveal(){
-        const targets = document.querySelectorAll(".reveal");
-        if (!("IntersectionObserver" in window) || reduceMotion){
-            targets.forEach((t) => t.classList.add("in-view"));
-            return;
-        }
-        const io = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting){
-                    entry.target.classList.add("in-view");
-                    io.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.16, rootMargin: "0px 0px -60px 0px" });
-        targets.forEach((t) => io.observe(t));
-    }
+if (langToggleBtn) {
+    langToggleBtn.addEventListener('click', () => {
+        currentLang = currentLang === 'uz' ? 'en' : 'uz';
+        localStorage.setItem('donylogic_lang', currentLang);
+        setLanguage(currentLang);
+    });
+}
 
-    /* ---------------- smooth anchor scroll for scroll-cue ---------------- */
-    function initScrollCue(){
-        document.querySelectorAll("[data-scroll-to]").forEach((el) => {
-            el.addEventListener("click", () => {
-                const target = document.querySelector(el.getAttribute("data-scroll-to"));
-                if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-            });
-        });
-    }
+function setLanguage(lang) {
+    if (currentLangText) currentLangText.textContent = lang.toUpperCase();
+    document.documentElement.setAttribute('lang', lang);
 
-    /* ---------------- founding-date stopwatch ----------------
-       Counts up from FOUNDING as "Donylogic™ Studios yoshi".
-       If FOUNDING is still in the future, counts down instead and
-       switches automatically the moment it passes — no manual edits needed. */
-    function initAgeCounter(){
-        const caption   = document.getElementById("ageCaption");
-        const daysEl    = document.getElementById("ageDays");
-        const hoursEl   = document.getElementById("ageHours");
-        const minutesEl = document.getElementById("ageMinutes");
-        const secondsEl = document.getElementById("ageSeconds");
-        if (!daysEl) return;
-
-        const FOUNDING = new Date(2025, 10, 15, 0, 0, 0); // 15-noyabr 2025, 00:00 (local)
-        let lastSecond = null;
-
-        function pad(n){ return String(n).padStart(2, "0"); }
-
-        function tick(){
-            const now = new Date();
-            const diffMs = now - FOUNDING;
-            const isFuture = diffMs < 0;
-            const abs = Math.abs(diffMs);
-
-            const totalSeconds = Math.floor(abs / 1000);
-            const days = Math.floor(totalSeconds / 86400);
-            const hours = Math.floor((totalSeconds % 86400) / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-
-            caption.textContent = isFuture
-                ? "tashkil topishiga qoldi"
-                : "Donylogic™ Studios yoshi";
-
-            daysEl.textContent = days;
-            hoursEl.textContent = pad(hours);
-            minutesEl.textContent = pad(minutes);
-            secondsEl.textContent = pad(seconds);
-
-            if (seconds !== lastSecond){
-                lastSecond = seconds;
-                secondsEl.classList.remove("pulse");
-                // force reflow so the animation can restart every second
-                void secondsEl.offsetWidth;
-                secondsEl.classList.add("pulse");
-            }
-        }
-
-        tick();
-        setInterval(tick, 1000);
-    }
-
-    function safe(fn, label){
-        try { fn(); }
-        catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        safe(initStarfield, "starfield");
-        safe(initReveal, "scroll-reveal");
-        safe(initScrollCue, "scroll-cue");
-        safe(initAgeCounter, "age-counter");
-        if (canFancy){
-            safe(initCursor, "cursor");
-            safe(initMagnetic, "magnetic");
-            safe(initTilt, "tilt");
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            el.textContent = translations[lang][key];
         }
     });
-})();
+
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.getAttribute('data-i18n-html');
+        if (translations[lang][key]) {
+            el.innerHTML = translations[lang][key];
+        }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang][key]) {
+            el.placeholder = translations[lang][key];
+        }
+    });
+}
