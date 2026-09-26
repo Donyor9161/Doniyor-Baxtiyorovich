@@ -226,24 +226,12 @@
         setInterval(tick, 1000);
     }
 
-    /* ---------------- studio-style splash intro ---------------- */
-    function initSplash(){
-        const splash = document.getElementById("splash");
-        if (!splash) return;
-
-        splash.addEventListener("click", () => splash.remove());
-        splash.addEventListener("animationend", (e) => {
-            if (e.animationName === "splashOut") splash.remove();
-        });
-    }
-
     function safe(fn, label){
         try { fn(); }
         catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-        safe(initSplash, "splash");
         safe(initStarfield, "starfield");
         safe(initReveal, "scroll-reveal");
         safe(initScrollCue, "scroll-cue");
