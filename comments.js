@@ -23,6 +23,7 @@ const firebaseConfig = {
 
 const PRUNE_AFTER_DAYS = 120;                      // shundan eski izohlar o'chirishga ruxsat etiladi
 const PRUNE_CHECK_EVERY_MS = 24 * 60 * 60 * 1000;  // brauzerda kuniga 1 marta tekshirish
+const ADMIN_EMAIL = "qwdonyor@gmail.com";           // shu email bilan kirgan foydalanuvchi — admin
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -324,6 +325,8 @@ function escapeHTML(str){
 
 function commentRowHTML(c, depth){
     const isOwn = currentUser && c.uid === currentUser.uid;
+    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+    const canDelete = isOwn || isAdmin;
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
     return `
         <div class="comment-item" style="margin-left:${depth * 34}px" data-id="${c.id}">
@@ -336,7 +339,7 @@ function commentRowHTML(c, depth){
                 <p class="comment-text">${escapeHTML(c.text || "")}</p>
                 <div class="comment-actions">
                     ${currentUser ? `<button class="comment-reply-btn" data-id="${c.id}"><i class="ri-reply-line"></i> Javob yozish</button>` : ""}
-                    ${isOwn ? `<button class="comment-delete" data-id="${c.id}"><i class="ri-delete-bin-6-line"></i> O'chirish</button>` : ""}
+                    ${canDelete ? `<button class="comment-delete" data-id="${c.id}"><i class="ri-delete-bin-6-line"></i> ${isOwn ? "O'chirish" : "O'chirish (admin)"}</button>` : ""}
                 </div>
                 <div class="reply-form-slot" data-slot-for="${c.id}"></div>
             </div>
