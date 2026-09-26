@@ -3,7 +3,7 @@
    ========================================================= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-    getAuth, GoogleAuthProvider, signInWithPopup, signInAnonymously,
+    getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, signInAnonymously,
     signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
@@ -28,11 +28,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 console.info("[donylogic] comments.js (popup login versiyasi) yuklandi ✅");
 
 /* ---------------- DOM refs ---------------- */
 const googleLoginBtn = document.getElementById("googleLoginBtn");
+const githubLoginBtn = document.getElementById("githubLoginBtn");
 const userProfile    = document.getElementById("userProfile");
 const userAvatar     = document.getElementById("userAvatar");
 const userName       = document.getElementById("userName");
@@ -51,21 +53,26 @@ let allComments = [];
 /* ---------------- auth: popup flow ---------------- */
 let justLoggedIn = false;
 
-googleLoginBtn?.addEventListener("click", async () => {
-    console.info("[donylogic] Google login bosildi, popup ochilmoqda...");
+googleLoginBtn?.addEventListener("click", () => loginWith(provider, "Google"));
+githubLoginBtn?.addEventListener("click", () => loginWith(githubProvider, "GitHub"));
+
+async function loginWith(authProvider, label){
+    console.info(`[donylogic] ${label} login bosildi, popup ochilmoqda...`);
     try {
-        const result = await signInWithPopup(auth, provider);
+        const result = await signInWithPopup(auth, authProvider);
         if (result?.user){
-            console.info("[donylogic] Login muvaffaqiyatli:", result.user.displayName);
+            console.info(`[donylogic] ${label} login muvaffaqiyatli:`, result.user.displayName);
             justLoggedIn = true;
         }
     } catch (err){
-        console.error("[fikrlar] login xatosi:", err.code, err.message);
-        if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request"){
+        console.error(`[fikrlar] ${label} login xatosi:`, err.code, err.message);
+        if (err.code === "auth/account-exists-with-different-credential"){
+            alert("Bu email boshqa usul (masalan Google) orqali allaqachon ro'yxatdan o'tgan. O'sha usul bilan kiring.");
+        } else if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request"){
             alert("Kirishda xatolik yuz berdi. Konsolni (F12) tekshiring yoki qayta urinib ko'ring.");
         }
     }
-});
+}
 
 logoutBtn?.addEventListener("click", async () => {
     try { await signOut(auth); }
@@ -84,12 +91,14 @@ onAuthStateChanged(auth, (user) => {
     if (user.isAnonymous){
         currentUser = null;
         googleLoginBtn.hidden = false;
+        githubLoginBtn.hidden = false;
         userProfile.hidden = true;
         commentForm.hidden = true;
         commentsHint.hidden = false;
     } else {
         currentUser = user;
         googleLoginBtn.hidden = true;
+        githubLoginBtn.hidden = true;
         userProfile.hidden = false;
         userAvatar.src = user.photoURL || "";
         userName.textContent = user.displayName || "Foydalanuvchi";
