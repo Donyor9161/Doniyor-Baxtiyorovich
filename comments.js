@@ -653,3 +653,43 @@ function setupAnnouncementsBanner(user) {
         }
     });
 }
+
+// Misol uchun banner xabarlarini almashtiruvchi funksiya mantiqi:
+function initAnnouncementCarousel(messages) {
+    const banner = document.getElementById('donylogicAnnouncementsBanner');
+    if (!banner || !messages || messages.length === 0) return;
+
+    let currentIndex = 0;
+    
+    // HTML elementlarni yaratib qo'yamiz
+    banner.innerHTML = '';
+    const itemElements = messages.map((msg, index) => {
+        const div = document.createElement('div');
+        div.className = 'announcement-item' + (index === 0 ? ' active' : '');
+        div.textContent = msg;
+        banner.appendChild(div);
+        return div;
+    });
+
+    if (messages.length <= 1) return;
+
+    // Har 3 sekundda almashish
+    setInterval(() => {
+        const prevIndex = currentIndex;
+        currentIndex = (currentIndex + 1) % messages.length;
+
+        // Eskisini pastga tushirib yuboramiz (exit)
+        itemElements[prevIndex].classList.remove('active');
+        itemElements[prevIndex].classList.add('exit');
+
+        // Yangisini tayyorlaymiz va tepadan tushiramiz
+        itemElements[currentIndex].classList.remove('exit');
+        itemElements[currentIndex].classList.add('active');
+
+        // O'tish tugagach, eski elementning 'exit' klassini tozalab qo'yamiz
+        setTimeout(() => {
+            itemElements[prevIndex].classList.remove('exit');
+        }, 500); // 0.5s transition vaqtiga moslab
+
+    }, 3000);
+}
