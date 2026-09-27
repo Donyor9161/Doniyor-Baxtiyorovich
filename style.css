@@ -1265,6 +1265,7 @@ footer p{
 
 
 /* --- Admin Panel Modal Dizayni --- */
+/* --- Admin Panel Modal Dizayni (Tuzatilgan) --- */
 .author-panel-btn {
     border: 1px solid rgba(79, 216, 255, 0.4) !important;
     color: #4fd8ff !important;
@@ -1286,11 +1287,16 @@ footer p{
     background: rgba(5, 5, 8, 0.8);
     backdrop-filter: blur(12px);
     z-index: 9999;
-    display: flex;
+    display: flex; /* Standart holatda flex */
     align-items: center;
     justify-content: center;
     padding: 20px;
     animation: fadeIn 0.3s ease;
+}
+
+/* MUHIM: hidden atributi ishlayishi uchun shart! */
+.author-modal[hidden] {
+    display: none !important;
 }
 
 .author-modal-content {
@@ -1341,7 +1347,6 @@ footer p{
     border-color: #ff5c5c;
     color: #ff5c5c;
 }
-
 /* Oldingi statistikalar va formalarning stillari */
 .dash-stats-grid {
     display: grid;
