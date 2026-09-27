@@ -354,7 +354,7 @@ function commentRowHTML(c, depth, parentAuthor){
     } else if (c.email === MANAGER_EMAIL) {
         roleBadge = `<span class="role-badge manager"><i class="ri-shield-user-fill"></i> Kommunitet-menejer</span>`;
     }
-    }
+
     return `
         <div class="comment-item ${extraClass}" style="margin-left:${depth * 34}px" data-id="${c.id}">
             <img class="comment-avatar" src="${escapeHTML(c.photo || "")}" alt="" referrerpolicy="no-referrer">
@@ -375,7 +375,6 @@ function commentRowHTML(c, depth, parentAuthor){
         </div>
     `;
 }
-
 function renderComments(){
     if (!commentsList) return;
 
