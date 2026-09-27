@@ -1196,7 +1196,7 @@ footer p{
 /* Tasdiqlangan ikonka (Remix Icon) uchun animatsiya */
 .animated-verify-icon {
     font-size: 1.1rem; /* Ikonka kattaligi */
-    color: #4fd8ff; /* Ikonka rangi - moviy */
+    color: #FF0000; /* Ikonka rangi - qizil */
     margin-right: 4px;
     display: inline-block; /* Transform ishlashi uchun muhim */
     /* Animatsiyani ulash: 1.5 soniyada bir marta to'liq aylanadi */
@@ -1218,37 +1218,47 @@ footer p{
         text-shadow: 0 0 2px rgba(79, 216, 255, 0.4); 
     }
 }
-/* --- GTranslate vidjetini sayt dizayniga moslash --- */
-.gtranslate_wrapper {
-    display: inline-flex;
-    align-items: center;
+/* --- GTranslate vidjetini to'liq qora/shisha dizaynga moslash --- */
+.gtranslate_wrapper, 
+.gt_container, 
+.gt_switcher {
+    background: transparent !important;
 }
 
-/* Selektorning asosiy oynasi (tashqi ko'rinishi) */
+/* GTranslate ning asosiy tanlash tugmasi yoki select menyusi */
 .gtranslate_wrapper select, 
-.gt_selector {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+.gt_switcher select,
+.gt_selected,
+.goog-te-combo {
+    background-color: #0d0d12 !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 6px 12px !important;
-    border-radius: 20px !important; /* Boshqa tugmalaringiz kabi yumaloq */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding: 6px 14px !important;
+    border-radius: 20px !important;
     font-family: inherit !important;
     font-size: 14px !important;
     outline: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    backdrop-filter: blur(10px);
 }
 
-/* Sichqoncha olib kelingandagi (hover) holati */
+/* Sichqoncha olib kelinganda */
 .gtranslate_wrapper select:hover, 
-.gt_selector:hover {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
+.gt_switcher select:hover,
+.gt_selected:hover {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    background-color: #16161c !important;
 }
 
-/* Ochilgan ro'yxatdagi elementlar (option) stili */
-.gtranslate_wrapper option {
-    background-color: #121214 !important;
+/* Ochiladigan ro'yxat menyusi (Dropdown options) */
+.gtranslate_wrapper option,
+.gt_switcher option {
+    background-color: #121216 !important;
+    color: #ffffff !important;
+}
+
+/* Agar GTranslate bayroqli versiyada ishlayotgan bo'lsa, matn va ikonkalarni oq qilish */
+.gtranslate_wrapper a, 
+.gt_switcher a {
     color: #ffffff !important;
 }
