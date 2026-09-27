@@ -331,20 +331,36 @@ function escapeHTML(str){
 }
 
 function commentRowHTML(c, depth, parentAuthor){
+    // O'chirish huquqlarini tekshirish
     const isOwn = currentUser && c.uid === currentUser.uid;
-    const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
-    const canDelete = isOwn || isAdmin;
+    const isViewerAuthor = currentUser && currentUser.email === AUTHOR_EMAIL;
+    const isViewerManager = currentUser && currentUser.email === MANAGER_EMAIL;
+    const canDelete = isOwn || isViewerAuthor || isViewerManager; // Muallif va menejer hamma narsani o'chira oladi
+
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
     const replyToHTML = parentAuthor
         ? `<span class="reply-to-label"><i class="ri-corner-down-right-line"></i> ${T("reply_to")} ${escapeHTML(parentAuthor)}</span>`
         : "";
+
+    // Fikr egasining kimligini aniqlash va unga mos dizayn (badge) berish
+    let roleBadge = "";
+    let extraClass = "";
+
+    if (c.email === AUTHOR_EMAIL) {
+        roleBadge = `<span class="role-badge author"><i class="ri-vip-crown-fill"></i> Loyiha muallifi</span>`;
+        extraClass = "comment-author-special"; // Jozibador CSS klass
+    } else if (c.email === MANAGER_EMAIL) {
+        roleBadge = `<span class="role-badge manager"><i class="ri-shield-user-fill"></i> Kommunitet-menejer</span>`;
+    }
+
     return `
-        <div class="comment-item" style="margin-left:${depth * 34}px" data-id="${c.id}">
+        <div class="comment-item ${extraClass}" style="margin-left:${depth * 34}px" data-id="${c.id}">
             <img class="comment-avatar" src="${escapeHTML(c.photo || "")}" alt="" referrerpolicy="no-referrer">
             <div class="comment-body">
                 ${replyToHTML}
                 <div class="comment-top">
                     <span class="comment-author">${escapeHTML(c.name || "Foydalanuvchi")}</span>
+                    ${roleBadge}
                     <span class="comment-time">${timeAgo(created)}</span>
                 </div>
                 <p class="comment-text">${escapeHTML(c.text || "")}</p>
