@@ -1191,3 +1191,28 @@ footer p{
 .comment-author-special .comment-author {
     color: #ffd166 !important;
 }
+/* Tasdiqlangan ikonka uchun animatsiya va o'lcham */
+.animated-verify-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    margin-right: 4px;
+    /* Animatsiyani ulash: 1.5 soniyada bir marta to'liq aylanadi, to'xtovsiz (infinite) ishlaydi */
+    animation: verify-pulse 1.5s infinite ease-in-out;
+}
+
+/* Animatsiya kalit kadrlari */
+@keyframes verify-pulse {
+    0% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 2px rgba(79, 216, 255, 0.5)); 
+    }
+    50% { 
+        transform: scale(1.25); /* Ikonka 25% ga kattalashadi */
+        filter: drop-shadow(0 0 8px rgba(79, 216, 255, 0.9)); /* Orqasida nur yonadi */
+    }
+    100% { 
+        transform: scale(1); 
+        filter: drop-shadow(0 0 2px rgba(79, 216, 255, 0.5)); 
+    }
+}
