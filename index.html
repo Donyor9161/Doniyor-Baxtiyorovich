@@ -39,6 +39,10 @@
 <body>
     <header>
         <div id="navbar">
+            <!-- Faqat muallif uchun chiqadigan Admin Panelni ochish tugmasi -->
+<button id="openAdminPanelBtn" class="btn btn-ghost author-panel-btn" hidden>
+    <i class="ri-shield-flash-line"></i> Admin Panel
+</button>
             <div id="logo">
                 <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
             </div>
@@ -60,6 +64,55 @@
     </header>
 
     <main>
+        <!-- MUALLIF PANELI (Modal oyna ko'rinishida) -->
+<div id="authorDashboardModal" class="author-modal" hidden>
+    <div class="author-modal-content">
+        <div class="author-modal-header">
+            <h3><i class="ri-shield-flash-line"></i> Muallif Boshqaruv Paneli</h3>
+            <button id="closeAdminPanelBtn" class="close-modal-btn"><i class="ri-close-line"></i></button>
+        </div>
+        
+        <div class="dashboard-card">
+            <!-- 1. Tezkor statistika -->
+            <div class="dash-stats-grid">
+                <div class="dash-stat-box">
+                    <i class="ri-eye-line"></i>
+                    <div>
+                        <span id="dashVisits">0</span>
+                        <small>Jami tashriflar</small>
+                    </div>
+                </div>
+                <div class="dash-stat-box">
+                    <i class="ri-user-shared-line"></i>
+                    <div>
+                        <span id="dashRegistered">0</span>
+                        <small>Ro'yxatdan o'tganlar</small>
+                    </div>
+                </div>
+                <div class="dash-stat-box">
+                    <i class="ri-chat-3-line"></i>
+                    <div>
+                        <span id="dashComments">0</span>
+                        <small>Jami fikrlar</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Global E'lon (Broadcast) yozish formasi -->
+            <div class="broadcast-box">
+                <h3><i class="ri-broadcast-line"></i> Hammaga e'lon yuborish (Banner)</h3>
+                <p>Bu yerda yozgan xabaringiz sayt tepasida barcha foydalanuvchilarga ko'rinadi.</p>
+                <form id="broadcastForm">
+                    <input type="text" id="broadcastInput" placeholder="Masalan: Ghost Legion o'yini tez orada chiqadi! 🔥" maxlength="150" required>
+                    <div class="broadcast-actions">
+                        <button type="submit" class="btn btn-primary"><i class="ri-send-plane-fill"></i> E'lonni chiqarish</button>
+                        <button type="button" id="deleteBroadcastBtn" class="btn btn-ghost" style="color: #ff5c5c;"><i class="ri-delete-bin-line"></i> E'lonni o'chirish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- HERO -->
         <section class="hero reveal">
             <span class="eyebrow" data-i18n="hero_eyebrow">Maqsad:: Game dev</span>
