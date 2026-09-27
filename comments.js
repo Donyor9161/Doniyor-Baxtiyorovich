@@ -347,12 +347,16 @@ function commentRowHTML(c, depth, parentAuthor){
     let extraClass = "";
 
     if (c.email === AUTHOR_EMAIL) {
-        roleBadge = `<span class="role-badge author"><i class="ri-vip-crown-fill"></i> Loyiha muallifi</span>`;
-        extraClass = "comment-author-special"; // Jozibador CSS klass
+        // "image_093e86.png" fayli loyihangiz papkasida bo'lishi kerak. 
+        // Agar u boshqa papkada (masalan "assets/") bo'lsa, yo'lini shunga moslang.
+        roleBadge = `<span class="role-badge author">
+            <img src="image_093e86.png" class="animated-verify-icon" alt="Verified">
+            Loyiha muallifi
+        </span>`;
+        extraClass = "comment-author-special";
     } else if (c.email === MANAGER_EMAIL) {
         roleBadge = `<span class="role-badge manager"><i class="ri-shield-user-fill"></i> Kommunitet-menejer</span>`;
     }
-
     return `
         <div class="comment-item ${extraClass}" style="margin-left:${depth * 34}px" data-id="${c.id}">
             <img class="comment-avatar" src="${escapeHTML(c.photo || "")}" alt="" referrerpolicy="no-referrer">
