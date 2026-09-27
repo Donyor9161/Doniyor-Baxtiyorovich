@@ -1191,28 +1191,30 @@ footer p{
 .comment-author-special .comment-author {
     color: #ffd166 !important;
 }
-/* Tasdiqlangan ikonka uchun animatsiya va o'lcham */
+
+
+/* Tasdiqlangan ikonka (Remix Icon) uchun animatsiya */
 .animated-verify-icon {
-    width: 18px;
-    height: 18px;
-    object-fit: contain;
+    font-size: 1.1rem; /* Ikonka kattaligi */
+    color: #4fd8ff; /* Ikonka rangi - moviy */
     margin-right: 4px;
-    /* Animatsiyani ulash: 1.5 soniyada bir marta to'liq aylanadi, to'xtovsiz (infinite) ishlaydi */
+    display: inline-block; /* Transform ishlashi uchun muhim */
+    /* Animatsiyani ulash: 1.5 soniyada bir marta to'liq aylanadi */
     animation: verify-pulse 1.5s infinite ease-in-out;
 }
 
-/* Animatsiya kalit kadrlari */
+/* Animatsiya kalit kadrlari (shriftlar uchun) */
 @keyframes verify-pulse {
     0% { 
         transform: scale(1); 
-        filter: drop-shadow(0 0 2px rgba(79, 216, 255, 0.5)); 
+        text-shadow: 0 0 2px rgba(79, 216, 255, 0.4); 
     }
     50% { 
-        transform: scale(1.25); /* Ikonka 25% ga kattalashadi */
-        filter: drop-shadow(0 0 8px rgba(79, 216, 255, 0.9)); /* Orqasida nur yonadi */
+        transform: scale(1.25); /* 25% ga kattalashadi */
+        text-shadow: 0 0 10px rgba(79, 216, 255, 0.9); /* Orqasida nur yonadi */
     }
     100% { 
         transform: scale(1); 
-        filter: drop-shadow(0 0 2px rgba(79, 216, 255, 0.5)); 
+        text-shadow: 0 0 2px rgba(79, 216, 255, 0.4); 
     }
 }
