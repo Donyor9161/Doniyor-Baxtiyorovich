@@ -100,41 +100,7 @@ body{
     pointer-events: none;
 }
 
-/* ---------- custom cursor ---------- */
-.cursor-dot,
-.cursor-ring{
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    will-change: transform;
-}
-.cursor-dot{
-    width: 6px;
-    height: 6px;
-    background: var(--cyan);
-    box-shadow: 0 0 10px var(--cyan), 0 0 20px var(--cyan);
-}
-.cursor-ring{
-    width: 34px;
-    height: 34px;
-    border: 1px solid var(--border-glow);
-    transition: width .25s var(--ease), height .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
-}
-.cursor-ring.is-active{
-    width: 56px;
-    height: 56px;
-    background: rgba(79,216,255,0.08);
-    border-color: var(--cyan);
-}
-@media (hover: hover) and (pointer: fine){
-    body.cursor-ready, body.cursor-ready *{
-        cursor: none;
-    }
-}
+
 
 /* ---------- header / nav ---------- */
 header{
@@ -587,9 +553,6 @@ footer p{
 @media (hover: none), (pointer: coarse){
     body.cursor-ready, body.cursor-ready a, body.cursor-ready button{
         cursor: auto;
-    }
-    .cursor-dot, .cursor-ring{
-        display: none;
     }
 }
 
