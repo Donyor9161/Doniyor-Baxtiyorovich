@@ -80,42 +80,6 @@
         requestAnimationFrame(draw);
     }
 
-    /* ---------------- custom cursor ---------------- */
-    function initCursor(){
-        document.body.classList.add("cursor-ready");
-        const dot = document.createElement("div");
-        dot.className = "cursor-dot";
-        const ring = document.createElement("div");
-        ring.className = "cursor-ring";
-        document.body.append(dot, ring);
-
-        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-        let rx = mx, ry = my;
-
-        window.addEventListener("mousemove", (e) => {
-            mx = e.clientX;
-            my = e.clientY;
-            // dot tracks the real cursor 1:1 — zero lag
-            dot.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
-        });
-
-        function loop(){
-            rx += (mx - rx) * 0.55;
-            ry += (my - ry) * 0.55;
-            ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
-            requestAnimationFrame(loop);
-        }
-        requestAnimationFrame(loop);
-
-        const hoverables = "a, button, .btn, [onclick], .card";
-        document.addEventListener("mouseover", (e) => {
-            if (e.target.closest(hoverables)) ring.classList.add("is-active");
-        });
-        document.addEventListener("mouseout", (e) => {
-            if (e.target.closest(hoverables)) ring.classList.remove("is-active");
-        });
-    }
-
     /* ---------------- magnetic elements ---------------- */
     function initMagnetic(){
         const els = document.querySelectorAll(".btn, #mininavbar a");
@@ -257,7 +221,6 @@
         safe(initScrollCue, "scroll-cue");
         safe(initAgeCounter, "age-counter");
         if (canFancy){
-            safe(initCursor, "cursor");
             safe(initMagnetic, "magnetic");
             safe(initTilt, "tilt");
         }
