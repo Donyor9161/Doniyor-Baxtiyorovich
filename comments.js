@@ -21,7 +21,7 @@ const firebaseConfig = {
     appId: "1:661119368716:web:22c57597f1e523995ff829"
 };
 
-const PRUNE_AFTER_DAYS = 120;                      // shundan eski izohlar o'chirishga ruxsat etiladi
+const PRUNE_AFTER_DAYS = 120;                  // shundan eski izohlar o'chirishga ruxsat etiladi
 const PRUNE_CHECK_EVERY_MS = 24 * 60 * 60 * 1000;  // brauzerda kuniga 1 marta tekshirish
 const AUTHOR_EMAIL = "donylogicstudios@gmail.com";  // Bosh muallif
 const MANAGER_EMAIL = "qwdonyor@gmail.com";         // Kommunitet-menejer
@@ -88,11 +88,10 @@ logoutBtn?.addEventListener("click", async () => {
 
 onAuthStateChanged(auth, (user) => {
     if (!user){
-        // hech kim login qilmagan — tashrifni hisoblash uchun sezilmas anonim kirish
         signInAnonymously(auth).catch((err) => {
             console.error("[hisoblagich] anonim kirishda xato:", err);
         });
-        return; // onAuthStateChanged anonim user bilan qayta chaqiriladi
+        return; 
     }
 
     if (user.isAnonymous){
@@ -121,6 +120,9 @@ onAuthStateChanged(auth, (user) => {
 
         maybePruneOldComments();
     }
+
+    // Admin panelni tekshirib yoqish funksiyasini shu yerda chaqiramiz
+    setupAdminPanel(user);
 
     countVisitOnce();
     renderComments();
@@ -331,18 +333,16 @@ function escapeHTML(str){
 }
 
 function commentRowHTML(c, depth, parentAuthor){
-    // O'chirish huquqlarini tekshirish
     const isOwn = currentUser && c.uid === currentUser.uid;
     const isViewerAuthor = currentUser && currentUser.email === AUTHOR_EMAIL;
     const isViewerManager = currentUser && currentUser.email === MANAGER_EMAIL;
-    const canDelete = isOwn || isViewerAuthor || isViewerManager; // Muallif va menejer hamma narsani o'chira oladi
+    const canDelete = isOwn || isViewerAuthor || isViewerManager;
 
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
     const replyToHTML = parentAuthor
         ? `<span class="reply-to-label"><i class="ri-corner-down-right-line"></i> ${T("reply_to")} ${escapeHTML(parentAuthor)}</span>`
         : "";
 
-    // Fikr egasining kimligini aniqlash va unga mos dizayn (badge) berish
     let roleBadge = "";
     let extraClass = "";
 
@@ -375,6 +375,7 @@ function commentRowHTML(c, depth, parentAuthor){
         </div>
     `;
 }
+
 function renderComments(){
     if (!commentsList) return;
 
@@ -391,7 +392,6 @@ function renderComments(){
         byParent.get(key).push(c);
     });
 
-    // eng yangi izohlar tepada; har bir mavzu ichidagi javoblar esa xronologik (eskisi tepada)
     const rootItems = (byParent.get("root") || []).slice().reverse();
 
     let html = "";
@@ -465,6 +465,7 @@ try {
 document.addEventListener("donylogic:langchange", () => {
     renderComments();
 });
+
 /* ---------------- donate: copy card numbers ---------------- */
 document.querySelectorAll("[data-copy-card]").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -480,7 +481,7 @@ document.querySelectorAll("[data-copy-card]").forEach((btn) => {
     });
 });
 
-// Muallif panelini boshqarish va e'lonlarni saqlash
+/* ---------------- Muallif panelini boshqarish ---------------- */
 function setupAdminPanel(user) {
     const openBtn = document.getElementById('openAdminPanelDbBtn') || document.getElementById('openAdminPanelBtn');
     const modal = document.getElementById('authorDashboardModal');
@@ -492,7 +493,7 @@ function setupAdminPanel(user) {
     if (!modal) return;
 
     // 1. Faqat muallifga tugmani ko'rsatish
-    if (user && user.email === "donylogicstudios@gmail.com") {
+    if (user && user.email === AUTHOR_EMAIL) {
         if (openBtn) openBtn.hidden = false;
     } else {
         if (openBtn) openBtn.hidden = true;
@@ -524,7 +525,7 @@ function setupAdminPanel(user) {
         }
     };
 
-    // 5. E'lon (Broadcast) yuborishni saqlash (Firebase Realtime Database yoki Firestore orqali)
+    // 5. E'lon (Broadcast) yuborishni saqlash
     if (broadcastForm) {
         broadcastForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -532,19 +533,17 @@ function setupAdminPanel(user) {
             if (!text) return;
 
             try {
-                // Agar Firebase ishlatayotgan bo'lsangiz, e'lonni bazaga yozish:
-                // Masalan: await set(ref(db, 'announcement'), { text: text });
-                localStorage.setItem('site_announcement', text); // Vaqtincha brauzer xotirasiga saqlash
+                localStorage.setItem('site_announcement', text);
                 alert("E'lon muvaffaqiyatli chiqarildi!");
                 modal.hidden = true;
-                showGlobalAnnouncement(text);
+                if (typeof showGlobalAnnouncement === 'function') showGlobalAnnouncement(text);
             } catch (err) {
                 console.error("Xatolik:", err);
             }
         };
     }
 
-    // 6. E'lonni o'chirish
+    // 6. E'lonni o'chirish (bo'sh else olib tashlandi)
     if (deleteBroadcastBtn) {
         deleteBroadcastBtn.onclick = async () => {
             if (confirm("Haqiqatan ham e'lonni o'chirmoqchimisiz?")) {
@@ -553,8 +552,9 @@ function setupAdminPanel(user) {
                     broadcastInput.value = '';
                     alert("E'lon o'chirildi!");
                     modal.hidden = true;
-                    hideGlobalAnnouncement();
-                } else {
+                    if (typeof hideGlobalAnnouncement === 'function') hideGlobalAnnouncement();
+                } catch (err) {
+                    console.error("O'chirishda xatolik:", err);
                 }
             }
         };
