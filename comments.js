@@ -479,3 +479,42 @@ document.querySelectorAll("[data-copy-card]").forEach((btn) => {
         }
     });
 });
+
+// Foydalanuvchi kirganda admin tugmasini tekshirish
+function setupAdminPanel(user) {
+    const openBtn = document.getElementById('openAdminPanelBtn');
+    const modal = document.getElementById('authorDashboardModal');
+    const closeBtn = document.getElementById('closeAdminPanelBtn');
+
+    if (!openBtn || !modal) return;
+
+    // Faqat muallifga tugmani ko'rsatish
+    if (user && user.email === "donylogicstudios@gmail.com") {
+        openBtn.hidden = false;
+    } else {
+        openBtn.hidden = true;
+        modal.hidden = true;
+        return;
+    }
+
+    // Tugmani bosganda oynani ochish va statistikani yangilash
+    openBtn.onclick = () => {
+        modal.hidden = false;
+        // Statistikani sahifadagi joriy raqamlardan o'qish
+        document.getElementById('dashVisits').innerText = document.getElementById('visitsCount')?.innerText || '0';
+        document.getElementById('dashRegistered').innerText = document.getElementById('registeredCount')?.innerText || '0';
+        document.getElementById('dashComments').innerText = document.querySelectorAll('.comment-item').length || '0';
+    };
+
+    // Yopish tugmasi
+    closeBtn.onclick = () => {
+        modal.hidden = true;
+    };
+
+    // Modal oynaning tashqarisiga bosganda yopish
+    modal.onclick = (e) => {
+        if (e.target === modal) {
+            modal.hidden = true;
+        }
+    };
+}
