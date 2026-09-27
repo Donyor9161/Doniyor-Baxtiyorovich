@@ -1157,3 +1157,37 @@ footer p{
         grid-template-columns: 1fr;
     }
 }
+/* --- Rollar (Loyiha muallifi, Kommunitet menejer) --- */
+.role-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.role-badge.author {
+    background: linear-gradient(45deg, #ffd166, #ff9f1c);
+    color: #1a1a1a;
+    box-shadow: 0 0 8px rgba(255, 209, 102, 0.4);
+}
+
+.role-badge.manager {
+    background: rgba(79, 216, 255, 0.15);
+    color: #4fd8ff;
+    border: 1px solid rgba(79, 216, 255, 0.3);
+}
+
+/* --- Muallifning izohi (Jozibador ajralib turishi uchun) --- */
+.comment-author-special {
+    background: rgba(255, 209, 102, 0.05); /* Yengil tilla rang fon */
+    border-left: 3px solid #ffd166;
+    border-radius: 8px;
+    padding-left: 10px;
+}
+.comment-author-special .comment-author {
+    color: #ffd166 !important;
+}
