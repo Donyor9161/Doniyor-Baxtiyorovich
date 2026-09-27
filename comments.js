@@ -480,41 +480,83 @@ document.querySelectorAll("[data-copy-card]").forEach((btn) => {
     });
 });
 
-// Foydalanuvchi kirganda admin tugmasini tekshirish
+// Muallif panelini boshqarish va e'lonlarni saqlash
 function setupAdminPanel(user) {
-    const openBtn = document.getElementById('openAdminPanelBtn');
+    const openBtn = document.getElementById('openAdminPanelDbBtn') || document.getElementById('openAdminPanelBtn');
     const modal = document.getElementById('authorDashboardModal');
     const closeBtn = document.getElementById('closeAdminPanelBtn');
+    const broadcastForm = document.getElementById('broadcastForm');
+    const broadcastInput = document.getElementById('broadcastInput');
+    const deleteBroadcastBtn = document.getElementById('deleteBroadcastBtn');
 
-    if (!openBtn || !modal) return;
+    if (!modal) return;
 
-    // Faqat muallifga tugmani ko'rsatish
+    // 1. Faqat muallifga tugmani ko'rsatish
     if (user && user.email === "donylogicstudios@gmail.com") {
-        openBtn.hidden = false;
+        if (openBtn) openBtn.hidden = false;
     } else {
-        openBtn.hidden = true;
+        if (openBtn) openBtn.hidden = true;
         modal.hidden = true;
         return;
     }
 
-    // Tugmani bosganda oynani ochish va statistikani yangilash
-    openBtn.onclick = () => {
-        modal.hidden = false;
-        // Statistikani sahifadagi joriy raqamlardan o'qish
-        document.getElementById('dashVisits').innerText = document.getElementById('visitsCount')?.innerText || '0';
-        document.getElementById('dashRegistered').innerText = document.getElementById('registeredCount')?.innerText || '0';
-        document.getElementById('dashComments').innerText = document.querySelectorAll('.comment-item').length || '0';
-    };
+    // 2. Tugmani bosganda oynani ochish va statistikani yangilash
+    if (openBtn) {
+        openBtn.onclick = () => {
+            modal.hidden = false;
+            document.getElementById('dashVisits').innerText = document.getElementById('visitsCount')?.innerText || '0';
+            document.getElementById('dashRegistered').innerText = document.getElementById('registeredCount')?.innerText || '0';
+            document.getElementById('dashComments').innerText = document.querySelectorAll('.comment-item').length || '0';
+        };
+    }
 
-    // Yopish tugmasi
-    closeBtn.onclick = () => {
-        modal.hidden = true;
-    };
+    // 3. Yopish tugmasi
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.hidden = true;
+        };
+    }
 
-    // Modal oynaning tashqarisiga bosganda yopish
+    // 4. Modal tashqarisiga bosganda yopish
     modal.onclick = (e) => {
         if (e.target === modal) {
             modal.hidden = true;
         }
     };
+
+    // 5. E'lon (Broadcast) yuborishni saqlash (Firebase Realtime Database yoki Firestore orqali)
+    if (broadcastForm) {
+        broadcastForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = broadcastInput.value.trim();
+            if (!text) return;
+
+            try {
+                // Agar Firebase ishlatayotgan bo'lsangiz, e'lonni bazaga yozish:
+                // Masalan: await set(ref(db, 'announcement'), { text: text });
+                localStorage.setItem('site_announcement', text); // Vaqtincha brauzer xotirasiga saqlash
+                alert("E'lon muvaffaqiyatli chiqarildi!");
+                modal.hidden = true;
+                showGlobalAnnouncement(text);
+            } catch (err) {
+                console.error("Xatolik:", err);
+            }
+        };
+    }
+
+    // 6. E'lonni o'chirish
+    if (deleteBroadcastBtn) {
+        deleteBroadcastBtn.onclick = async () => {
+            if (confirm("Haqiqatan ham e'lonni o'chirmoqchimisiz?")) {
+                try {
+                    localStorage.removeItem('site_announcement');
+                    broadcastInput.value = '';
+                    alert("E'lon o'chirildi!");
+                    modal.hidden = true;
+                    hideGlobalAnnouncement();
+                } else {
+                }
+            }
+        };
+    }
 }
