@@ -47,6 +47,11 @@ const commentsList   = document.getElementById("commentsList");
 const registeredCountEl = document.getElementById("registeredCount");
 const visitsCountEl     = document.getElementById("visitsCount");
 const donationsTotalEl  = document.getElementById("donationsTotal");
+const commentsCountEl   = document.getElementById("commentsCount");
+
+function T(key){
+    return window.DonylogicI18n ? window.DonylogicI18n.t(key) : key;
+}
 
 let currentUser = null;
 let allComments = [];
@@ -310,11 +315,11 @@ async function maybePruneOldComments(){
 function timeAgo(date){
     if (!date) return "";
     const diff = Math.max(0, (Date.now() - date.getTime()) / 1000);
-    if (diff < 60) return "hozirgina";
-    if (diff < 3600) return `${Math.floor(diff / 60)} daqiqa oldin`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)} soat oldin`;
-    if (diff < 2592000) return `${Math.floor(diff / 86400)} kun oldin`;
-    return date.toLocaleDateString("uz-UZ");
+    if (diff < 60) return T("just_now");
+    if (diff < 3600) return `${Math.floor(diff / 60)} ${T("minutes_ago")}`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} ${T("hours_ago")}`;
+    if (diff < 2592000) return `${Math.floor(diff / 86400)} ${T("days_ago")}`;
+    return date.toLocaleDateString(window.DonylogicI18n?.getLang() === "en" ? "en-US" : window.DonylogicI18n?.getLang() === "ru" ? "ru-RU" : "uz-UZ");
 }
 
 function escapeHTML(str){
@@ -323,23 +328,27 @@ function escapeHTML(str){
     return div.innerHTML;
 }
 
-function commentRowHTML(c, depth){
+function commentRowHTML(c, depth, parentAuthor){
     const isOwn = currentUser && c.uid === currentUser.uid;
     const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
     const canDelete = isOwn || isAdmin;
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
+    const replyToHTML = parentAuthor
+        ? `<span class="reply-to-label"><i class="ri-corner-down-right-line"></i> ${T("reply_to")} ${escapeHTML(parentAuthor)}</span>`
+        : "";
     return `
         <div class="comment-item" style="margin-left:${depth * 34}px" data-id="${c.id}">
             <img class="comment-avatar" src="${escapeHTML(c.photo || "")}" alt="" referrerpolicy="no-referrer">
             <div class="comment-body">
+                ${replyToHTML}
                 <div class="comment-top">
                     <span class="comment-author">${escapeHTML(c.name || "Foydalanuvchi")}</span>
                     <span class="comment-time">${timeAgo(created)}</span>
                 </div>
                 <p class="comment-text">${escapeHTML(c.text || "")}</p>
                 <div class="comment-actions">
-                    ${currentUser ? `<button class="comment-reply-btn" data-id="${c.id}"><i class="ri-reply-line"></i> Javob yozish</button>` : ""}
-                    ${canDelete ? `<button class="comment-delete" data-id="${c.id}"><i class="ri-delete-bin-6-line"></i> ${isOwn ? "O'chirish" : "O'chirish (admin)"}</button>` : ""}
+                    ${currentUser ? `<button class="comment-reply-btn" data-id="${c.id}"><i class="ri-reply-line"></i> ${T("reply_btn")}</button>` : ""}
+                    ${canDelete ? `<button class="comment-delete" data-id="${c.id}"><i class="ri-delete-bin-6-line"></i> ${isOwn ? T("delete_btn") : T("delete_admin_btn")}</button>` : ""}
                 </div>
                 <div class="reply-form-slot" data-slot-for="${c.id}"></div>
             </div>
@@ -351,7 +360,8 @@ function renderComments(){
     if (!commentsList) return;
 
     if (!allComments.length){
-        commentsList.innerHTML = `<p class="comments-empty">Hali fikrlar yo'q — birinchi bo'lib fikr qoldiring!</p>`;
+        commentsList.innerHTML = `<p class="comments-empty">${T("comments_empty")}</p>`;
+        if (commentsCountEl) commentsCountEl.hidden = true;
         return;
     }
 
@@ -362,17 +372,24 @@ function renderComments(){
         byParent.get(key).push(c);
     });
 
+    // eng yangi izohlar tepada; har bir mavzu ichidagi javoblar esa xronologik (eskisi tepada)
+    const rootItems = (byParent.get("root") || []).slice().reverse();
+
     let html = "";
-    function walk(parentKey, depth){
-        const items = byParent.get(parentKey) || [];
+    function walk(items, depth, parentAuthor){
         items.forEach((c) => {
-            html += commentRowHTML(c, depth);
-            walk(c.id, depth + 1);
+            html += commentRowHTML(c, depth, parentAuthor);
+            walk(byParent.get(c.id) || [], depth + 1, c.name || "Foydalanuvchi");
         });
     }
-    walk("root", 0);
+    walk(rootItems, 0, null);
 
     commentsList.innerHTML = html;
+
+    if (commentsCountEl){
+        commentsCountEl.hidden = false;
+        commentsCountEl.textContent = `${allComments.length} ${T("comments_count_one")}`;
+    }
 
     commentsList.querySelectorAll(".comment-delete").forEach((btn) => {
         btn.addEventListener("click", () => deleteComment(btn.dataset.id));
@@ -397,8 +414,8 @@ function toggleReplyForm(parentId){
     const form = document.createElement("form");
     form.className = "reply-form";
     form.innerHTML = `
-        <textarea maxlength="500" rows="2" placeholder="Javobingizni yozing..." required></textarea>
-        <button type="submit" class="btn btn-ghost">Yuborish</button>
+        <textarea maxlength="500" rows="2" placeholder="${T("reply_placeholder")}" required></textarea>
+        <button type="submit" class="btn btn-ghost">${T("comment_send")}</button>
     `;
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -419,12 +436,16 @@ try {
         renderComments();
     }, (err) => {
         console.error("[fikrlar] o'qishda xatolik:", err);
-        if (commentsList) commentsList.innerHTML = `<p class="comments-empty">Fikrlarni yuklab bo'lmadi.</p>`;
+        if (commentsList) commentsList.innerHTML = `<p class="comments-empty">${T("comments_error")}</p>`;
     });
 } catch (err){
     console.error("[fikrlar] ulanishda xatolik:", err);
 }
 
+/* ---------------- til almashtirilganda dinamik matnlarni yangilash ---------------- */
+document.addEventListener("donylogic:langchange", () => {
+    renderComments();
+});
 /* ---------------- donate: copy card numbers ---------------- */
 document.querySelectorAll("[data-copy-card]").forEach((btn) => {
     btn.addEventListener("click", async () => {
@@ -432,7 +453,7 @@ document.querySelectorAll("[data-copy-card]").forEach((btn) => {
         try {
             await navigator.clipboard.writeText(value);
             const original = btn.innerHTML;
-            btn.innerHTML = `<i class="ri-check-line"></i> Nusxalandi`;
+            btn.innerHTML = `<i class="ri-check-line"></i> ${T("donate_copied")}`;
             setTimeout(() => { btn.innerHTML = original; }, 1600);
         } catch (err){
             console.error("[donat] nusxalashda xatolik:", err);
