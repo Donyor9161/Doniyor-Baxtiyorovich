@@ -50,11 +50,7 @@
                 <a href="portfolio.html"><span data-i18n="nav_dev">Dasturchi</span></a>
             </div>
             <div class="nav-tools">
-                <div class="lang-switch">
-                    <button data-lang="uz">UZ</button>
-                    <button data-lang="ru">RU</button>
-                    <button data-lang="en">EN</button>
-                </div>
+                <div class="gtranslate_wrapper"></div>
                 <button id="themeToggle" class="theme-toggle" data-i18n-title="theme_toggle" title="Rejimni almashtirish">
                     <i class="ri-moon-line theme-icon-moon"></i>
                     <i class="ri-sun-line theme-icon-sun"></i>
@@ -220,9 +216,22 @@
             <a href="https://tezkorquiz.uz/" target="_blank">tezkorquiz.uz</a>
         </div>
     </footer>
+    <!-- GTranslate Wrapper -->
+<div class="gtranslate_wrapper"></div>
+<script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
 
     <script src="i18n.js?v=1"></script>
     <script src="script.js?v=9"></script>
     <script type="module" src="comments.js?v=7"></script>
+    <script>
+window.gtranslateSettings = {
+  "default_language": "uz",
+  "languages": ["uz", "ru", "en"],
+  "wrapper_selector": ".gtranslate_wrapper",
+  "flag_style": "3d",
+  "alt_flags": {"en": "usa"}
+}
+</script>
+<script src="https://cdn.gtranslate.net/widgets/latest/dropdown.js" defer></script>
 </body>
 </html>
