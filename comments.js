@@ -9,7 +9,7 @@ import {
 import {
     getFirestore, collection, addDoc, deleteDoc, doc, getDoc, getDocs,
     onSnapshot, query, orderBy, where, serverTimestamp, Timestamp,
-    runTransaction, writeBatch
+    runTransaction, writeBatch, limit
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -56,6 +56,7 @@ function T(key){
 
 let currentUser = null;
 let allComments = [];
+let bannerInterval = null;
 
 /* ---------------- auth: popup flow ---------------- */
 let justLoggedIn = false;
@@ -96,20 +97,20 @@ onAuthStateChanged(auth, (user) => {
 
     if (user.isAnonymous){
         currentUser = null;
-        googleLoginBtn.hidden = false;
-        githubLoginBtn.hidden = false;
-        userProfile.hidden = true;
-        commentForm.hidden = true;
-        commentsHint.hidden = false;
+        if(googleLoginBtn) googleLoginBtn.hidden = false;
+        if(githubLoginBtn) githubLoginBtn.hidden = false;
+        if(userProfile) userProfile.hidden = true;
+        if(commentForm) commentForm.hidden = true;
+        if(commentsHint) commentsHint.hidden = false;
     } else {
         currentUser = user;
-        googleLoginBtn.hidden = true;
-        githubLoginBtn.hidden = true;
-        userProfile.hidden = false;
-        userAvatar.src = user.photoURL || "";
-        userName.textContent = user.displayName || "Foydalanuvchi";
-        commentForm.hidden = false;
-        commentsHint.hidden = true;
+        if(googleLoginBtn) googleLoginBtn.hidden = true;
+        if(githubLoginBtn) githubLoginBtn.hidden = true;
+        if(userProfile) userProfile.hidden = false;
+        if(userAvatar) userAvatar.src = user.photoURL || "";
+        if(userName) userName.textContent = user.displayName || "Foydalanuvchi";
+        if(commentForm) commentForm.hidden = false;
+        if(commentsHint) commentsHint.hidden = true;
 
         registerUniqueUser(user.uid).then(() => {
             if (justLoggedIn){
@@ -121,8 +122,9 @@ onAuthStateChanged(auth, (user) => {
         maybePruneOldComments();
     }
 
-    // Admin panelni tekshirib yoqish funksiyasini shu yerda chaqiramiz
+    // Admin panelni tekshirib yoqish va bannerlarni sozlash
     setupAdminPanel(user);
+    setupAnnouncementsBanner(user);
 
     countVisitOnce();
     renderComments();
@@ -163,7 +165,12 @@ async function registerUniqueUser(uid){
             const statsSnap = await tx.get(statsRef);
             const current = statsSnap.exists() ? (statsSnap.data().count || 0) : 0;
 
-            tx.set(userRef, { createdAt: serverTimestamp() });
+            tx.set(userRef, { 
+                uid: uid,
+                email: currentUser.email || "Anonim",
+                name: currentUser.displayName || "Foydalanuvchi",
+                createdAt: serverTimestamp() 
+            });
             tx.set(statsRef, { count: current + 1 });
         });
         return true;
@@ -268,10 +275,15 @@ async function postComment(rawText, parentId, submitBtn){
 
     if (submitBtn) submitBtn.disabled = true;
     try {
+        let finalName = currentUser.displayName || "Foydalanuvchi";
+        if (currentUser.email === AUTHOR_EMAIL) {
+            finalName = "Loyiha muallifi: " + finalName;
+        }
+
         await addDoc(collection(db, "comments"), {
             uid: currentUser.uid,
             email: currentUser.email || "",
-            name: currentUser.displayName || "Foydalanuvchi",
+            name: finalName,
             photo: currentUser.photoURL || "",
             text: text.slice(0, 500),
             parentId: parentId || null,
@@ -488,11 +500,10 @@ function setupAdminPanel(user) {
     const closeBtn = document.getElementById('closeAdminPanelBtn');
     const broadcastForm = document.getElementById('broadcastForm');
     const broadcastInput = document.getElementById('broadcastInput');
-    const deleteBroadcastBtn = document.getElementById('deleteBroadcastBtn');
 
     if (!modal) return;
 
-    // 1. Faqat muallifga tugmani ko'rsatish
+    // 1. Veb sahifada oddiy userlarga admin panelini ochish tugmasi mutlaqo ko'rinmasin
     if (user && user.email === AUTHOR_EMAIL) {
         if (openBtn) openBtn.hidden = false;
     } else {
@@ -501,13 +512,42 @@ function setupAdminPanel(user) {
         return;
     }
 
-    // 2. Tugmani bosganda oynani ochish va statistikani yangilash
+    // 2. Tugmani bosganda oynani ochish va maxsus statistikalar/ro'yxatni yuklash
     if (openBtn) {
-        openBtn.onclick = () => {
+        openBtn.onclick = async () => {
             modal.hidden = false;
             document.getElementById('dashVisits').innerText = document.getElementById('visitsCount')?.innerText || '0';
             document.getElementById('dashRegistered').innerText = document.getElementById('registeredCount')?.innerText || '0';
-            document.getElementById('dashComments').innerText = document.querySelectorAll('.comment-item').length || '0';
+            const dashComments = document.getElementById('dashComments');
+            if(dashComments) dashComments.innerText = document.querySelectorAll('.comment-item').length || '0';
+            
+            // 3. Loyiha muallifi admin panelida o'ziga xos, oddiy userlar ko'rmaydigan ro'yxatdan o'tganlar ro'yxati
+            // Agar modal ichida shunday id li element mavjud bo'lmasa, uni qidirib topamiz yoki yaratamiz
+            let usersListContainer = document.getElementById('adminRegisteredUsersList');
+            if (!usersListContainer) {
+                usersListContainer = document.createElement('div');
+                usersListContainer.id = 'adminRegisteredUsersList';
+                usersListContainer.style.cssText = "margin-top: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px;";
+                modal.querySelector('.modal-content, form, div') || modal.appendChild(usersListContainer);
+            }
+
+            usersListContainer.innerHTML = "<p style='font-size:13px; color:#aaa;'>Ro'yxatdan o'tganlar yuklanmoqda...</p>";
+            try {
+                const usersSnap = await getDocs(collection(db, "users"));
+                let userHtml = "<h4 style='margin-bottom:8px; font-size:14px; color:#4fd8ff;'>Ro'yxatdan o'tgan foydalanuvchilar:</h4><ul style='max-height:160px; overflow-y:auto; text-align:left; font-size:13px; padding-left:15px;'>";
+                usersSnap.forEach(docSnap => {
+                    const uData = docSnap.data();
+                    let dateStr = "";
+                    if (uData.createdAt && uData.createdAt.toDate) {
+                        dateStr = uData.createdAt.toDate().toLocaleDateString();
+                    }
+                    userHtml += `<li style="margin-bottom:4px;"><b>${escapeHTML(uData.name || 'User')}</b> — <span style="color:#aaa;">${escapeHTML(uData.email || 'Nomaʼlum')}</span> <small>(${dateStr})</small></li>`;
+                });
+                userHtml += "</ul>";
+                usersListContainer.innerHTML = userHtml;
+            } catch(e) {
+                usersListContainer.innerHTML = "<p style='color:red;'>Ro'yxatni olishda xatolik yuz berdi.</p>";
+            }
         };
     }
 
@@ -525,7 +565,7 @@ function setupAdminPanel(user) {
         }
     };
 
-    // 5. E'lon (Broadcast) yuborishni saqlash
+    // 5. E'lon (Broadcast) yuborish va 5 tadan oshig'ini (6-chisini) avtomatik o'chirish logikasi
     if (broadcastForm) {
         broadcastForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -533,30 +573,83 @@ function setupAdminPanel(user) {
             if (!text) return;
 
             try {
-                localStorage.setItem('site_announcement', text);
-                alert("E'lon muvaffaqiyatli chiqarildi!");
+                // Yangi e'lonni Firestore'ga qo'shish
+                await addDoc(collection(db, "announcements"), {
+                    text: text,
+                    createdAt: serverTimestamp()
+                });
+
+                // Limit: Agar xabarlar soni 5 tadan oshib ketsa, eng eski (6-chi va undan narigi)larini o'chirish
+                const snapshot = await getDocs(query(collection(db, "announcements"), orderBy("createdAt", "desc")));
+                if (snapshot.docs.length > 5) {
+                    const batch = writeBatch(db);
+                    for (let i = 5; i < snapshot.docs.length; i++) {
+                        batch.delete(snapshot.docs[i].ref);
+                    }
+                    await batch.commit();
+                }
+
+                broadcastInput.value = '';
                 modal.hidden = true;
-                if (typeof showGlobalAnnouncement === 'function') showGlobalAnnouncement(text);
+                alert("E'lon muvaffaqiyatli yuborildi!");
             } catch (err) {
                 console.error("Xatolik:", err);
+                alert("Xatolik yuz berdi.");
             }
         };
+    }
+}
+
+/* ---------------- 4. BANNER (Donylogic logosi o'ng tomonida) ---------------- */
+function setupAnnouncementsBanner(user) {
+    let bannerContainer = document.getElementById('donylogicAnnouncementsBanner');
+    
+    // Muallifga bu banner ko'rinmaydi
+    if (user && user.email === AUTHOR_EMAIL) {
+        if (bannerContainer) bannerContainer.style.display = 'none';
+        return;
     }
 
-    // 6. E'lonni o'chirish (bo'sh else olib tashlandi)
-    if (deleteBroadcastBtn) {
-        deleteBroadcastBtn.onclick = async () => {
-            if (confirm("Haqiqatan ham e'lonni o'chirmoqchimisiz?")) {
-                try {
-                    localStorage.removeItem('site_announcement');
-                    broadcastInput.value = '';
-                    alert("E'lon o'chirildi!");
-                    modal.hidden = true;
-                    if (typeof hideGlobalAnnouncement === 'function') hideGlobalAnnouncement();
-                } catch (err) {
-                    console.error("O'chirishda xatolik:", err);
-                }
-            }
-        };
+    // Agar HTML faylda banner konteyneri bo'lmasa, uni Donylogic logosi o'ng tomoniga o'zi joylashtiradi
+    if (!bannerContainer) {
+        const logoEl = document.querySelector('.logo, img[alt*="Logo"], [class*="logo"]'); 
+        bannerContainer = document.createElement('div');
+        bannerContainer.id = 'donylogicAnnouncementsBanner';
+        bannerContainer.style.cssText = "margin-left: 15px; color: #4fd8ff; font-size: 14px; font-weight: 500; display: inline-block; max-width: 380px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle;";
+        
+        if (logoEl && logoEl.parentNode) {
+            logoEl.parentNode.insertBefore(bannerContainer, logoEl.nextSibling);
+        } else {
+            document.body.prepend(bannerContainer);
+        }
     }
+
+    bannerContainer.style.display = 'inline-block';
+
+    // Eng oxirgi yozilgan 5 ta xabarni olish
+    const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(5));
+    
+    onSnapshot(q, (snapshot) => {
+        let messages = [];
+        snapshot.docs.forEach((docSnap) => {
+            messages.push(docSnap.data().text);
+        });
+
+        if (bannerInterval) clearInterval(bannerInterval);
+        if (messages.length === 0) {
+            bannerContainer.innerHTML = "";
+            return;
+        }
+
+        let currentIndex = 0;
+        bannerContainer.innerHTML = `📢 ${escapeHTML(messages[currentIndex])}`;
+
+        // Har 3 sekundda ketma-ket almashib turishi
+        if (messages.length > 1) {
+            bannerInterval = setInterval(() => {
+                currentIndex = (currentIndex + 1) % messages.length;
+                bannerContainer.innerHTML = `📢 ${escapeHTML(messages[currentIndex])}`;
+            }, 3000);
+        }
+    });
 }
