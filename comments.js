@@ -23,7 +23,8 @@ const firebaseConfig = {
 
 const PRUNE_AFTER_DAYS = 120;                      // shundan eski izohlar o'chirishga ruxsat etiladi
 const PRUNE_CHECK_EVERY_MS = 24 * 60 * 60 * 1000;  // brauzerda kuniga 1 marta tekshirish
-const ADMIN_EMAIL = "qwdonyor@gmail.com";           // shu email bilan kirgan foydalanuvchi — admin
+const AUTHOR_EMAIL = "donylogicstudios@gmail.com";  // Bosh muallif
+const MANAGER_EMAIL = "qwdonyor@gmail.com";         // Kommunitet-menejer
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -267,6 +268,7 @@ async function postComment(rawText, parentId, submitBtn){
     try {
         await addDoc(collection(db, "comments"), {
             uid: currentUser.uid,
+            email: currentUser.email || "",
             name: currentUser.displayName || "Foydalanuvchi",
             photo: currentUser.photoURL || "",
             text: text.slice(0, 500),
