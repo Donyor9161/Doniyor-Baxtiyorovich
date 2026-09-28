@@ -91,6 +91,14 @@ async function resolveRole(uid, emailHint){
         return null;
     }
 }
+// Admin panel faqat muallifning GOOGLE orqali kirgan akkaunti uchun
+function isAuthorGoogle(user){
+    return !!user
+        && user.email === AUTHOR_EMAIL
+        && user.emailVerified === true
+        && user.providerData.some((p) => p.providerId === "google.com");
+}
+
 function invalidateRole(uid){
     roleCache.delete(uid);
 }
@@ -164,7 +172,7 @@ onAuthStateChanged(auth, (user) => {
 
             applyOwnRoleUI();
 
-            if (adminPanelBtn) adminPanelBtn.hidden = user.email !== AUTHOR_EMAIL;
+            if (adminPanelBtn) adminPanelBtn.hidden = !isAuthorGoogle(user);
 
             if (justLoggedIn){
                 celebrateLogin();
@@ -596,7 +604,7 @@ function showAnnouncement(idx){
 }
 
 async function postAnnouncement(rawText, submitBtn){
-    if (!currentUser || currentUser.email !== AUTHOR_EMAIL) return;
+    if (!isAuthorGoogle(currentUser)) return;
     const text = rawText.trim();
     if (!text) return;
 
@@ -654,7 +662,7 @@ function renderAnnouncementAdminList(host){
 adminPanelBtn?.addEventListener("click", openAdminPanel);
 
 async function openAdminPanel(){
-    if (!currentUser || currentUser.email !== AUTHOR_EMAIL) return;
+    if (!isAuthorGoogle(currentUser)) return;
 
     const overlay = document.createElement("div");
     overlay.className = "admin-overlay";
