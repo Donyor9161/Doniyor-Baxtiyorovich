@@ -18,7 +18,7 @@
             document.documentElement.setAttribute("data-theme", theme);
         })();
     </script>
-    <title>Donylogic™ Studios - tashrif</title>
+    <title>DONYLOGIC — Kod orqali fikrlash</title>
     <meta name="description" content="Donylogic — web dasturlash, interaktiv platformalar va aniq, tezkor raqamli yechimlar studiyasi.">
     <!-- Faviconlar -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=11">
     <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,25 +39,36 @@
 <body>
     <header>
         <div id="navbar">
-            <!-- Faqat muallif uchun chiqadigan Admin Panelni ochish tugmasi -->
-<button id="openAdminPanelBtn" class="btn btn-ghost author-panel-btn" hidden>
-    <i class="ri-shield-flash-line"></i> Admin Panel
-</button>
-            <div id="logo">
-                <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
-                <!-- E'lonlar banneri (faqat oddiy foydalanuvchilarga ko'rinadi) -->
-                <div id="donylogicAnnouncementsBanner" class="announcements-banner"></div>
+            <div id="logoRow">
+                <div id="logo">
+                    <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
+                </div>
+                <!-- E'LONLAR KARUSELI — faqat admin nashr qilgan e'lonlar bo'lsa ko'rinadi -->
+                <div id="announcementBar" class="announcement-bar" hidden>
+                    <i class="ri-megaphone-fill announcement-icon"></i>
+                    <span id="announcementText" class="announcement-text"></span>
+                </div>
             </div>
             <div id="mininavbar">
                 <a href="#"
-                    onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..')" data-i18n="nav_about">Biz
+                    onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..')">Biz
                     haqimizda</a>
-                <a href="salom.html" data-i18n="nav_something">Bir narsalar</a>
-                <a href="portfolio.html"><span data-i18n="nav_dev">Dasturchi</span></a>
+                <a href="salom.html">Bir narsalar</a>
+                <a href="portfolio.html"><span>Dasturchi</span></a>
             </div>
             <div class="nav-tools">
-                <div class="gtranslate_wrapper"></div>
-                <button id="themeToggle" class="theme-toggle" data-i18n-title="theme_toggle" title="Rejimni almashtirish">
+                <button id="adminPanelBtn" class="admin-panel-btn" hidden title="Admin panel">
+                    <i class="ri-shield-star-fill"></i> Admin
+                </button>
+                <!-- 3 tugmali til almashtirgich: UZ (standart) / EN / RU -->
+                <div id="langSwitch" class="lang-switch">
+                    <button type="button" class="lang-btn" data-lang="uz">UZ</button>
+                    <button type="button" class="lang-btn" data-lang="en">EN</button>
+                    <button type="button" class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                <!-- GTranslate asl widgeti fon rejimida — doGTranslate() shundan ishlaydi, ko'rinmaydi -->
+                <div class="gtranslate_wrapper" id="gtranslateBox" hidden></div>
+                <button id="themeToggle" class="theme-toggle" title="Rejimni almashtirish">
                     <i class="ri-moon-line theme-icon-moon"></i>
                     <i class="ri-sun-line theme-icon-sun"></i>
                 </button>
@@ -66,64 +77,17 @@
     </header>
 
     <main>
-        <!-- MUALLIF PANELI (Modal oyna ko'rinishida) -->
-<div id="authorDashboardModal" class="author-modal" hidden>
-    <div class="author-modal-content">
-        <div class="author-modal-header">
-            <h3><i class="ri-shield-flash-line"></i> Muallif Boshqaruv Paneli</h3>
-            <button id="closeAdminPanelBtn" class="close-modal-btn"><i class="ri-close-line"></i></button>
-        </div>
-        
-        <div class="dashboard-card">
-            <!-- 1. Tezkor statistika -->
-            <div class="dash-stats-grid">
-                <div class="dash-stat-box">
-                    <i class="ri-eye-line"></i>
-                    <div>
-                        <span id="dashVisits">0</span>
-                        <small>Jami tashriflar</small>
-                    </div>
-                </div>
-                <div class="dash-stat-box">
-                    <i class="ri-user-shared-line"></i>
-                    <div>
-                        <span id="dashRegistered">0</span>
-                        <small>Ro'yxatdan o'tganlar</small>
-                    </div>
-                </div>
-                <div class="dash-stat-box">
-                    <i class="ri-chat-3-line"></i>
-                    <div>
-                        <span id="dashComments">0</span>
-                        <small>Jami fikrlar</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. Global E'lon (Broadcast) yozish formasi -->
-            <div class="broadcast-box">
-                <h3><i class="ri-broadcast-line"></i> Hammaga e'lon yuborish (Banner)</h3>
-                <p>Bu yerda yozgan xabaringiz sayt tepasida barcha foydalanuvchilarga ko'rinadi.</p>
-                <form id="broadcastForm">
-                    <input type="text" id="broadcastInput" placeholder="Masalan: Ghost Legion o'yini tez orada chiqadi! 🔥" maxlength="150" required>
-                    <div class="broadcast-actions">
-                        <button type="submit" class="btn btn-primary"><i class="ri-send-plane-fill"></i> E'lonni chiqarish</button>
-                        <button type="button" id="deleteBroadcastBtn" class="btn btn-ghost" style="color: #ff5c5c;"><i class="ri-delete-bin-line"></i> E'lonni o'chirish</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
         <!-- HERO -->
         <section class="hero reveal">
-            <span class="eyebrow" data-i18n="hero_eyebrow">Maqsad:: Game dev</span>
-            <h1><span data-i18n="hero_title_pre"></span><em data-i18n="hero_title_word">Donylogic™ Studios </em><span data-i18n="hero_title_post">Rasmiy sahifasi.</span></h1>
-            <p class="lead" data-i18n="hero_lead">
-                Donylogic™ Studios - bu shunchaki loyiha emas balkiy kuchli brend bo'lishni maqsad qilgan,🇺🇿 Milliy kelajak studiyasi.
+            <span class="eyebrow">Yakka dasturchi</span>
+            <h1>Bu yerda <em>Donylogic</em><br>mavjud.</h1>
+            <p class="lead">
+                Men — yolg'iz o'zim ishlaydigan dasturchiman. Bu sahifa shunchaki
+                Donylogic borligini va nima bilan shug'ullanishimni bildirish uchun —
+                ortiqcha va'dalarsiz, faqat kod va aniq izlar.
             </p>
             <div class="hero-actions">
-                <a href="portfolio.html" class="btn btn-primary"><i class="ri-code-s-slash-line"></i> <span data-i18n="hero_cta">Ishlarimni ko'rish</span></a>
+                <a href="portfolio.html" class="btn btn-primary"><i class="ri-code-s-slash-line"></i> <span>Ishlarimni ko'rish</span></a>
             </div>
         </section>
 
@@ -133,33 +97,33 @@
             <span class="corner corner-tr"></span>
             <span class="corner corner-bl"></span>
             <span class="corner corner-br"></span>
-            <span class="eyebrow" data-i18n="age_official">Rasmiy nomi</span>
+            <span class="eyebrow">Rasmiy nomi</span>
             <strong class="brand-legal">Donylogic™ Studios</strong>
-            <p class="age-caption" id="ageCaption" data-i18n="age_label">yoshi</p>
+            <p class="age-caption" id="ageCaption">yoshi</p>
             <div class="age-timer">
-                <div class="age-pill"><span id="ageDays">0</span><small data-i18n="age_days">kun</small></div>
+                <div class="age-pill"><span id="ageDays">0</span><small>kun</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageHours">00</span><small data-i18n="age_hours">soat</small></div>
+                <div class="age-pill"><span id="ageHours">00</span><small>soat</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageMinutes">00</span><small data-i18n="age_minutes">daqiqa</small></div>
+                <div class="age-pill"><span id="ageMinutes">00</span><small>daqiqa</small></div>
                 <span class="age-colon">:</span>
-                <div class="age-pill"><span id="ageSeconds" class="age-seconds">00</span><small data-i18n="age_seconds">soniya</small></div>
+                <div class="age-pill"><span id="ageSeconds" class="age-seconds">00</span><small>soniya</small></div>
             </div>
         </aside>
 
         <!-- IJTIMOIY TARMOQLAR -->
         <section class="social-block reveal">
             <div class="section-head">
-                <span class="eyebrow" data-i18n="social_eyebrow">Biz bilan bog'laning</span>
-                <h2 data-i18n="social_title">Ijtimoiy tarmoqlar</h2>
+                <span class="eyebrow">Biz bilan bog'laning</span>
+                <h2>Ijtimoiy tarmoqlar</h2>
             </div>
-            <p class="social-lead" data-i18n="social_lead">Yangiliklardan xabardor bo'lish va bog'lanish uchun quyidagi manzillardan foydalaning.</p>
+            <p class="social-lead">Yangiliklardan xabardor bo'lish va bog'lanish uchun quyidagi manzillardan foydalaning.</p>
             <div class="social-cards">
                 <a class="social-card" href="https://t.me/donylogic_studios" target="_blank" rel="noopener">
                     <span class="social-icon social-icon-telegram"><i class="ri-telegram-2-fill"></i></span>
                     <span class="social-info">
                         <span class="social-name">Telegram</span>
-                        <span class="social-desc" data-i18n="social_telegram_desc">Yangiliklar va e'lonlar</span>
+                        <span class="social-desc">Yangiliklar va e'lonlar</span>
                     </span>
                     <i class="ri-arrow-right-up-line social-go"></i>
                 </a>
@@ -167,7 +131,7 @@
                     <span class="social-icon social-icon-instagram"><i class="ri-instagram-fill"></i></span>
                     <span class="social-info">
                         <span class="social-name">Instagram</span>
-                        <span class="social-desc" data-i18n="social_instagram_desc">Loyiha kundaligi</span>
+                        <span class="social-desc">Loyiha kundaligi</span>
                     </span>
                     <i class="ri-arrow-right-up-line social-go"></i>
                 </a>
@@ -175,7 +139,7 @@
                     <span class="social-icon social-icon-gmail"><i class="ri-mail-fill"></i></span>
                     <span class="social-info">
                         <span class="social-name">Gmail</span>
-                        <span class="social-desc" data-i18n="social_gmail_desc">Rasmiy yozishmalar</span>
+                        <span class="social-desc">Rasmiy yozishmalar</span>
                     </span>
                     <i class="ri-arrow-right-up-line social-go"></i>
                 </a>
@@ -185,37 +149,37 @@
         <!-- FIKRLAR -->
         <section id="fikrlar" class="reveal">
             <div class="section-head">
-                <span class="eyebrow" data-i18n="comments_eyebrow">Fikr-mulohaza</span>
-                <h2 data-i18n="comments_title">Fikringizni qoldiring</h2>
+                <span class="eyebrow">Fikr-mulohaza</span>
+                <h2>Fikringizni qoldiring</h2>
             </div>
 
             <div class="comments-shell">
                 <div id="authBox" class="auth-box">
                     <button id="googleLoginBtn" class="btn btn-ghost">
-                        <i class="ri-google-fill"></i> <span data-i18n="login_google">Google bilan kirish</span>
+                        <i class="ri-google-fill"></i> <span>Google bilan kirish</span>
                     </button>
                     <button id="githubLoginBtn" class="btn btn-ghost">
-                        <i class="ri-github-fill"></i> <span data-i18n="login_github">GitHub bilan kirish</span>
+                        <i class="ri-github-fill"></i> <span>GitHub bilan kirish</span>
                     </button>
                     <div id="userProfile" class="user-profile" hidden>
                         <img id="userAvatar" class="user-avatar" alt="">
                         <span id="userName" class="user-name"></span>
-                        <button id="logoutBtn" class="logout-btn" data-i18n-title="logout" title="Chiqish"><i class="ri-logout-box-r-line"></i></button>
+                        <button id="logoutBtn" class="logout-btn" title="Chiqish"><i class="ri-logout-box-r-line"></i></button>
                     </div>
                 </div>
 
                 <form id="commentForm" class="comment-form" hidden>
-                    <textarea id="commentText" maxlength="500" data-i18n-placeholder="comment_placeholder" placeholder="Fikringizni shu yerga yozing..." rows="3" required></textarea>
-                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> <span data-i18n="comment_send">Yuborish</span></button>
+                    <textarea id="commentText" maxlength="500" placeholder="Fikringizni shu yerga yozing..." rows="3" required></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> <span>Yuborish</span></button>
                 </form>
 
-                <p id="commentsHint" class="comments-hint" data-i18n="comment_hint">Fikr qoldirish uchun avval Google yoki GitHub bilan kiring.</p>
+                <p id="commentsHint" class="comments-hint">Fikr qoldirish uchun avval Google yoki GitHub bilan kiring.</p>
 
                 <p id="commentsCount" class="comments-count" hidden></p>
 
                 <div class="comments-scroll-wrap">
                     <div id="commentsList" class="comments-list">
-                        <p class="comments-loading" data-i18n="comments_loading">Fikrlar yuklanmoqda...</p>
+                        <p class="comments-loading">Fikrlar yuklanmoqda...</p>
                     </div>
                     <div class="comments-fade" aria-hidden="true"></div>
                 </div>
@@ -224,68 +188,63 @@
 
         <!-- JONLI HISOBLAGICH -->
         <section class="live-stat reveal">
-            <span class="eyebrow" data-i18n="stat_eyebrow">Jonli statistika</span>
+            <span class="eyebrow">Jonli statistika</span>
             <div class="live-stat-row">
                 <span class="live-stat-number" id="registeredCount">0</span>
-                <span class="live-stat-label" data-i18n="stat_registered">kishi sahifamizda ro'yxatdan o'tdi</span>
+                <span class="live-stat-label">kishi Google orqali ro'yxatdan o'tdi</span>
             </div>
             <div class="live-stat-row live-stat-row-secondary">
                 <span class="live-stat-number live-stat-number-sm" id="visitsCount">0</span>
-                <span class="live-stat-label" data-i18n="stat_visits">(25.09.2026>>) sahifaga marta saytga tashrif buyurildi</span>
+                <span class="live-stat-label">marta saytga tashrif buyurildi</span>
             </div>
         </section>
 
         <!-- DONAT -->
         <section id="donat" class="reveal">
             <div class="section-head">
-                <span class="eyebrow" data-i18n="donate_eyebrow">Qo'llab-quvvatlash</span>
-                <h2 data-i18n="donate_title">Loyihani qo'llab-quvvatlang</h2>
+                <span class="eyebrow">Qo'llab-quvvatlash</span>
+                <h2>Loyihani qo'llab-quvvatlang</h2>
             </div>
             <div class="donate-shell">
-                <p class="donate-lead" data-i18n="donate_lead">Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!</p>
+                <p class="donate-lead">Agar loyiha yoqqan bo'lsa, ixtiyoriy ravishda quyidagi kartalardan biriga donat qilishingiz mumkin. Har bir yordam uchun rahmat!</p>
 
                 <div class="donate-cards">
                     <div class="donate-card">
                         <span class="donate-bank">HUMO</span>
                         <span class="donate-number">9860 0801 6545 3699</span>
-                        <button class="btn btn-ghost donate-copy" data-copy-card="9860080165453699"><i class="ri-file-copy-line"></i> <span data-i18n="donate_copy">Nusxalash</span></button>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="9860080165453699"><i class="ri-file-copy-line"></i> <span>Nusxalash</span></button>
                     </div>
                     <div class="donate-card">
                         <span class="donate-bank">VISA</span>
                         <span class="donate-number">4916 9912 0004 9554</span>
-                        <button class="btn btn-ghost donate-copy" data-copy-card="4916991200049554"><i class="ri-file-copy-line"></i> <span data-i18n="donate_copy">Nusxalash</span></button>
+                        <button class="btn btn-ghost donate-copy" data-copy-card="4916991200049554"><i class="ri-file-copy-line"></i> <span>Nusxalash</span></button>
                     </div>
                 </div>
 
-                <p class="donate-total"><span data-i18n="donate_total">Jami donat qilingan:</span> <strong id="donationsTotal">—</strong></p>
+                <p class="donate-total"><span>Jami donat qilingan:</span> <strong id="donationsTotal">—</strong></p>
             </div>
         </section>
     </main>
 
     <footer>
         <div id="huquqlar">
-            <p data-i18n="footer_rights">©2026 Donylogic™ Studios. Barcha huquqlar himoyalangan.</p>
+            <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
         </div>
         <div id="quizlink">
-            <p data-i18n="footer_disclaimer">Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan va Bu uchun hech kimdan maanfatdor emas.</p>
+            <p>Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas. Havolalar tegishli egalarining ruxsati bilan joylashtirilgan.</p>
             <a href="https://tezkorquiz.uz/" target="_blank">tezkorquiz.uz</a>
         </div>
     </footer>
+
     <script>
-window.gtranslateSettings = {
-  "default_language": "uz",
-  "languages": ["uz", "ru", "en"],
-  "wrapper_selector": ".gtranslate_wrapper",
-  "flag_style": "3d",
-  "alt_flags": {"en": "usa"}
-}
-</script>
-<script src="https://cdn.gtranslate.net/widgets/latest/dropdown.js" defer></script>
-
-    <script src="script.js?v=9"></script>
-
-    <script type="module" src="comments.js?v=7"></script>
-
+        window.gtranslateSettings = {
+            "default_language": "uz",
+            "languages": ["uz", "en", "ru"],
+            "wrapper_selector": ".gtranslate_wrapper"
+        };
+    </script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+    <script src="script.js?v=12"></script>
+    <script type="module" src="comments.js?v=10"></script>
 </body>
-
-</html>
+        </html>
