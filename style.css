@@ -100,8 +100,6 @@ body{
     pointer-events: none;
 }
 
-
-
 /* ---------- header / nav ---------- */
 header{
     margin: 18px 23px;
@@ -126,6 +124,12 @@ header{
 #navbar:hover{
     border-color: var(--border-glow);
     box-shadow: 0 8px 30px var(--nav-shadow-hover), var(--shadow-cyan);
+}
+#logoRow{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
 }
 #logo img{
     width: 168px;
@@ -183,40 +187,112 @@ span:hover{
     filter: drop-shadow(0 0 10px rgba(124,92,255,0.6));
 }
 
-/* ---------- nav tools: language switch + theme toggle ---------- */
+/* ---------- nav tools: lang switch + GTranslate (hidden) + theme toggle ---------- */
 .nav-tools{
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.lang-switch{
+
+/* ---------- e'lonlar karuseli (logotip yonida) ---------- */
+.announcement-bar{
     display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    max-width: 300px;
+    padding: 7px 16px 7px 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(79,216,255,0.12), rgba(124,92,255,0.1));
+    border: 1px solid var(--border-glow);
+    box-shadow: 0 0 14px rgba(79,216,255,0.15);
+    overflow: hidden;
+}
+.announcement-icon{
+    flex-shrink: 0;
+    color: var(--cyan);
+    font-size: 0.95rem;
+    animation: annRing 2.4s ease-in-out infinite;
+}
+@keyframes annRing{
+    0%, 100%{ transform: rotate(0deg); }
+    10%{ transform: rotate(-14deg); }
+    20%{ transform: rotate(10deg); }
+    30%{ transform: rotate(-6deg); }
+    40%{ transform: rotate(0deg); }
+}
+.announcement-text{
+    display: block;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: "Space Mono", monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.2px;
+    color: var(--text);
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    opacity: 1;
+    transition: opacity .35s var(--ease);
+}
+.announcement-text.is-fading{
+    opacity: 0;
+}
+
+@media(max-width: 900px){
+    .announcement-bar{
+        display: none;
+    }
+}
+
+/* ---------- til almashtirgich (UZ / EN / RU) ---------- */
+.lang-switch{
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
     background: var(--glass);
     border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px;
-    gap: 2px;
 }
-.lang-switch button{
+.lang-btn{
     font-family: "Space Mono", monospace;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    padding: 5px 10px;
+    padding: 6px 10px;
     border: none;
     border-radius: 999px;
     background: transparent;
     color: var(--muted);
     cursor: pointer;
-    transition: background .25s var(--ease), color .25s var(--ease);
+    transition: color .2s var(--ease), background .2s var(--ease), box-shadow .2s var(--ease);
 }
-.lang-switch button:hover{
+.lang-btn:hover{
     color: var(--text);
 }
-.lang-switch button.is-active{
+.lang-btn.is-active{
     background: linear-gradient(90deg, var(--cyan), var(--violet));
     color: #05070d;
+    box-shadow: 0 0 12px rgba(79,216,255,0.4);
 }
+
+/* GTranslate's own widget + Google's injected chrome stay fully hidden;
+   we drive translation ourselves via the 3 lang-btn buttons + doGTranslate() */
+.gtranslate_wrapper{ display: none !important; }
+.goog-te-banner-frame,
+.goog-te-gadget,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight{
+    display: none !important;
+    background: none !important;
+    box-shadow: none !important;
+}
+body{ top: 0 !important; }
 
 .theme-toggle{
     display: inline-flex;
@@ -546,13 +622,6 @@ footer p{
     }
     .hero{
         min-height: 64vh;
-    }
-}
-
-/* touch devices: no fine hover, kill custom cursor regardless of width */
-@media (hover: none), (pointer: coarse){
-    body.cursor-ready, body.cursor-ready a, body.cursor-ready button{
-        cursor: auto;
     }
 }
 
@@ -1157,331 +1226,384 @@ footer p{
         grid-template-columns: 1fr;
     }
 }
-/* --- Rollar (Loyiha muallifi, Kommunitet menejer) --- */
-.role-badge {
-    font-size: 0.75rem;
-    padding: 2px 8px;
-    border-radius: 12px;
-    margin-left: 8px;
-    font-weight: 600;
+
+/* ---------- rol nishonlari (badge) ---------- */
+.role-badge{
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-family: "Space Mono", monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.role-badge i{ font-size: 0.95em; }
+
+.role-badge-author{
+    background: linear-gradient(90deg, #ffd166, #ff9a4f);
+    color: #2a1600;
+    box-shadow: 0 0 14px rgba(255,209,102,0.5);
+}
+.role-badge-admin{
+    background: linear-gradient(90deg, var(--violet), #ff4fd8);
+    color: #fff;
+    box-shadow: 0 0 14px rgba(124,92,255,0.45);
+}
+.role-badge-manager{
+    background: linear-gradient(90deg, var(--cyan), #38b6ff);
+    color: #05070d;
+    box-shadow: 0 0 14px rgba(79,216,255,0.4);
 }
 
-.role-badge.author {
-    background: linear-gradient(45deg, #ffd166, #ff9f1c);
-    color: #1a1a1a;
-    box-shadow: 0 0 8px rgba(255, 209, 102, 0.4);
+.comment-author-line{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.role-badge.manager {
-    background: rgba(79, 216, 255, 0.15);
-    color: #4fd8ff;
-    border: 1px solid rgba(79, 216, 255, 0.3);
+/* premium izoh kartochkalari */
+.comment-item-author{
+    border-color: rgba(255,209,102,0.4) !important;
+    background: linear-gradient(135deg, rgba(255,209,102,0.07), var(--glass)) !important;
+    box-shadow: 0 0 20px rgba(255,209,102,0.12);
+}
+.comment-item-admin{
+    border-color: rgba(124,92,255,0.4) !important;
+    background: linear-gradient(135deg, rgba(124,92,255,0.07), var(--glass)) !important;
+}
+.comment-item-manager{
+    border-color: rgba(79,216,255,0.4) !important;
+    background: linear-gradient(135deg, rgba(79,216,255,0.07), var(--glass)) !important;
 }
 
-/* --- Muallifning izohi (Jozibador ajralib turishi uchun) --- */
-.comment-author-special {
-    background: rgba(255, 209, 102, 0.05); /* Yengil tilla rang fon */
-    border-left: 3px solid #ffd166;
-    border-radius: 8px;
-    padding-left: 10px;
-}
-.comment-author-special .comment-author {
-    color: #ffd166 !important;
+.user-profile .role-badge{
+    margin-left: 2px;
 }
 
+/* premium profil chiplari — muallif/admin/manager kirganda navbardagi profil ham porlaydi */
+.user-profile.is-author{
+    border-color: rgba(255,209,102,0.5);
+    background: linear-gradient(135deg, rgba(255,209,102,0.12), var(--glass));
+    box-shadow: 0 0 18px rgba(255,209,102,0.2);
+}
+.user-profile.is-admin{
+    border-color: rgba(124,92,255,0.5);
+    background: linear-gradient(135deg, rgba(124,92,255,0.12), var(--glass));
+    box-shadow: 0 0 18px rgba(124,92,255,0.18);
+}
+.user-profile.is-manager{
+    border-color: rgba(79,216,255,0.5);
+    background: linear-gradient(135deg, rgba(79,216,255,0.12), var(--glass));
+    box-shadow: 0 0 18px rgba(79,216,255,0.16);
+}
+.user-profile.is-author .user-avatar{ border-color: #ffd166; }
+.user-profile.is-admin .user-avatar{ border-color: var(--violet); }
+.user-profile.is-manager .user-avatar{ border-color: var(--cyan); }
 
-/* Tasdiqlangan ikonka (Remix Icon) uchun animatsiya */
-.animated-verify-icon {
-    font-size: 1.1rem; /* Ikonka kattaligi */
-    color: #FF0000; /* Ikonka rangi - qizil */
-    margin-right: 4px;
-    display: inline-block; /* Transform ishlashi uchun muhim */
-    /* Animatsiyani ulash: 1.5 soniyada bir marta to'liq aylanadi */
-    animation: verify-pulse 1.5s infinite ease-in-out;
+/* ---------- admin panel tugmasi ---------- */
+.admin-panel-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,209,102,0.4);
+    background: linear-gradient(90deg, rgba(255,209,102,0.15), rgba(255,154,79,0.1));
+    color: #ffd166;
+    font-family: "Space Mono", monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: box-shadow .25s var(--ease), transform .25s var(--ease);
+}
+.admin-panel-btn:hover{
+    box-shadow: 0 0 16px rgba(255,209,102,0.4);
+    transform: translateY(-1px);
 }
 
-/* Animatsiya kalit kadrlari (shriftlar uchun) */
-@keyframes verify-pulse {
-    0% { 
-        transform: scale(1); 
-        text-shadow: 0 0 2px rgba(79, 216, 255, 0.4); 
-    }
-    50% { 
-        transform: scale(1.25); /* 25% ga kattalashadi */
-        text-shadow: 0 0 10px rgba(79, 216, 255, 0.9); /* Orqasida nur yonadi */
-    }
-    100% { 
-        transform: scale(1); 
-        text-shadow: 0 0 2px rgba(79, 216, 255, 0.4); 
-    }
-}
-/* --- GTranslate vidjetini to'liq qora/shisha dizaynga moslash --- */
-.gtranslate_wrapper, 
-.gt_container, 
-.gt_switcher {
-    background: transparent !important;
-}
-
-/* GTranslate ning asosiy tanlash tugmasi yoki select menyusi */
-.gtranslate_wrapper select, 
-.gt_switcher select,
-.gt_selected,
-.goog-te-combo {
-    background-color: #0d0d12 !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    padding: 6px 14px !important;
-    border-radius: 20px !important;
-    font-family: inherit !important;
-    font-size: 14px !important;
-    outline: none !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
-    cursor: pointer !important;
-}
-
-/* Sichqoncha olib kelinganda */
-.gtranslate_wrapper select:hover, 
-.gt_switcher select:hover,
-.gt_selected:hover {
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    background-color: #16161c !important;
-}
-
-/* Ochiladigan ro'yxat menyusi (Dropdown options) */
-.gtranslate_wrapper option,
-.gt_switcher option {
-    background-color: #121216 !important;
-    color: #ffffff !important;
-}
-
-/* Agar GTranslate bayroqli versiyada ishlayotgan bo'lsa, matn va ikonkalarni oq qilish */
-.gtranslate_wrapper a, 
-.gt_switcher a {
-    color: #ffffff !important;
-}
-
-
-/* --- Admin Panel Modal Dizayni --- */
-/* --- Admin Panel Modal Dizayni (Tuzatilgan) --- */
-.author-panel-btn {
-    border: 1px solid rgba(79, 216, 255, 0.4) !important;
-    color: #4fd8ff !important;
-    background: rgba(79, 216, 255, 0.05) !important;
-    transition: all 0.3s ease;
-}
-
-.author-panel-btn:hover {
-    background: rgba(79, 216, 255, 0.15) !important;
-    box-shadow: 0 0 15px rgba(79, 216, 255, 0.3);
-}
-
-.author-modal {
+/* ---------- admin panel modal ---------- */
+.admin-overlay{
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(5, 5, 8, 0.8);
-    backdrop-filter: blur(12px);
-    z-index: 9999;
-    display: flex; /* Standart holatda flex */
+    inset: 0;
+    z-index: 15000;
+    background: rgba(5,7,13,0.72);
+    backdrop-filter: blur(6px);
+    display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    animation: fadeIn 0.3s ease;
 }
-
-/* MUHIM: hidden atributi ishlayishi uchun shart! */
-.author-modal[hidden] {
-    display: none !important;
-}
-
-.author-modal-content {
-    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(10, 10, 15, 0.98));
-    border: 1px solid rgba(79, 216, 255, 0.3);
-    border-radius: 20px;
+.admin-modal{
     width: 100%;
-    max-width: 600px;
-    padding: 30px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 25px rgba(79, 216, 255, 0.05);
-    position: relative;
-    animation: scaleUp 0.3s ease;
+    max-width: 980px;
+    max-height: 84vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--navy-soft);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow: hidden;
 }
-
-.author-modal-header {
+.admin-modal-head{
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 25px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding-bottom: 15px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
 }
-
-.author-modal-header h3 {
-    font-size: 18px;
-    color: #4fd8ff;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.close-modal-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.close-modal-btn:hover {
-    background: rgba(255, 92, 92, 0.2);
-    border-color: #ff5c5c;
-    color: #ff5c5c;
-}
-/* Oldingi statistikalar va formalarning stillari */
-.dash-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.dash-stat-box {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 15px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.dash-stat-box i {
-    font-size: 24px;
-    color: #4fd8ff;
-}
-
-.dash-stat-box span {
-    display: block;
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.dash-stat-box small {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 11px;
-}
-
-.broadcast-box {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.broadcast-box h3 {
-    font-size: 15px;
-    margin-bottom: 5px;
-    color: #4fd8ff;
+.admin-modal-head h3{
     display: flex;
     align-items: center;
     gap: 8px;
+    font-size: 1.05rem;
+    color: #ffd166;
+}
+.admin-close{
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+.admin-close:hover{
+    border-color: var(--border-glow);
+    color: var(--cyan);
+}
+.admin-modal-body{
+    padding: 18px 22px 22px;
+    overflow: auto;
+}
+.admin-loading{
+    color: var(--muted);
+    font-size: 0.92rem;
 }
 
-.broadcast-box p {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 12px;
+.admin-table-wrap{
+    overflow-x: auto;
 }
-
-.broadcast-box input {
+.admin-table{
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 15px;
-    border-radius: 8px;
-    color: #ffffff;
-    font-size: 13px;
-    margin-bottom: 12px;
-    outline: none;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 780px;
 }
-
-.broadcast-box input:focus {
-    border-color: #4fd8ff;
+.admin-table th{
+    text-align: left;
+    padding: 10px 12px;
+    font-family: "Space Mono", monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
 }
-
-.broadcast-actions {
-    display: flex;
-    gap: 10px;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes scaleUp {
-    from { transform: scale(0.9); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-
-/* E'lonlar karuseli (Tepadan tushib, pastga ketish animatsiyasi) */
-.announcements-banner {
-    position: relative;
-    display: inline-block;
-    margin-left: 15px;
-    padding: 6px 14px;
-    background: rgba(79, 216, 255, 0.08);
-    border: 1px solid rgba(79, 216, 255, 0.2);
-    border-radius: 6px;
-    color: var(--text-color, #4fd8ff);
-    font-size: 13px;
-    font-weight: 500;
-    max-width: 400px;
-    height: 32px; /* Qat'iy balandlik karusel uchun muhim */
-    overflow: hidden; /* Chiqib ketgan matn ko'rinmay turishi uchun */
+.admin-table td{
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
-
-.announcement-item {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    top: 0;
-    line-height: 20px;
+.admin-row-blocked{
+    opacity: 0.55;
+}
+.admin-cell-user{
+    display: flex;
+    align-items: center;
+    gap: 8px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.5s ease;
+}
+.admin-cell-user img{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.admin-activity-dot{
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--muted);
+    margin-right: 6px;
+}
+.admin-activity-dot.is-online{
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+}
+.admin-status-ok{ color: #4ade80; font-weight: 600; }
+.admin-status-blocked{ color: #ff6b6b; font-weight: 600; }
+
+.admin-actions{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.admin-role-select{
+    font-family: "Saira", sans-serif;
+    font-size: 0.78rem;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+}
+.admin-block-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.76rem;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+.admin-block-btn:hover{
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+.admin-block-btn.is-blocked{
+    border-color: #4ade80;
+    color: #4ade80;
+}
+.admin-self-tag{
+    font-family: "Space Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
 }
 
-/* Faol e'lon o'rtada turadi */
-.announcement-item.active {
-    opacity: 1;
-    transform: translateY(6px);
-}
-
-/* Eski e'lon pastga qarab chiqib ketadi */
-.announcement-item.exit {
-    opacity: 0;
-    transform: translateY(20px);
-}
-
-@media (max-width: 768px) {
-    .announcements-banner {
-        display: none;
+@media(max-width: 640px){
+    .admin-modal{
+        max-height: 90vh;
     }
 }
+
+/* ---------- admin panel: e'lonlar bo'limi ---------- */
+.admin-section{
+    margin-bottom: 20px;
+}
+.admin-section-title{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: var(--cyan);
+    margin-bottom: 12px;
+}
+.admin-section-title i{
+    font-size: 1rem;
+}
+.admin-count-tag{
+    margin-left: auto;
+    font-family: "Space Mono", monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-weight: 400;
+}
+.admin-divider{
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 22px 0;
+}
+
+.announcement-form{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.announcement-form input{
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border-radius: 12px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: "Saira", sans-serif;
+    font-size: 0.9rem;
+}
+.announcement-form input:focus{
+    outline: none;
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-cyan);
+}
+.announcement-form .btn{
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.announcement-admin-list{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.announcement-admin-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+}
+.announcement-admin-text{
+    flex: 1;
+    min-width: 0;
+    font-size: 0.85rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.announcement-admin-time{
+    font-family: "Space Mono", monospace;
+    font-size: 0.66rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+.announcement-admin-delete{
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.announcement-admin-delete:hover{
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+.announcement-admin-empty{
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+@media(max-width: 560px){
+    .announcement-form{
+        flex-direction: column;
+    }
+    .announcement-form .btn{
+        width: 100%;
+        justify-content: center;
+    }
+                        }
