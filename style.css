@@ -156,6 +156,25 @@ header{
     text-decoration: none;
     padding: 4px 2px;
 }
+/* faqat ikonkali nav tugmalari */
+#mininavbar a.nav-icon-link{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    font-size: 1.05rem;
+    transition: border-color .25s var(--ease), box-shadow .25s var(--ease), color .25s var(--ease), transform .25s var(--ease);
+}
+#mininavbar a.nav-icon-link::after{ display: none; }
+#mininavbar a.nav-icon-link:hover{
+    border-color: var(--border-glow);
+    box-shadow: var(--shadow-cyan);
+}
 #mininavbar a::after{
     content: "";
     position: absolute;
@@ -651,7 +670,8 @@ footer p{
         width: 140px;
     }
     #mininavbar{
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: center;
         text-align: center;
         gap: 12px;
         font-size: 0.9em;
@@ -749,7 +769,7 @@ footer p{
 }
 .social-cards{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
 }
 .social-card{
@@ -799,6 +819,7 @@ footer p{
 }
 .social-icon-telegram{ background: linear-gradient(135deg, #38b6ff, #4fd8ff); --card-glow: rgba(79,216,255,0.18); }
 .social-icon-instagram{ background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af, #515bd4); --card-glow: rgba(221,42,123,0.18); }
+.social-icon-portfolio{ background: linear-gradient(135deg, #4fd8ff, #7c5cff); --card-glow: rgba(124,92,255,0.2); }
 .social-icon-gmail{ background: linear-gradient(135deg, #ff6b6b, #ff4fd8); --card-glow: rgba(255,79,216,0.18); }
 .social-info{
     display: flex;
@@ -1616,4 +1637,4 @@ footer p{
         width: 100%;
         justify-content: center;
     }
-}
+   }
