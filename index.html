@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=14">
+    <link rel="stylesheet" href="style.css?v=15">
     <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,11 +45,9 @@
                 </div>
             </div>
             <div id="mininavbar">
-                <a href="#"
-                    onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..')">Biz
-                    haqimizda</a>
-                <a href="salom.html">Bir narsalar</a>
-                <a href="portfolio.html"><span>Dasturchi</span></a>
+                <a href="#" class="nav-icon-link" title="Biz haqimizda" aria-label="Biz haqimizda"
+                    onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..'); return false;"><i class="ri-information-line"></i></a>
+                <a href="salom.html" class="nav-icon-link" title="Bir narsalar" aria-label="Bir narsalar"><i class="ri-sparkling-2-line"></i></a>
             </div>
             <div class="nav-tools">
                 <button id="adminPanelBtn" class="admin-panel-btn" hidden title="Admin panel">
@@ -140,6 +138,14 @@
                     <span class="social-info">
                         <span class="social-name">Gmail</span>
                         <span class="social-desc">Rasmiy yozishmalar</span>
+                    </span>
+                    <i class="ri-arrow-right-up-line social-go"></i>
+                </a>
+                <a class="social-card" href="portfolio.html">
+                    <span class="social-icon social-icon-portfolio"><i class="ri-code-s-slash-line"></i></span>
+                    <span class="social-info">
+                        <span class="social-name">Dasturchi</span>
+                        <span class="social-desc">Portfolio va ishlarim</span>
                     </span>
                     <i class="ri-arrow-right-up-line social-go"></i>
                 </a>
@@ -247,4 +253,4 @@
     <script src="script.js?v=12"></script>
     <script type="module" src="comments.js?v=13"></script>
 </body>
-</html>
+                                                                                  </html>
