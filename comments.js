@@ -600,7 +600,7 @@ function showAnnouncement(idx){
 
     const slide = document.createElement("div");
     slide.className = "announcement-slide is-entering";
-    slide.innerHTML = `<i class="ri-megaphone-fill announcement-icon"></i><span>${escapeHTML(item.text || "")}</span>`;
+    slide.innerHTML = `<span>${escapeHTML(item.text || "")}</span>`;
 
     // eskisi pastga tushadi, yangisi shu zahoti tepadan uchib keladi
     const old = currentSlide;
