@@ -27,7 +27,7 @@ const HEARTBEAT_MS = 90 * 1000;                 // "oxirgi faollik"ni yangilab t
 const AUTHOR_EMAIL  = "donylogicstudios@gmail.com"; // loyiha muallifi — o'zgarmas
 const MANAGER_DEFAULT_EMAIL = "qwdonyor@gmail.com"; // birinchi community-manager (standart)
 const MAX_ANNOUNCEMENTS = 5;
-const ANNOUNCEMENT_ROTATE_MS = 3000;
+const ANNOUNCEMENT_ROTATE_MS = 3600; // 0.6s kirish animatsiyasi + 3s o'rtada turish
 
 const ROLE_LABEL = { author: "Loyiha muallifi", admin: "Admin", manager: "Community-manager" };
 const ROLE_ICON  = { author: "ri-vip-crown-2-fill", admin: "ri-shield-star-fill", manager: "ri-shield-user-fill" };
@@ -57,7 +57,8 @@ const donationsTotalEl  = document.getElementById("donationsTotal");
 const commentsCountEl   = document.getElementById("commentsCount");
 const adminPanelBtn     = document.getElementById("adminPanelBtn");
 const announcementBar   = document.getElementById("announcementBar");
-const announcementText  = document.getElementById("announcementText");
+const announcementStage  = document.getElementById("announcementStage");
+let currentSlide = null;
 
 let currentUser = null;
 let currentUserRole = null;   // 'author' | 'admin' | 'manager' | null
@@ -568,12 +569,14 @@ try {
 }
 
 function renderAnnouncementBar(){
-    if (!announcementBar || !announcementText) return;
+    if (!announcementBar || !announcementStage) return;
 
     if (announcementRotateTimer){
         clearInterval(announcementRotateTimer);
         announcementRotateTimer = null;
     }
+    announcementStage.innerHTML = "";
+    currentSlide = null;
 
     if (!allAnnouncements.length){
         announcementBar.hidden = true;
@@ -584,23 +587,30 @@ function renderAnnouncementBar(){
     announcementIndex = 0;
     showAnnouncement(0);
 
-    if (allAnnouncements.length > 1){
-        announcementRotateTimer = setInterval(() => {
-            announcementIndex = (announcementIndex + 1) % allAnnouncements.length;
-            showAnnouncement(announcementIndex);
-        }, ANNOUNCEMENT_ROTATE_MS);
-    }
+    // 1 ta bo'lsa ham xuddi shu e'lon aylanib keladi; ko'p bo'lsa navbatma-navbat
+    announcementRotateTimer = setInterval(() => {
+        announcementIndex = (announcementIndex + 1) % allAnnouncements.length;
+        showAnnouncement(announcementIndex);
+    }, ANNOUNCEMENT_ROTATE_MS);
 }
 
 function showAnnouncement(idx){
     const item = allAnnouncements[idx];
-    if (!item || !announcementText) return;
+    if (!item || !announcementStage) return;
 
-    announcementText.classList.add("is-fading");
-    setTimeout(() => {
-        announcementText.textContent = item.text || "";
-        announcementText.classList.remove("is-fading");
-    }, 220);
+    const slide = document.createElement("div");
+    slide.className = "announcement-slide is-entering";
+    slide.innerHTML = `<i class="ri-megaphone-fill announcement-icon"></i><span>${escapeHTML(item.text || "")}</span>`;
+
+    // eskisi pastga tushadi, yangisi shu zahoti tepadan uchib keladi
+    const old = currentSlide;
+    announcementStage.appendChild(slide);
+    if (old){
+        old.classList.remove("is-entering");
+        old.classList.add("is-leaving");
+        setTimeout(() => old.remove(), 650);
+    }
+    currentSlide = slide;
 }
 
 async function postAnnouncement(rawText, submitBtn){
