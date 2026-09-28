@@ -1,10 +1,11 @@
 /* =========================================================
    DONYLOGIC — Studio interactions
-   - custom cursor (dot + trailing ring)
    - parallax starfield canvas
    - magnetic buttons / nav links
    - 3D tilt on cards
    - scroll-reveal via IntersectionObserver
+   - tun/kun rejimi
+   - UZ/EN/RU til almashtirgich (GTranslate ustida)
    All effects respect prefers-reduced-motion and skip on touch devices.
    ========================================================= */
 (() => {
@@ -173,9 +174,9 @@
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
 
-            caption.textContent = window.DonylogicI18n
-                ? window.DonylogicI18n.t(isFuture ? "age_future" : "age_label")
-                : (isFuture ? "tashkil topishiga qoldi" : "yoshi");
+            caption.textContent = isFuture
+                ? "tashkil topishiga qoldi"
+                : "yoshi";
 
             daysEl.textContent = days;
             hoursEl.textContent = pad(hours);
@@ -209,6 +210,77 @@
         });
     }
 
+    /* ---------------- til almashtirgich: UZ (standart) / EN / RU ----------------
+       GTranslate'ning dwf.js skripti sahifaga doGTranslate() funksiyasini qo'shadi;
+       biz o'zimizning 3 ta tugmamiz orqali shu funksiyani chaqiramiz, GTranslate'ning
+       standart (chiroyli bo'lmagan) dropdown ko'rinishini esa CSS orqali yashiramiz. */
+    function initLangSwitch(){
+        const wrap = document.getElementById("langSwitch");
+        if (!wrap) return;
+        const btns = Array.from(wrap.querySelectorAll(".lang-btn"));
+        if (!btns.length) return;
+
+        const STORAGE_KEY = "donylogic_lang";
+
+        function currentLangFromCookie(){
+            const m = document.cookie.match(/googtrans=\/[a-zA-Z-]+\/([a-zA-Z-]+)/);
+            return m ? m[1].toLowerCase() : null;
+        }
+
+        function markActive(lang){
+            btns.forEach((b) => b.classList.toggle("is-active", b.dataset.lang === lang));
+        }
+
+        // boshlang'ich holat: avval saqlangan tanlov, bo'lmasa cookie, bo'lmasa "uz"
+        markActive(localStorage.getItem(STORAGE_KEY) || currentLangFromCookie() || "uz");
+
+        // Ba'zi holatlarda GTranslate skripti window.doGTranslate'ni ochiq qilmasligi mumkin —
+        // shu holat uchun to'g'ridan-to'g'ri Google'ning o'zi yaratadigan yashirin
+        // <select class="goog-te-combo"> elementiga zaxira (fallback) yo'l qo'yamiz.
+        function fireEvent(el, evtName){
+            try {
+                const evt = document.createEvent("HTMLEvents");
+                evt.initEvent(evtName, true, true);
+                el.dispatchEvent(evt);
+            } catch (e){
+                try { el.dispatchEvent(new Event(evtName, { bubbles: true })); } catch (e2){}
+            }
+        }
+        function tryDirectCombo(lang){
+            const combo = document.querySelector("select.goog-te-combo");
+            if (!combo) return false;
+            combo.value = lang;
+            fireEvent(combo, "change");
+            return true;
+        }
+
+        let waitAttempts = 0;
+        function callDoGTranslate(pair, onDone){
+            if (typeof window.doGTranslate === "function"){
+                window.doGTranslate(pair);
+                onDone();
+                return;
+            }
+            const lang = pair.split("|")[1];
+            if (tryDirectCombo(lang)){
+                onDone();
+                return;
+            }
+            waitAttempts++;
+            if (waitAttempts > 40) return; // ~8s kutgandan keyin voz kechish
+            setTimeout(() => callDoGTranslate(pair, onDone), 200);
+        }
+
+        btns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const lang = btn.dataset.lang;
+                markActive(lang); // tugmani darhol faollashtiramiz — foydalanuvchi kutmasin
+                localStorage.setItem(STORAGE_KEY, lang);
+                callDoGTranslate("uz|" + lang, () => markActive(lang));
+            });
+        });
+    }
+
     function safe(fn, label){
         try { fn(); }
         catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
@@ -220,6 +292,7 @@
         safe(initReveal, "scroll-reveal");
         safe(initScrollCue, "scroll-cue");
         safe(initAgeCounter, "age-counter");
+        safe(initLangSwitch, "lang-switch");
         if (canFancy){
             safe(initMagnetic, "magnetic");
             safe(initTilt, "tilt");
