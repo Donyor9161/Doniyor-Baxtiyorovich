@@ -194,24 +194,29 @@ span:hover{
     gap: 10px;
 }
 
-/* ---------- e'lonlar karuseli (logotip yonida) ---------- */
+/* hidden atributi display:flex/inline-flex qoidalari tomonidan bekor qilinmasin */
+[hidden]{ display: none !important; }
+
+/* ---------- e'lonlar karuseli (navbar ostida, to'liq kenglik) ---------- */
 .announcement-bar{
     display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    max-width: 300px;
-    padding: 7px 16px 7px 12px;
-    border-radius: 999px;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px 18px;
+    border-radius: 18px;
     background: linear-gradient(90deg, rgba(79,216,255,0.12), rgba(124,92,255,0.1));
     border: 1px solid var(--border-glow);
     box-shadow: 0 0 14px rgba(79,216,255,0.15);
-    overflow: hidden;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 .announcement-icon{
     flex-shrink: 0;
+    margin-top: 2px;
     color: var(--cyan);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     animation: annRing 2.4s ease-in-out infinite;
 }
 @keyframes annRing{
@@ -223,28 +228,26 @@ span:hover{
 }
 .announcement-text{
     display: block;
+    flex: 1;
     min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
     font-family: "Space Mono", monospace;
-    font-size: 0.74rem;
-    letter-spacing: 0.2px;
+    font-size: 0.8rem;
+    line-height: 1.55;
     color: var(--text);
     background: none;
     -webkit-background-clip: initial;
     background-clip: initial;
     opacity: 1;
-    transition: opacity .35s var(--ease);
+    transition: opacity .3s var(--ease);
 }
 .announcement-text.is-fading{
     opacity: 0;
 }
-
-@media(max-width: 900px){
-    .announcement-bar{
-        display: none;
-    }
+@media(max-width: 768px){
+    .announcement-bar{ padding: 10px 14px; }
+    .announcement-text{ font-size: 0.74rem; }
 }
 
 /* ---------- til almashtirgich (UZ / EN / RU) ---------- */
@@ -1606,4 +1609,4 @@ footer p{
         width: 100%;
         justify-content: center;
     }
-                        }
+}
