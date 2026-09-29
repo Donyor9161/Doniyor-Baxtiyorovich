@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function(){
+            var saved = localStorage.getItem("donylogic_theme");
+            var theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
+    <title>Kino va Seriallar Bazasi — DONYLOGIC</title>
+    <meta name="description" content="Kino va seriallar bazasi — eng so'nggi filmlar va seriallarni qidiring, ko'ring va kashf eting.">
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="kinostyle.css?v=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div id="navbar">
+            <div id="logoRow">
+                <div id="logo">
+                    <img src="DONYLOGIC LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
+                </div>
+            </div>
+            <div id="mininavbar">
+                <a href="index.html" class="nav-icon-link" title="Bosh sahifa" aria-label="Bosh sahifa"><i class="ri-home-4-line"></i></a>
+                <a href="#" class="nav-icon-link kino-nav-active" title="Kino bazasi" aria-label="Kino bazasi"><i class="ri-film-line"></i></a>
+            </div>
+            <div class="nav-tools">
+                <button id="themeToggle" class="theme-toggle" title="Rejimni almashtirish">
+                    <i class="ri-moon-line theme-icon-moon"></i>
+                    <i class="ri-sun-line theme-icon-sun"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="kino-hero reveal">
+            <span class="eyebrow">TMDB ma'lumotlar bazasi</span>
+            <h1>Kino va Seriallar <em>Bazasi</em></h1>
+            <p class="kino-lead">
+                Dunyodagi eng so'nggi va mashhur kinolar hamda seriallarni kashf eting.
+                Qidiring, janr bo'yicha filtrlang va batafsil ma'lumot oling.
+            </p>
+            <div class="kino-search-wrap">
+                <i class="ri-search-line kino-search-icon"></i>
+                <input id="kinoSearch" type="text" class="kino-search-input" placeholder="Kino yoki serial qidirish..." autocomplete="off">
+                <button id="kinoSearchClear" class="kino-search-clear" hidden title="Tozalash">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- CONTENT -->
+        <section class="kino-section reveal">
+            <!-- Tabs -->
+            <div class="kino-tabs" id="kinoTabs">
+                <button class="kino-tab is-active" data-type="movie">
+                    <i class="ri-movie-2-line"></i> Kinolar
+                </button>
+                <button class="kino-tab" data-type="tv">
+                    <i class="ri-tv-2-line"></i> Seriallar
+                </button>
+            </div>
+
+            <!-- Genre Filters -->
+            <div class="kino-genres-wrap">
+                <div class="kino-genres" id="kinoGenres">
+                    <button class="genre-btn is-active" data-genre="">Barchasi</button>
+                </div>
+            </div>
+
+            <!-- Results info -->
+            <div id="kinoResultsInfo" class="kino-results-info" hidden></div>
+
+            <!-- Loading -->
+            <div id="kinoLoading" class="kino-loading">
+                <div class="kino-spinner-wrap">
+                    <i class="ri-loader-4-line kino-spinner"></i>
+                </div>
+                <span>Yuklanmoqda...</span>
+            </div>
+
+            <!-- Empty -->
+            <div id="kinoEmpty" class="kino-empty" hidden>
+                <i class="ri-emotion-sad-line"></i>
+                <p>Hech narsa topilmadi</p>
+                <span>Boshqa so'z bilan qidirib ko'ring</span>
+            </div>
+
+            <!-- Grid -->
+            <div id="kinoGrid" class="kino-grid"></div>
+
+            <!-- Load More -->
+            <div class="kino-load-more-wrap">
+                <button id="kinoLoadMore" class="btn btn-ghost kino-load-more" hidden>
+                    <i class="ri-arrow-down-s-line"></i> <span>Ko'proq yuklash</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL -->
+    <div id="kinoModal" class="kino-modal-overlay" hidden>
+        <div class="kino-modal">
+            <button class="kino-modal-close" id="kinoModalClose" title="Yopish">
+                <i class="ri-close-line"></i>
+            </button>
+            <div id="kinoModalContent" class="kino-modal-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div id="huquqlar">
+            <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
+        </div>
+        <div id="quizlink">
+            <p>Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas.</p>
+            <a href="index.html">Bosh sahifaga qaytish</a>
+        </div>
+    </footer>
+
+    <script src="script.js?v=12"></script>
+    <script src="kinoscript.js?v=1"></script>
+</body>
+</html>
