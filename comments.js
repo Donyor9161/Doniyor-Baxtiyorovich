@@ -28,6 +28,8 @@ const AUTHOR_EMAIL  = "donylogicstudios@gmail.com"; // loyiha muallifi — o'zga
 const MANAGER_DEFAULT_EMAIL = "qwdonyor@gmail.com"; // birinchi community-manager (standart)
 const MAX_ANNOUNCEMENTS = 5;
 const ANNOUNCEMENT_ROTATE_MS = 3600; // 0.6s kirish animatsiyasi + 3s o'rtada turish
+const notifiedAnnouncementKeys = new Set(); // "id:millis" — bir xil push'ni ikki marta ko'rsatmaslik uchun
+let announcementsFirstLoad = true; // birinchi yuklanishda eski notifiedAt'lar uchun push chiqmasin
 
 const ROLE_LABEL = { author: "CEO of DONYLOGIC™", ceo_alfgamex: "CEO of AlfGameX", admin: "Admin", manager: "Community-manager" };
 const ROLE_ICON  = { author: "ri-vip-crown-2-fill", ceo_alfgamex: "ri-gamepad-fill", admin: "ri-shield-star-fill", manager: "ri-shield-user-fill" };
@@ -56,6 +58,7 @@ const visitsCountEl     = document.getElementById("visitsCount");
 const donationsTotalEl  = document.getElementById("donationsTotal");
 const commentsCountEl   = document.getElementById("commentsCount");
 const adminPanelBtn     = document.getElementById("adminPanelBtn");
+const notifyToggleBtn   = document.getElementById("notifyToggleBtn");
 const announcementBar   = document.getElementById("announcementBar");
 const announcementStage  = document.getElementById("announcementStage");
 let currentSlide = null;
@@ -108,6 +111,36 @@ function roleBadgeHTML(role){
     if (!role) return "";
     return `<span class="role-badge role-badge-${role}"><i class="${ROLE_ICON[role]}"></i> ${ROLE_LABEL[role]}</span>`;
 }
+
+/* ---------------- bildirishnoma ruxsati (Notification API) ----------------
+   Eslatma: bu faqat sayt ochiq turgan (yoki fon tabida) brauzerlarga ishlaydi.
+   Yopilgan brauzerga push yuborish uchun Firebase Cloud Messaging + Cloud
+   Function kerak bo'ladi — bu esa Blaze rejasi va alohida server kodi talab qiladi. */
+function updateNotifyBtnUI(){
+    if (!notifyToggleBtn || !("Notification" in window)) { if (notifyToggleBtn) notifyToggleBtn.hidden = true; return; }
+    const perm = Notification.permission;
+    notifyToggleBtn.innerHTML = perm === "granted"
+        ? '<i class="ri-notification-3-fill"></i>'
+        : '<i class="ri-notification-off-line"></i>';
+    notifyToggleBtn.classList.toggle("is-on", perm === "granted");
+    notifyToggleBtn.title = perm === "granted"
+        ? "Bildirishnomalar yoqilgan"
+        : "Bildirishnomalarni yoqish";
+}
+notifyToggleBtn?.addEventListener("click", async () => {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted"){
+        alert("Bildirishnomalar allaqachon yoqilgan. O'chirish uchun brauzer sozlamalaridan foydalaning.");
+        return;
+    }
+    try {
+        await Notification.requestPermission();
+    } catch (err){
+        console.error("[bildirishnoma] ruxsat so'rashda xato:", err);
+    }
+    updateNotifyBtnUI();
+});
+updateNotifyBtnUI();
 
 /* ---------------- auth: popup flow ---------------- */
 let justLoggedIn = false;
@@ -169,7 +202,8 @@ onAuthStateChanged(auth, (user) => {
             invalidateRole(user.uid);
             currentUserRole = await resolveRole(user.uid, user.email);
             const freshSnap = await getDoc(doc(db, "users", user.uid));
-            currentUserBlocked = freshSnap.exists() ? !!freshSnap.data().blocked : false;
+            const freshData = freshSnap.exists() ? freshSnap.data() : {};
+            currentUserBlocked = !!freshData.blocked;
 
             applyOwnRoleUI();
 
@@ -179,6 +213,14 @@ onAuthStateChanged(auth, (user) => {
                 celebrateLogin();
                 justLoggedIn = false;
             }
+
+            // rol o'zgargani haqida BIR MARTALIK xabar (admin panelidan rol o'zgartirilganda belgilanadi)
+            if (freshData.roleNotifyPending){
+                showRoleChangeToast(currentUserRole);
+                setDoc(doc(db, "users", user.uid), { roleNotifyPending: false }, { merge: true })
+                    .catch((err) => console.error("[rol-xabar] belgilashda xato:", err));
+            }
+
             renderComments();
         }).catch((err) => {
             console.error("[profil] sinxronlashda xatolik:", err);
@@ -340,6 +382,33 @@ function celebrateLogin(){
         host.appendChild(p);
     }
     setTimeout(() => host.remove(), 2800);
+}
+
+/* ---------------- rol o'zgargani haqida bir martalik xabar (toast) ---------------- */
+function showRoleChangeToast(newRole){
+    const label = newRole ? (ROLE_LABEL[newRole] || newRole) : "Oddiy foydalanuvchi";
+    const icon  = newRole ? (ROLE_ICON[newRole] || "ri-user-star-line") : "ri-user-line";
+
+    const toast = document.createElement("div");
+    toast.className = "role-toast";
+    toast.innerHTML = `
+        <i class="${icon} role-toast-icon"></i>
+        <div class="role-toast-body">
+            <strong>Rolingiz yangilandi!</strong>
+            <span>Sizga endi <b>${escapeHTML(label)}</b> maqomi berildi.</span>
+        </div>
+        <button class="role-toast-close" aria-label="Yopish"><i class="ri-close-line"></i></button>
+    `;
+    document.body.appendChild(toast);
+
+    const remove = () => {
+        toast.classList.add("is-leaving");
+        setTimeout(() => toast.remove(), 400);
+    };
+    toast.querySelector(".role-toast-close").addEventListener("click", remove);
+    setTimeout(remove, 7000);
+
+    requestAnimationFrame(() => toast.classList.add("is-visible"));
 }
 
 /* ---------------- add comment / reply ---------------- */
@@ -561,6 +630,30 @@ try {
         const countTag = document.querySelector("[data-announce-count]");
         if (listHost) renderAnnouncementAdminList(listHost);
         if (countTag) countTag.textContent = `${allAnnouncements.length}/${MAX_ANNOUNCEMENTS}`;
+
+        // "Bildirishnoma qilib yuborish" bosilganda notifiedAt yangilangan hujjatlarni topib,
+        // ushbu tabda (ruxsat berilgan bo'lsa) OS darajasidagi bildirishnoma ko'rsatamiz.
+        if (!announcementsFirstLoad && "Notification" in window && Notification.permission === "granted"){
+            snapshot.docChanges().forEach((change) => {
+                if (change.type !== "modified") return;
+                const data = change.doc.data();
+                const ms = data.notifiedAt?.toMillis?.();
+                if (!ms) return;
+                const key = `${change.doc.id}:${ms}`;
+                if (notifiedAnnouncementKeys.has(key)) return;
+                if (Date.now() - ms > 15000) return; // eski (sayt endi ochilganda) push'larni qayta chiqarmaslik
+                notifiedAnnouncementKeys.add(key);
+                try {
+                    new Notification("Donylogic — yangi e'lon", {
+                        body: data.text || "",
+                        icon: "/favicon-96x96.png"
+                    });
+                } catch (err){
+                    console.error("[bildirishnoma] ko'rsatishda xato:", err);
+                }
+            });
+        }
+        announcementsFirstLoad = false;
     }, (err) => {
         console.error("[elon] o'qishda xatolik:", err);
     });
@@ -657,6 +750,7 @@ function renderAnnouncementAdminList(host){
             <div class="announcement-admin-item" data-id="${a.id}">
                 <span class="announcement-admin-text">${escapeHTML(a.text || "")}</span>
                 <span class="announcement-admin-time">${timeAgo(created)}</span>
+                <button class="announcement-admin-notify" data-id="${a.id}" title="Bildirishnoma qilib yuborish"><i class="ri-notification-3-line"></i></button>
                 <button class="announcement-admin-delete" data-id="${a.id}" title="O'chirish"><i class="ri-delete-bin-6-line"></i></button>
             </div>
         `;
@@ -664,6 +758,28 @@ function renderAnnouncementAdminList(host){
     host.querySelectorAll(".announcement-admin-delete").forEach((btn) => {
         btn.addEventListener("click", () => deleteAnnouncement(btn.dataset.id));
     });
+    host.querySelectorAll(".announcement-admin-notify").forEach((btn) => {
+        btn.addEventListener("click", () => pushAnnouncementNotification(btn));
+    });
+}
+
+async function pushAnnouncementNotification(btn){
+    const id = btn.dataset.id;
+    btn.disabled = true;
+    try {
+        await updateDoc(doc(db, "announcements", id), { notifiedAt: serverTimestamp() });
+        btn.classList.add("is-sent");
+        btn.innerHTML = '<i class="ri-check-line"></i>';
+        setTimeout(() => {
+            btn.classList.remove("is-sent");
+            btn.innerHTML = '<i class="ri-notification-3-line"></i>';
+            btn.disabled = false;
+        }, 1800);
+    } catch (err){
+        console.error("[elon] bildirishnoma yuborishda xato:", err);
+        alert("Bildirishnomani yuborib bo'lmadi.");
+        btn.disabled = false;
+    }
 }
 
 /* ==================================================================
@@ -803,7 +919,7 @@ function renderAdminTable(section, users){
             const uid = sel.dataset.uid;
             const value = sel.value === "__none__" ? null : sel.value;
             try {
-                await updateDoc(doc(db, "users", uid), { role: value });
+                await updateDoc(doc(db, "users", uid), { role: value, roleNotifyPending: true });
                 invalidateRole(uid);
                 renderComments();
             } catch (err){
