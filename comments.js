@@ -72,22 +72,16 @@ let allAnnouncements = [];
 let announcementRotateTimer = null;
 let announcementIndex = 0;
 
-/* ---------------- rol aniqlash (har doim /users hujjatidan, spoofing imkonsiz) ---------------- */
+/* ---------------- rol aniqlash (har doim /users hujjatidan, spoofing imkonsiz) ----------------
+   Eslatma: rol endi email bilan emas — hujjat yaratilgan paytda Firestore qoidasi
+   tasdiqlangan auth tokenidagi email bo'yicha serverda tekshirilib yoziladi (pastga qarang). */
 const roleCache = new Map(); // uid -> role|null
 
-async function resolveRole(uid, emailHint){
-    if (emailHint === AUTHOR_EMAIL) return "author";
+async function resolveRole(uid){
     if (roleCache.has(uid)) return roleCache.get(uid);
     try {
         const snap = await getDoc(doc(db, "users", uid));
-        let role = null;
-        if (snap.exists()){
-            const data = snap.data();
-            role = data.role || null;
-            if (!role && data.email === MANAGER_DEFAULT_EMAIL) role = "manager";
-        } else if (emailHint === MANAGER_DEFAULT_EMAIL){
-            role = "manager";
-        }
+        const role = snap.exists() ? (snap.data().role || null) : null;
         roleCache.set(uid, role);
         return role;
     } catch (err){
@@ -198,12 +192,14 @@ onAuthStateChanged(auth, (user) => {
         userAvatar.src = user.photoURL || "";
         userName.textContent = user.displayName || "Foydalanuvchi";
 
-        syncUserProfile(user).then(async ({ isNew }) => {
+        syncUserProfile(user).then(async ({ }) => {
             invalidateRole(user.uid);
-            currentUserRole = await resolveRole(user.uid, user.email);
-            const freshSnap = await getDoc(doc(db, "users", user.uid));
-            const freshData = freshSnap.exists() ? freshSnap.data() : {};
-            currentUserBlocked = !!freshData.blocked;
+            currentUserRole = await resolveRole(user.uid);
+            const privateSnap = await getDoc(doc(db, "user_private", user.uid));
+            currentUserBlocked = privateSnap.exists() ? !!privateSnap.data().blocked : false;
+
+            const publicSnap = await getDoc(doc(db, "users", user.uid));
+            const publicData = publicSnap.exists() ? publicSnap.data() : {};
 
             applyOwnRoleUI();
 
@@ -215,7 +211,7 @@ onAuthStateChanged(auth, (user) => {
             }
 
             // rol o'zgargani haqida BIR MARTALIK xabar (admin panelidan rol o'zgartirilganda belgilanadi)
-            if (freshData.roleNotifyPending){
+            if (publicData.roleNotifyPending){
                 showRoleChangeToast(currentUserRole);
                 setDoc(doc(db, "users", user.uid), { roleNotifyPending: false }, { merge: true })
                     .catch((err) => console.error("[rol-xabar] belgilashda xato:", err));
@@ -228,7 +224,7 @@ onAuthStateChanged(auth, (user) => {
 
         maybePruneOldComments();
         heartbeatTimer = setInterval(() => {
-            setDoc(doc(db, "users", user.uid), { lastLogin: serverTimestamp() }, { merge: true })
+            setDoc(doc(db, "user_private", user.uid), { lastLogin: serverTimestamp() }, { merge: true })
                 .catch((err) => console.error("[heartbeat] yangilashda xato:", err));
         }, HEARTBEAT_MS);
     }
@@ -283,16 +279,25 @@ async function incrementCounter(statId){
 /* ---------------- profil yaratish/yangilash + ro'yxatdan o'tganlar hisoblagichi ---------------- */
 async function syncUserProfile(user){
     const userRef = doc(db, "users", user.uid);
+    const privateRef = doc(db, "user_private", user.uid);
     const existing = await getDoc(userRef);
 
     if (existing.exists()){
         await setDoc(userRef, {
             displayName: user.displayName || "Foydalanuvchi",
-            photoURL: user.photoURL || "",
+            photoURL: user.photoURL || ""
+        }, { merge: true });
+        await setDoc(privateRef, {
             lastLogin: serverTimestamp()
         }, { merge: true });
         return { isNew: false };
     }
+
+    // Rol faqat quyida taklif qilinadi — Firestore qoidasi buni haqiqiy,
+    // tasdiqlangan auth token emailiga qarab serverda tasdiqlaydi yoki rad etadi.
+    const proposedRole = user.email === AUTHOR_EMAIL
+        ? "author"
+        : (user.email === MANAGER_DEFAULT_EMAIL ? "manager" : null);
 
     try {
         await runTransaction(db, async (tx) => {
@@ -303,13 +308,17 @@ async function syncUserProfile(user){
             const statsSnap = await tx.get(statsRef);
             const current = statsSnap.exists() ? (statsSnap.data().count || 0) : 0;
 
+            // OMMAVIY hujjat — email, blok holati va kirish tarixi bu yerda YO'Q.
             tx.set(userRef, {
-                email: user.email || "",
                 displayName: user.displayName || "Foydalanuvchi",
                 photoURL: user.photoURL || "",
+                role: proposedRole
+            });
+            // XUSUSIY hujjat — faqat egasi va admin o'qiy oladi.
+            tx.set(privateRef, {
+                email: user.email || "",
                 createdAt: serverTimestamp(),
                 lastLogin: serverTimestamp(),
-                role: null,
                 blocked: false
             });
             tx.set(statsRef, { count: current + 1 });
@@ -429,7 +438,6 @@ async function postComment(rawText, parentId, submitBtn){
             uid: currentUser.uid,
             name: currentUser.displayName || "Foydalanuvchi",
             photo: currentUser.photoURL || "",
-            email: currentUser.email || "",
             text: text.slice(0, 500),
             parentId: parentId || null,
             createdAt: serverTimestamp()
@@ -494,7 +502,7 @@ function commentRowHTML(c, depth, parentAuthor){
     const canModerate = currentUser && (currentUserRole === "author" || currentUserRole === "admin" || currentUserRole === "manager" || currentUserRole === "ceo_alfgamex");
     const canDelete = isOwn || canModerate;
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
-    const role = c.email === AUTHOR_EMAIL ? "author" : roleCache.get(c.uid);
+    const role = roleCache.get(c.uid);
     const replyToHTML = parentAuthor
         ? `<span class="reply-to-label"><i class="ri-corner-down-right-line"></i> Javob: ${escapeHTML(parentAuthor)}</span>`
         : "";
@@ -563,14 +571,9 @@ function renderComments(){
     });
 
     // fonda: hali rol keshida yo'q mualliflarning rolini aniqlab, keyin bir marta qayta chizish
-    const uncached = [...new Set(allComments.map((c) => c.uid))].filter(
-        (uid) => !roleCache.has(uid) && !(allComments.find((c) => c.uid === uid)?.email === AUTHOR_EMAIL)
-    );
+    const uncached = [...new Set(allComments.map((c) => c.uid))].filter((uid) => !roleCache.has(uid));
     if (uncached.length){
-        Promise.all(uncached.map((uid) => {
-            const sample = allComments.find((c) => c.uid === uid);
-            return resolveRole(uid, sample?.email);
-        })).then(() => renderComments());
+        Promise.all(uncached.map((uid) => resolveRole(uid))).then(() => renderComments());
     }
 }
 
@@ -838,14 +841,25 @@ async function openAdminPanel(){
 
     const usersSection = overlay.querySelectorAll(".admin-section")[0];
     try {
-        const snap = await getDocs(collection(db, "users"));
-        const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
-        users.sort((a, b) => (b.lastLogin?.toMillis?.() || 0) - (a.lastLogin?.toMillis?.() || 0));
+        const users = await fetchAdminUsers();
         renderAdminTable(usersSection, users);
     } catch (err){
         console.error("[admin] foydalanuvchilarni yuklashda xato:", err);
         usersSection.querySelector(".admin-loading").textContent = `Yuklab bo'lmadi: ${err.message || ""}`;
     }
+}
+
+// Ommaviy (/users) va maxfiy (/user_private) hujjatlarni uid bo'yicha birlashtiradi.
+// /user_private faqat admin (isAdmin()) yoki hujjat egasi tomonidan o'qilishi mumkin.
+async function fetchAdminUsers(){
+    const [pubSnap, privSnap] = await Promise.all([
+        getDocs(collection(db, "users")),
+        getDocs(collection(db, "user_private"))
+    ]);
+    const priv = new Map(privSnap.docs.map((d) => [d.id, d.data()]));
+    const users = pubSnap.docs.map((d) => ({ uid: d.id, ...d.data(), ...(priv.get(d.id) || {}) }));
+    users.sort((a, b) => (b.lastLogin?.toMillis?.() || 0) - (a.lastLogin?.toMillis?.() || 0));
+    return users;
 }
 
 function fmtDate(ts){
@@ -934,7 +948,7 @@ function renderAdminTable(section, users){
             const uid = btn.dataset.uid;
             const nextBlocked = btn.dataset.blocked !== "true";
             try {
-                await updateDoc(doc(db, "users", uid), { blocked: nextBlocked });
+                await updateDoc(doc(db, "user_private", uid), { blocked: nextBlocked });
                 openAdminPanelRefresh(section);
             } catch (err){
                 console.error("[admin] bloklashda xato:", err);
@@ -946,9 +960,7 @@ function renderAdminTable(section, users){
 
 async function openAdminPanelRefresh(section){
     try {
-        const snap = await getDocs(collection(db, "users"));
-        const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
-        users.sort((a, b) => (b.lastLogin?.toMillis?.() || 0) - (a.lastLogin?.toMillis?.() || 0));
+        const users = await fetchAdminUsers();
         renderAdminTable(section, users);
     } catch (err){
         console.error("[admin] yangilashda xato:", err);
