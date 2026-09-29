@@ -29,8 +29,8 @@ const MANAGER_DEFAULT_EMAIL = "qwdonyor@gmail.com"; // birinchi community-manage
 const MAX_ANNOUNCEMENTS = 5;
 const ANNOUNCEMENT_ROTATE_MS = 3600; // 0.6s kirish animatsiyasi + 3s o'rtada turish
 
-const ROLE_LABEL = { author: "Loyiha muallifi", admin: "Admin", manager: "Community-manager" };
-const ROLE_ICON  = { author: "ri-vip-crown-2-fill", admin: "ri-shield-star-fill", manager: "ri-shield-user-fill" };
+const ROLE_LABEL = { author: "CEO of DONYLOGIC™", ceo_alfgamex: "CEO of AlfGameX", admin: "Admin", manager: "Community-manager" };
+const ROLE_ICON  = { author: "ri-vip-crown-2-fill", ceo_alfgamex: "ri-gamepad-fill", admin: "ri-shield-star-fill", manager: "ri-shield-user-fill" };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -422,7 +422,7 @@ function escapeHTML(str){
 
 function commentRowHTML(c, depth, parentAuthor){
     const isOwn = currentUser && c.uid === currentUser.uid;
-    const canModerate = currentUser && (currentUserRole === "author" || currentUserRole === "admin" || currentUserRole === "manager");
+    const canModerate = currentUser && (currentUserRole === "author" || currentUserRole === "admin" || currentUserRole === "manager" || currentUserRole === "ceo_alfgamex");
     const canDelete = isOwn || canModerate;
     const created = c.createdAt?.toDate ? c.createdAt.toDate() : null;
     const role = c.email === AUTHOR_EMAIL ? "author" : roleCache.get(c.uid);
@@ -752,6 +752,7 @@ function renderAdminTable(section, users){
                     <option value="__none__" ${!role ? "selected" : ""}>Oddiy foydalanuvchi</option>
                     <option value="manager" ${role === "manager" ? "selected" : ""}>Community-manager</option>
                     <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
+                    <option value="ceo_alfgamex" ${role === "ceo_alfgamex" ? "selected" : ""}>CEO of AlfGameX</option>
                 </select>
                 <button class="admin-block-btn ${u.blocked ? "is-blocked" : ""}" data-uid="${u.uid}" data-blocked="${!!u.blocked}">
                     <i class="ri-${u.blocked ? "lock-unlock-line" : "forbid-line"}"></i> ${u.blocked ? "Blokdan chiqarish" : "Bloklash"}
