@@ -1289,6 +1289,11 @@ footer p{
     color: #05070d;
     box-shadow: 0 0 14px rgba(79,216,255,0.4);
 }
+.role-badge-ceo_alfgamex{
+    background: linear-gradient(90deg, #ff6b4a, #ff2f6b);
+    color: #fff;
+    box-shadow: 0 0 14px rgba(255,79,107,0.45);
+}
 
 .comment-author-line{
     display: inline-flex;
@@ -1310,6 +1315,10 @@ footer p{
 .comment-item-manager{
     border-color: rgba(79,216,255,0.4) !important;
     background: linear-gradient(135deg, rgba(79,216,255,0.07), var(--glass)) !important;
+}
+.comment-item-ceo_alfgamex{
+    border-color: rgba(255,79,107,0.4) !important;
+    background: linear-gradient(135deg, rgba(255,79,107,0.07), var(--glass)) !important;
 }
 
 .user-profile .role-badge{
@@ -1335,6 +1344,12 @@ footer p{
 .user-profile.is-author .user-avatar{ border-color: #ffd166; }
 .user-profile.is-admin .user-avatar{ border-color: var(--violet); }
 .user-profile.is-manager .user-avatar{ border-color: var(--cyan); }
+.user-profile.is-ceo_alfgamex .user-avatar{ border-color: #ff6b4a; }
+.user-profile.is-ceo_alfgamex{
+    border-color: rgba(255,79,107,0.5);
+    background: linear-gradient(135deg, rgba(255,79,107,0.12), var(--glass));
+    box-shadow: 0 0 18px rgba(255,79,107,0.18);
+}
 
 /* ---------- admin panel tugmasi ---------- */
 .admin-panel-btn{
@@ -1637,4 +1652,4 @@ footer p{
         width: 100%;
         justify-content: center;
     }
-   }
+}
