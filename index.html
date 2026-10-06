@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=17">
     <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +37,11 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
+    <!-- BOOT EKRANI — faqat bir martalik, sessionStorage orqali boshqariladi (script.js) -->
+    <div id="bootScreen" class="boot-screen" aria-hidden="true">
+        <div class="boot-lines" id="bootLines"></div>
+    </div>
+
     <header>
         <div id="navbar">
             <div id="logoRow">
@@ -48,7 +53,7 @@
                 <a href="#" class="nav-icon-link" title="Biz haqimizda" aria-label="Biz haqimizda"
                     onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..'); return false;"><i class="ri-information-line"></i></a>
                 <a href="salom.html" class="nav-icon-link" title="Bir narsalar" aria-label="Bir narsalar"><i class="ri-sparkling-2-line"></i></a>
-                <a href="kino.html" class="nav-icon-link" title="Kino va seriallar bazasi" aria-label="Kino bazasi"><i class="ri-film-line"></i></a>
+                <a href="kino.html" class="nav-icon-link" title="Kinolar va seriallar" aria-label="Kinolar va seriallar"><i class="ri-film-line"></i></a>
             </div>
             <div class="nav-tools">
                 <button id="adminPanelBtn" class="admin-panel-btn" hidden title="Admin panel">
@@ -62,6 +67,9 @@
                 </div>
                 <!-- GTranslate asl widgeti fon rejimida — doGTranslate() shundan ishlaydi, ko'rinmaydi -->
                 <div class="gtranslate_wrapper" id="gtranslateBox" hidden></div>
+                <button id="notifyToggleBtn" class="notify-toggle" title="Bildirishnomalarni yoqish">
+                    <i class="ri-notification-3-line"></i>
+                </button>
                 <button id="themeToggle" class="theme-toggle" title="Rejimni almashtirish">
                     <i class="ri-moon-line theme-icon-moon"></i>
                     <i class="ri-sun-line theme-icon-sun"></i>
@@ -251,7 +259,7 @@
         };
     </script>
     <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
-    <script src="script.js?v=12"></script>
-    <script type="module" src="comments.js?v=13"></script>
+    <script src="script.js?v=15"></script>
+    <script type="module" src="comments.js?v=14"></script>
 </body>
-                                                                                  </html>
+</html>
