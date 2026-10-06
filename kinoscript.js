@@ -1,407 +1,348 @@
 /* =========================================================
-   KINO VA SERIALLAR BAZASI — TMDB API integration
+   DONYLOGIC — Kinolar va seriallar bazasi (TMDB API)
    ========================================================= */
 (() => {
     "use strict";
 
-    // ——— TMDB konfiguratsiya ———
-    // O'zingizning API kalitingizni qo'ying: https://www.themoviedb.org/settings/api
-    const TMDB_KEY  = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MmQ5YTUyYmY0ZDFhZGYxNjBhMjRhN2MzYjk2OTk1NCIsIm5iZiI6MTc1MDc2MjI2Mi40Miwic3ViIjoiNjgzYjMzNTY2MTA5NjBiOTQxYmE5MDg1Iiwic2NvcGVzIjpbImFwaV9yZWFkX2FjY2VzcyJdLCJ2ZXJzaW9uIjoxfQ.W6OT_2gy_S4OY1qlEL7Lia2bIu7-n9sEIPT0ov15gH8";
+    // TMDB'ning v3 "API key"i — bu kalit ochiq (frontend) kodda ishlatilishi uchun
+    // mo'ljallangan, Firebase apiKey kabi. Faqat o'qish huquqi beradi, maxfiy emas.
+    const TMDB_API_KEY = "d76e12be5c55f3c980982a5f51907a97";
     const TMDB_BASE = "https://api.themoviedb.org/3";
-    const IMG_BASE  = "https://image.tmdb.org/t/p";
-    const LANG      = "uz-UZ";
-    const LANG_FB   = "en-US"; // fallback
+    const IMG_POSTER = "https://image.tmdb.org/t/p/w342";
+    const IMG_BACKDROP = "https://image.tmdb.org/t/p/w780";
+    const IMG_PROFILE = "https://image.tmdb.org/t/p/w185";
+    const LANG = "uz-UZ"; // tarjima yo'q bo'lsa, TMDB o'zi inglizchaga tushadi
 
-    // ——— DOM elementlari ———
-    const searchInput  = document.getElementById("kinoSearch");
-    const searchClear  = document.getElementById("kinoSearchClear");
-    const tabsWrap     = document.getElementById("kinoTabs");
-    const genresWrap   = document.getElementById("kinoGenres");
-    const grid         = document.getElementById("kinoGrid");
-    const loadMoreBtn  = document.getElementById("kinoLoadMore");
-    const loadingEl    = document.getElementById("kinoLoading");
-    const emptyEl      = document.getElementById("kinoEmpty");
-    const resultsInfo  = document.getElementById("kinoResultsInfo");
-    const modalOverlay = document.getElementById("kinoModal");
-    const modalContent = document.getElementById("kinoModalContent");
-    const modalClose   = document.getElementById("kinoModalClose");
-
-    if (!grid) return; // sahifa topilmasa chiqib ketsin
-
-    // ——— Holat ———
-    let currentType  = "movie";
-    let currentGenre = "";
-    let currentQuery = "";
-    let currentPage  = 1;
-    let totalPages   = 1;
-    let isLoading    = false;
-
-    // ——— Janr nomlari (o'zbekcha) ———
-    const genreNamesUz = {
-        28: "Jangari", 12: "Sarguzasht", 16: "Animatsiya", 35: "Komediya",
-        80: "Jinoyat", 99: "Hujjatli", 18: "Drama", 10751: "Oilaviy",
-        14: "Fantaziya", 36: "Tarixiy", 27: "Dahshat", 10402: "Musiqiy",
-        9648: "Sirli", 10749: "Romantik", 878: "Ilmiy-fantastik",
-        10770: "TV film", 53: "Triller", 10752: "Urush", 37: "Vestern",
-        10759: "Jangari & Sarguzasht", 10762: "Bolalar", 10763: "Yangiliklar",
-        10764: "Realiti", 10765: "Ilmiy-fantastik & Fantaziya",
-        10766: "Serial", 10767: "Tok-shou", 10768: "Urush & Siyosat"
+    const CATEGORIES = {
+        movie: [
+            { key: "trending", label: "Trend" },
+            { key: "popular", label: "Mashhur" },
+            { key: "top_rated", label: "Eng yuqori reyting" },
+            { key: "now_playing", label: "Hozir kinoteatrlarda" }
+        ],
+        tv: [
+            { key: "trending", label: "Trend" },
+            { key: "popular", label: "Mashhur" },
+            { key: "top_rated", label: "Eng yuqori reyting" },
+            { key: "airing_today", label: "Bugun efirda" }
+        ]
     };
 
-    // ——— API so'rovlar ———
-    function tmdbHeaders() {
-        return {
-            accept: "application/json",
-            Authorization: `Bearer ${TMDB_KEY}`
-        };
+    const state = {
+        mediaType: "movie",
+        category: "trending",
+        query: "",
+        page: 1,
+        totalPages: 1,
+        isLoading: false,
+        requestToken: 0 // eski so'rovlar natijasi kech kelib, yangi natijani bosib ketmasligi uchun
+    };
+
+    const genreCache = { movie: null, tv: null };
+
+    const grid = document.getElementById("kinoGrid");
+    const emptyEl = document.getElementById("kinoEmpty");
+    const loadingEl = document.getElementById("kinoLoading");
+    const sentinel = document.getElementById("kinoSentinel");
+    const mediaTabs = document.getElementById("kinoMediaTabs");
+    const chipsHost = document.getElementById("kinoCategoryChips");
+    const searchForm = document.getElementById("kinoSearchForm");
+    const searchInput = document.getElementById("kinoSearchInput");
+    const searchClear = document.getElementById("kinoSearchClear");
+    const modalOverlay = document.getElementById("kinoModalOverlay");
+    const modalBody = document.getElementById("kinoModalBody");
+    const modalClose = document.getElementById("kinoModalClose");
+
+    if (!grid) return; // bu sahifa kino.html emas
+
+    function escapeHTML(str){
+        const div = document.createElement("div");
+        div.textContent = str == null ? "" : String(str);
+        return div.innerHTML;
     }
 
-    async function tmdbFetch(path, params = {}) {
-        const url = new URL(`${TMDB_BASE}${path}`);
-        Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-        const res = await fetch(url, { headers: tmdbHeaders() });
-        if (!res.ok) throw new Error(`TMDB xato: ${res.status}`);
-        return res.json();
-    }
-
-    // ——— Janrlarni yuklash ———
-    async function loadGenres() {
-        try {
-            const data = await tmdbFetch(`/genre/${currentType}/list`, { language: LANG });
-            renderGenres(data.genres || []);
-        } catch (e) {
-            console.error("Janrlar yuklanmadi:", e);
-        }
-    }
-
-    function renderGenres(genres) {
-        genresWrap.innerHTML = '<button class="genre-btn is-active" data-genre="">Barchasi</button>';
-        genres.forEach(g => {
-            const btn = document.createElement("button");
-            btn.className = "genre-btn";
-            btn.dataset.genre = g.id;
-            btn.textContent = genreNamesUz[g.id] || g.name;
-            genresWrap.appendChild(btn);
-        });
-    }
-
-    // ——— Kinolarni yuklash ———
-    async function loadItems(append = false) {
-        if (isLoading) return;
-        isLoading = true;
-
-        if (!append) {
-            grid.innerHTML = "";
-            currentPage = 1;
-            showLoading(true);
-            showEmpty(false);
-            loadMoreBtn.hidden = true;
-            resultsInfo.hidden = true;
-        }
-
-        try {
-            let data;
-            if (currentQuery) {
-                // Qidiruv
-                data = await tmdbFetch(`/search/${currentType}`, {
-                    query: currentQuery,
-                    language: LANG,
-                    page: currentPage,
-                    include_adult: false
-                });
-            } else if (currentGenre) {
-                // Janr bo'yicha
-                data = await tmdbFetch(`/discover/${currentType}`, {
-                    with_genres: currentGenre,
-                    language: LANG,
-                    page: currentPage,
-                    sort_by: "popularity.desc",
-                    include_adult: false
-                });
-            } else {
-                // Trendlar
-                data = await tmdbFetch(`/trending/${currentType}/week`, {
-                    language: LANG,
-                    page: currentPage
-                });
-            }
-
-            totalPages = data.total_pages || 1;
-            const items = data.results || [];
-
-            if (!append && items.length === 0) {
-                showEmpty(true);
-            } else {
-                showEmpty(false);
-                renderCards(items, append);
-            }
-
-            // Qidiruv natijasi soni
-            if (currentQuery && data.total_results > 0) {
-                resultsInfo.textContent = `${data.total_results} ta natija topildi`;
-                resultsInfo.hidden = false;
-            } else {
-                resultsInfo.hidden = true;
-            }
-
-            loadMoreBtn.hidden = currentPage >= totalPages;
-        } catch (e) {
-            console.error("Yuklanmadi:", e);
-            if (!append) showEmpty(true);
-        } finally {
-            showLoading(false);
-            isLoading = false;
-        }
-    }
-
-    // ——— Kartochkalar ———
-    function renderCards(items, append) {
-        const fragment = document.createDocumentFragment();
-        items.forEach(item => {
-            const card = document.createElement("div");
-            card.className = "kino-card";
-            card.setAttribute("role", "button");
-            card.setAttribute("tabindex", "0");
-
-            const title = item.title || item.name || "Nomsiz";
-            const date = item.release_date || item.first_air_date || "";
-            const year = date ? date.slice(0, 4) : "—";
-            const rating = item.vote_average ? item.vote_average.toFixed(1) : "—";
-            const ratingNum = item.vote_average || 0;
-            const ratingClass = ratingNum >= 7.5 ? "high" : ratingNum >= 5.5 ? "mid" : "low";
-            const posterPath = item.poster_path;
-            const type = currentType === "movie" ? "Film" : "Serial";
-
-            card.innerHTML = `
-                ${posterPath
-                    ? `<div class="kino-card-poster"><img src="${IMG_BASE}/w500${posterPath}" alt="${title}" loading="lazy"><div class="kino-card-rating ${ratingClass}"><i class="ri-star-fill"></i> ${rating}</div></div>`
-                    : `<div class="kino-no-poster"><i class="ri-film-line"></i></div><div class="kino-card-rating ${ratingClass}" style="position:absolute"><i class="ri-star-fill"></i> ${rating}</div>`
+    /* ---------------- janr kategoriyasi tugmalari ---------------- */
+    function renderChips(){
+        chipsHost.innerHTML = CATEGORIES[state.mediaType].map((c) => `
+            <button type="button" class="kino-chip${c.key === state.category ? " is-active" : ""}" data-key="${c.key}">${c.label}</button>
+        `).join("");
+        chipsHost.querySelectorAll(".kino-chip").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                if (state.query) {
+                    state.query = "";
+                    searchInput.value = "";
+                    searchClear.hidden = true;
                 }
-                <div class="kino-card-info">
-                    <div class="kino-card-title">${title}</div>
-                    <div class="kino-card-meta">
-                        <span class="kino-card-year"><i class="ri-calendar-line"></i> ${year}</span>
-                        <span class="kino-card-type">${type}</span>
-                    </div>
-                </div>
-            `;
-
-            // Klikni saqlash uchun item ma'lumotlarini closure orqali
-            const itemId = item.id;
-            const itemType = currentType;
-            card.addEventListener("click", () => openModal(itemId, itemType));
-            card.addEventListener("keydown", e => {
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    openModal(itemId, itemType);
-                }
+                state.category = btn.dataset.key;
+                chipsHost.querySelectorAll(".kino-chip").forEach((b) => b.classList.toggle("is-active", b === btn));
+                resetAndLoad();
             });
-
-            fragment.appendChild(card);
         });
-
-        if (append) {
-            grid.appendChild(fragment);
-        } else {
-            grid.innerHTML = "";
-            grid.appendChild(fragment);
-        }
     }
 
-    // ——— Modal ———
-    async function openModal(id, type) {
-        modalOverlay.hidden = false;
-        document.body.style.overflow = "hidden";
-        modalContent.innerHTML = `
-            <div class="kino-loading" style="padding: 80px 0">
-                <div class="kino-spinner-wrap"><i class="ri-loader-4-line kino-spinner"></i></div>
-                <span>Yuklanmoqda...</span>
-            </div>
-        `;
-
-        try {
-            // Ma'lumotni uz tilida yuklash, fallback en
-            let data = await tmdbFetch(`/${type}/${id}`, { language: LANG });
-            if (!data.overview) {
-                const fb = await tmdbFetch(`/${type}/${id}`, { language: LANG_FB });
-                data.overview = fb.overview;
-            }
-
-            const title = data.title || data.name || "Nomsiz";
-            const originalTitle = data.original_title || data.original_name || "";
-            const date = data.release_date || data.first_air_date || "";
-            const year = date ? date.slice(0, 4) : "—";
-            const rating = data.vote_average ? data.vote_average.toFixed(1) : "—";
-            const voteCount = data.vote_count || 0;
-            const runtime = data.runtime || (data.episode_run_time && data.episode_run_time[0]) || null;
-            const genres = (data.genres || []).map(g => genreNamesUz[g.id] || g.name);
-            const overview = data.overview || "Ma'lumot mavjud emas.";
-            const backdrop = data.backdrop_path ? `${IMG_BASE}/w1280${data.backdrop_path}` : "";
-            const poster = data.poster_path ? `${IMG_BASE}/w500${data.poster_path}` : "";
-            const status = data.status || "";
-            const seasons = data.number_of_seasons || null;
-            const episodes = data.number_of_episodes || null;
-            const companies = (data.production_companies || []).map(c => c.name).slice(0, 3).join(", ");
-            const countries = (data.production_countries || []).map(c => c.name).join(", ");
-            const popularity = data.popularity ? Math.round(data.popularity) : null;
-
-            // Status ni o'zbekchaga
-            const statusMap = {
-                "Released": "Chiqarilgan", "Returning Series": "Davom etmoqda",
-                "Ended": "Tugallangan", "Canceled": "Bekor qilingan",
-                "In Production": "Ishlab chiqilmoqda", "Planned": "Rejalashtirilgan",
-                "Post Production": "Post-ishlov berish", "Rumored": "Mish-mish"
-            };
-            const statusUz = statusMap[status] || status;
-
-            modalContent.innerHTML = `
-                ${backdrop ? `<div class="kino-modal-backdrop"><img src="${backdrop}" alt=""></div>` : '<div style="height:40px"></div>'}
-                <div class="kino-modal-detail">
-                    <div class="kino-modal-header">
-                        ${poster ? `<div class="kino-modal-poster-wrap"><img src="${poster}" alt="${title}"></div>` : ''}
-                        <div class="kino-modal-title-block">
-                            <h2 class="kino-modal-title">${title} ${originalTitle && originalTitle !== title ? `<em>(${originalTitle})</em>` : ''}</h2>
-                            <div class="kino-modal-tags">
-                                ${genres.map(g => `<span class="kino-modal-tag">${g}</span>`).join('')}
-                            </div>
-                            <div class="kino-modal-stats">
-                                <span class="kino-modal-stat"><i class="ri-star-fill kino-modal-star"></i> <strong>${rating}</strong> (${voteCount.toLocaleString()})</span>
-                                <span class="kino-modal-stat"><i class="ri-calendar-line"></i> <strong>${year}</strong></span>
-                                ${runtime ? `<span class="kino-modal-stat"><i class="ri-time-line"></i> <strong>${runtime} daq.</strong></span>` : ''}
-                                ${statusUz ? `<span class="kino-modal-stat"><i class="ri-information-line"></i> ${statusUz}</span>` : ''}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="kino-modal-overview-label">Tavsif</div>
-                    <p class="kino-modal-overview">${overview}</p>
-
-                    <div class="kino-modal-extra">
-                        ${seasons ? `<div class="kino-modal-extra-card"><div class="kino-modal-extra-label">Fasllar / Epizodlar</div><div class="kino-modal-extra-value">${seasons} fasl · ${episodes} epizod</div></div>` : ''}
-                        ${companies ? `<div class="kino-modal-extra-card"><div class="kino-modal-extra-label">Kompaniya</div><div class="kino-modal-extra-value">${companies}</div></div>` : ''}
-                        ${countries ? `<div class="kino-modal-extra-card"><div class="kino-modal-extra-label">Mamlakat</div><div class="kino-modal-extra-value">${countries}</div></div>` : ''}
-                        ${popularity ? `<div class="kino-modal-extra-card"><div class="kino-modal-extra-label">Mashhurlik</div><div class="kino-modal-extra-value">${popularity.toLocaleString()} ball</div></div>` : ''}
-                    </div>
-                </div>
-            `;
-        } catch (e) {
-            console.error("Modal yuklanmadi:", e);
-            modalContent.innerHTML = `
-                <div class="kino-empty" style="padding: 60px 20px">
-                    <i class="ri-error-warning-line"></i>
-                    <p>Ma'lumot yuklanmadi</p>
-                    <span>Iltimos, qaytadan urinib ko'ring</span>
-                </div>
-            `;
-        }
-    }
-
-    function closeModal() {
-        modalOverlay.hidden = true;
-        document.body.style.overflow = "";
-    }
-
-    // ——— UI helpers ———
-    function showLoading(show) {
-        loadingEl.hidden = !show;
-    }
-    function showEmpty(show) {
-        emptyEl.hidden = !show;
-    }
-
-    // ——— Debounce ———
-    function debounce(fn, ms) {
-        let timer;
-        return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => fn(...args), ms);
-        };
-    }
-
-    // ——— Event listeners ———
-
-    // Tablar
-    tabsWrap.addEventListener("click", e => {
-        const tab = e.target.closest(".kino-tab");
-        if (!tab || tab.classList.contains("is-active")) return;
-        tabsWrap.querySelectorAll(".kino-tab").forEach(t => t.classList.remove("is-active"));
-        tab.classList.add("is-active");
-        currentType = tab.dataset.type;
-        currentGenre = "";
-        currentQuery = "";
-        searchInput.value = "";
-        searchClear.hidden = true;
-        loadGenres();
-        loadItems();
+    /* ---------------- media-turi tablari (Kinolar / Seriallar) ---------------- */
+    mediaTabs.querySelectorAll(".kino-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+            if (tab.classList.contains("is-active")) return;
+            mediaTabs.querySelectorAll(".kino-tab").forEach((t) => t.classList.toggle("is-active", t === tab));
+            state.mediaType = tab.dataset.media;
+            state.category = "trending";
+            state.query = "";
+            searchInput.value = "";
+            searchClear.hidden = true;
+            renderChips();
+            resetAndLoad();
+        });
     });
 
-    // Janrlar
-    genresWrap.addEventListener("click", e => {
-        const btn = e.target.closest(".genre-btn");
-        if (!btn || btn.classList.contains("is-active")) return;
-        genresWrap.querySelectorAll(".genre-btn").forEach(b => b.classList.remove("is-active"));
-        btn.classList.add("is-active");
-        currentGenre = btn.dataset.genre;
-        currentQuery = "";
-        searchInput.value = "";
-        searchClear.hidden = true;
-        loadItems();
+    /* ---------------- qidiruv (debounce bilan) ---------------- */
+    let searchTimer = null;
+    searchInput.addEventListener("input", () => {
+        searchClear.hidden = !searchInput.value;
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            state.query = searchInput.value.trim();
+            resetAndLoad();
+        }, 350);
     });
-
-    // Qidiruv
-    const doSearch = debounce(() => {
-        currentQuery = searchInput.value.trim();
-        searchClear.hidden = !currentQuery;
-        if (currentQuery) {
-            // Janr filtrini tiklash
-            genresWrap.querySelectorAll(".genre-btn").forEach(b => b.classList.remove("is-active"));
-            const allBtn = genresWrap.querySelector('[data-genre=""]');
-            if (allBtn) allBtn.classList.add("is-active");
-            currentGenre = "";
-        }
-        loadItems();
-    }, 400);
-
-    searchInput.addEventListener("input", doSearch);
-
+    searchForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        clearTimeout(searchTimer);
+        state.query = searchInput.value.trim();
+        resetAndLoad();
+    });
     searchClear.addEventListener("click", () => {
         searchInput.value = "";
         searchClear.hidden = true;
-        currentQuery = "";
-        loadItems();
+        state.query = "";
         searchInput.focus();
+        resetAndLoad();
     });
 
-    // Ko'proq yuklash
-    loadMoreBtn.addEventListener("click", () => {
-        currentPage++;
-        loadItems(true);
-    });
+    /* ---------------- TMDB so'rovlari ---------------- */
+    function buildListUrl(){
+        const base = `${TMDB_BASE}`;
+        if (state.query){
+            return `${base}/search/${state.mediaType}?api_key=${TMDB_API_KEY}&language=${LANG}&query=${encodeURIComponent(state.query)}&page=${state.page}&include_adult=false`;
+        }
+        if (state.category === "trending"){
+            return `${base}/trending/${state.mediaType}/week?api_key=${TMDB_API_KEY}&language=${LANG}&page=${state.page}`;
+        }
+        return `${base}/${state.mediaType}/${state.category}?api_key=${TMDB_API_KEY}&language=${LANG}&page=${state.page}`;
+    }
 
-    // Modal yopish
-    modalClose.addEventListener("click", closeModal);
-    modalOverlay.addEventListener("click", e => {
-        if (e.target === modalOverlay) closeModal();
-    });
-    document.addEventListener("keydown", e => {
-        if (e.key === "Escape" && !modalOverlay.hidden) closeModal();
-    });
+    async function fetchGenres(mediaType){
+        if (genreCache[mediaType]) return genreCache[mediaType];
+        try {
+            const res = await fetch(`${TMDB_BASE}/genre/${mediaType}/list?api_key=${TMDB_API_KEY}&language=${LANG}`);
+            const data = await res.json();
+            const map = {};
+            (data.genres || []).forEach((g) => { map[g.id] = g.name; });
+            genreCache[mediaType] = map;
+            return map;
+        } catch (err){
+            console.error("[kino] janrlarni yuklashda xato:", err);
+            genreCache[mediaType] = {};
+            return {};
+        }
+    }
 
-    // ——— Tema sinxronlash ———
-    function initKinoTheme() {
-        const toggle = document.getElementById("themeToggle");
-        const STORAGE_KEY = "donylogic_theme";
-        toggle?.addEventListener("click", () => {
-            const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
-            const next = current === "light" ? "dark" : "light";
-            document.documentElement.setAttribute("data-theme", next);
-            localStorage.setItem(STORAGE_KEY, next);
-            window.dispatchEvent(new CustomEvent("donylogic:themechange", { detail: { theme: next } }));
+    function resetAndLoad(){
+        state.page = 1;
+        state.totalPages = 1;
+        grid.innerHTML = "";
+        emptyEl.hidden = true;
+        loadMore();
+    }
+
+    async function loadMore(){
+        if (state.isLoading) return;
+        if (state.page > state.totalPages) return;
+
+        state.isLoading = true;
+        loadingEl.hidden = false;
+        const myToken = ++state.requestToken;
+
+        try {
+            const res = await fetch(buildListUrl());
+            if (!res.ok) throw new Error(`TMDB ${res.status}`);
+            const data = await res.json();
+
+            if (myToken !== state.requestToken) return; // bu orada boshqa so'rov boshlanib ketgan
+
+            state.totalPages = data.total_pages || 1;
+            const results = data.results || [];
+
+            if (state.page === 1 && !results.length){
+                emptyEl.hidden = false;
+            }
+
+            renderCards(results);
+            state.page += 1;
+        } catch (err){
+            console.error("[kino] ro'yxatni yuklashda xato:", err);
+            if (state.page === 1){
+                emptyEl.hidden = false;
+                emptyEl.textContent = "Ma'lumotlarni yuklab bo'lmadi. Birozdan so'ng qayta urinib ko'ring.";
+            }
+        } finally {
+            if (myToken === state.requestToken){
+                state.isLoading = false;
+                loadingEl.hidden = true;
+            }
+        }
+    }
+
+    function renderCards(items){
+        const mediaType = state.mediaType;
+        const html = items.map((item) => {
+            const title = item.title || item.name || "Nomsiz";
+            const dateStr = item.release_date || item.first_air_date;
+            const year = dateStr ? dateStr.slice(0, 4) : "—";
+            const rating = item.vote_average ? item.vote_average.toFixed(1) : "—";
+            const poster = item.poster_path
+                ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}" loading="lazy">`
+                : `<div class="kino-poster-fallback"><i class="ri-image-line"></i></div>`;
+            return `
+                <article class="kino-card" data-id="${item.id}" data-media="${mediaType}" tabindex="0" role="button" aria-label="${escapeHTML(title)}">
+                    <div class="kino-poster">
+                        ${poster}
+                        <span class="kino-rating"><i class="ri-star-fill"></i> ${rating}</span>
+                    </div>
+                    <div class="kino-card-info">
+                        <h3 class="kino-card-title">${escapeHTML(title)}</h3>
+                        <span class="kino-card-year">${year}</span>
+                    </div>
+                </article>
+            `;
+        }).join("");
+
+        grid.insertAdjacentHTML("beforeend", html);
+
+        grid.querySelectorAll(".kino-card:not([data-wired])").forEach((card) => {
+            card.setAttribute("data-wired", "1");
+            card.addEventListener("click", () => openModal(card.dataset.id, card.dataset.media));
+            card.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " "){
+                    e.preventDefault();
+                    openModal(card.dataset.id, card.dataset.media);
+                }
+            });
         });
     }
 
-    // ——— Boshlash ———
-    initKinoTheme();
-    loadGenres();
-    loadItems();
+    /* ---------------- cheksiz skroll ---------------- */
+    if ("IntersectionObserver" in window){
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) loadMore();
+            });
+        }, { rootMargin: "600px 0px" });
+        io.observe(sentinel);
+    }
+
+    /* ---------------- batafsil modal ---------------- */
+    async function openModal(id, mediaType){
+        modalOverlay.hidden = false;
+        document.body.classList.add("scroll-locked");
+        modalBody.innerHTML = `<p class="admin-loading">Yuklanmoqda...</p>`;
+
+        try {
+            const [detail, genreMap] = await Promise.all([
+                fetch(`${TMDB_BASE}/${mediaType}/${id}?api_key=${TMDB_API_KEY}&language=${LANG}&append_to_response=credits`).then((r) => r.json()),
+                fetchGenres(mediaType)
+            ]);
+            renderModal(detail, mediaType, genreMap);
+        } catch (err){
+            console.error("[kino] tafsilotlarni yuklashda xato:", err);
+            modalBody.innerHTML = `<div class="kino-modal-content"><p>Ma'lumotlarni yuklab bo'lmadi.</p></div>`;
+        }
+    }
+
+    function renderModal(item, mediaType, genreMap){
+        const title = item.title || item.name || "Nomsiz";
+        const dateStr = item.release_date || item.first_air_date;
+        const year = dateStr ? dateStr.slice(0, 4) : "—";
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : "—";
+        const voteCount = item.vote_count ? item.vote_count.toLocaleString("uz-UZ") : "0";
+
+        let runtimeLabel = "";
+        if (mediaType === "movie" && item.runtime){
+            const h = Math.floor(item.runtime / 60);
+            const m = item.runtime % 60;
+            runtimeLabel = h ? `${h}s ${m}d` : `${m}d`;
+        } else if (mediaType === "tv"){
+            if (item.number_of_seasons) runtimeLabel = `${item.number_of_seasons} fasl`;
+            if (item.episode_run_time && item.episode_run_time[0]) runtimeLabel += (runtimeLabel ? " · " : "") + `${item.episode_run_time[0]}d/qism`;
+        }
+
+        const genres = (item.genres && item.genres.length)
+            ? item.genres.map((g) => `<span class="kino-genre-chip">${escapeHTML(g.name)}</span>`).join("")
+            : "";
+
+        const backdropStyle = item.backdrop_path
+            ? `style="background-image:url('${IMG_BACKDROP}${item.backdrop_path}')"`
+            : `style="background:var(--navy)"`;
+
+        const posterHTML = item.poster_path
+            ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}">`
+            : `<div class="kino-poster-fallback"><i class="ri-image-line"></i></div>`;
+
+        const cast = (item.credits && item.credits.cast ? item.credits.cast.slice(0, 8) : []);
+        const castHTML = cast.length ? `
+            <div class="kino-modal-section-title">Bosh rollarda</div>
+            <div class="kino-modal-cast">
+                ${cast.map((c) => `
+                    <div class="kino-cast-item">
+                        <div class="kino-cast-avatar">
+                            ${c.profile_path ? `<img src="${IMG_PROFILE}${c.profile_path}" alt="${escapeHTML(c.name)}">` : `<i class="ri-user-3-line"></i>`}
+                        </div>
+                        <div class="kino-cast-name">${escapeHTML(c.name)}</div>
+                        <div class="kino-cast-character">${escapeHTML(c.character || "")}</div>
+                    </div>
+                `).join("")}
+            </div>
+        ` : "";
+
+        const tmdbUrl = `https://www.themoviedb.org/${mediaType}/${item.id}`;
+
+        modalBody.innerHTML = `
+            <div class="kino-modal-backdrop" ${backdropStyle}></div>
+            <div class="kino-modal-head">
+                <div class="kino-modal-poster">${posterHTML}</div>
+                <div class="kino-modal-titleblock">
+                    <h2 class="kino-modal-title">${escapeHTML(title)}</h2>
+                    ${item.tagline ? `<p class="kino-modal-tagline">${escapeHTML(item.tagline)}</p>` : ""}
+                </div>
+            </div>
+            <div class="kino-modal-content">
+                <div class="kino-modal-meta">
+                    <span class="kino-meta-rating"><i class="ri-star-fill"></i> ${rating} (${voteCount})</span>
+                    <span><i class="ri-calendar-line"></i> ${year}</span>
+                    ${runtimeLabel ? `<span><i class="ri-time-line"></i> ${runtimeLabel}</span>` : ""}
+                </div>
+                <div class="kino-modal-genres">${genres}</div>
+                <p class="kino-modal-overview">${escapeHTML(item.overview) || "Tavsif mavjud emas."}</p>
+                ${castHTML}
+                <a class="kino-modal-link" href="${tmdbUrl}" target="_blank" rel="noopener"><i class="ri-external-link-line"></i> TMDB'da to'liq ko'rish</a>
+            </div>
+        `;
+    }
+
+    function closeModal(){
+        modalOverlay.hidden = true;
+        document.body.classList.remove("scroll-locked");
+        modalBody.innerHTML = "";
+    }
+    modalClose.addEventListener("click", closeModal);
+    modalOverlay.addEventListener("click", (e) => {
+        if (e.target === modalOverlay) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modalOverlay.hidden) closeModal();
+    });
+
+    /* ---------------- ishga tushirish ---------------- */
+    renderChips();
+    loadMore();
 })();
