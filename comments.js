@@ -171,26 +171,35 @@ onAuthStateChanged(auth, (user) => {
         return;
     }
 
+    // Izoh/login UI faqat shu elementlar mavjud bo'lgan sahifada (masalan index.html) ishlaydi.
+    // Boshqa sahifalarda (masalan kino.html) bu elementlar yo'q — xatoga yo'l qo'ymaymiz,
+    // chunki admin tugmasi va e'lonlar karuseli baribir ishlashi kerak.
+    const hasCommentUI = !!(googleLoginBtn && githubLoginBtn && userProfile && userAvatar && userName && commentForm && commentsHint);
+
     if (user.isAnonymous){
         currentUser = null;
         currentUserRole = null;
         currentUserBlocked = false;
-        googleLoginBtn.hidden = false;
-        githubLoginBtn.hidden = false;
-        userProfile.hidden = true;
-        userProfile.classList.remove("is-author", "is-admin", "is-manager");
-        commentForm.hidden = true;
-        commentsHint.hidden = false;
-        commentsHint.textContent = "Fikr qoldirish uchun avval Google yoki GitHub bilan kiring.";
+        if (hasCommentUI){
+            googleLoginBtn.hidden = false;
+            githubLoginBtn.hidden = false;
+            userProfile.hidden = true;
+            userProfile.classList.remove("is-author", "is-admin", "is-manager");
+            commentForm.hidden = true;
+            commentsHint.hidden = false;
+            commentsHint.textContent = "Fikr qoldirish uchun avval Google yoki GitHub bilan kiring.";
+        }
         if (adminPanelBtn) adminPanelBtn.hidden = true;
         renderComments();
     } else {
         currentUser = user;
-        googleLoginBtn.hidden = true;
-        githubLoginBtn.hidden = true;
-        userProfile.hidden = false;
-        userAvatar.src = user.photoURL || "";
-        userName.textContent = user.displayName || "Foydalanuvchi";
+        if (hasCommentUI){
+            googleLoginBtn.hidden = true;
+            githubLoginBtn.hidden = true;
+            userProfile.hidden = false;
+            userAvatar.src = user.photoURL || "";
+            userName.textContent = user.displayName || "Foydalanuvchi";
+        }
 
         syncUserProfile(user).then(async ({ }) => {
             invalidateRole(user.uid);
@@ -234,6 +243,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 function applyOwnRoleUI(){
+    if (!userProfile || !userName || !commentForm || !commentsHint) return; // kino.html kabi sahifalarda bu elementlar yo'q
     const existingBadge = userProfile.querySelector(".role-badge");
     if (existingBadge) existingBadge.remove();
     if (currentUserRole){
