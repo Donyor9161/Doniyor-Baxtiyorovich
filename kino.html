@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
+    <!-- GGoogle analytics-->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLVESJJJZM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-BLVESJJJZM');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -10,23 +18,30 @@
             document.documentElement.setAttribute("data-theme", theme);
         })();
     </script>
-    <title>Kino va Seriallar Bazasi — DONYLOGIC</title>
-    <meta name="description" content="Kino va seriallar bazasi — eng so'nggi filmlar va seriallarni qidiring, ko'ring va kashf eting.">
+    <title>Kinolar va seriallar — DONYLOGIC</title>
+    <meta name="description" content="Donylogic — eng mashhur va eng yuqori reytingli kinolar hamda seriallar bazasi, TMDB orqali.">
+    <!-- Faviconlar -->
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Donylogic© Studios" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=15">
-    <link rel="stylesheet" href="kinostyle.css?v=1">
+    <link rel="stylesheet" href="style.css?v=17">
+    <!-- googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- remixicon -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 </head>
 <body>
+    <!-- BOOT EKRANI — faqat bir martalik, sessionStorage orqali boshqariladi (script.js) -->
+    <div id="bootScreen" class="boot-screen" aria-hidden="true">
+        <div class="boot-lines" id="bootLines"></div>
+    </div>
+
     <header>
         <div id="navbar">
             <div id="logoRow">
@@ -35,92 +50,80 @@
                 </div>
             </div>
             <div id="mininavbar">
-                <a href="index.html" class="nav-icon-link" title="Bosh sahifa" aria-label="Bosh sahifa"><i class="ri-home-4-line"></i></a>
-                <a href="#" class="nav-icon-link kino-nav-active" title="Kino bazasi" aria-label="Kino bazasi"><i class="ri-film-line"></i></a>
+                <a href="#"
+                    onclick="alert('Hozirda bunday turdagi malumotlar kiritilmagan, biroq tez orada shakllantiramiz..'); return false;"
+                    class="nav-icon-link" title="Biz haqimizda" aria-label="Biz haqimizda"><i class="ri-information-line"></i></a>
+                <a href="salom.html" class="nav-icon-link" title="Bir narsalar" aria-label="Bir narsalar"><i class="ri-sparkling-2-line"></i></a>
+                <a href="kino.html" class="nav-icon-link is-active" title="Kinolar va seriallar" aria-label="Kinolar va seriallar"><i class="ri-film-line"></i></a>
             </div>
             <div class="nav-tools">
+                <button id="adminPanelBtn" class="admin-panel-btn" hidden title="Admin panel">
+                    <i class="ri-shield-star-fill"></i> Admin
+                </button>
+                <!-- 3 tugmali til almashtirgich: UZ (standart) / EN / RU -->
+                <div id="langSwitch" class="lang-switch">
+                    <button type="button" class="lang-btn" data-lang="uz">UZ</button>
+                    <button type="button" class="lang-btn" data-lang="en">EN</button>
+                    <button type="button" class="lang-btn" data-lang="ru">RU</button>
+                </div>
+                <!-- GTranslate asl widgeti fon rejimida — doGTranslate() shundan ishlaydi, ko'rinmaydi -->
+                <div class="gtranslate_wrapper" id="gtranslateBox" hidden></div>
+                <button id="notifyToggleBtn" class="notify-toggle" title="Bildirishnomalarni yoqish">
+                    <i class="ri-notification-3-line"></i>
+                </button>
                 <button id="themeToggle" class="theme-toggle" title="Rejimni almashtirish">
                     <i class="ri-moon-line theme-icon-moon"></i>
                     <i class="ri-sun-line theme-icon-sun"></i>
                 </button>
             </div>
         </div>
+        <!-- E'LONLAR KARUSELI — navbar ostida, to'liq kenglikda (uzun matn ham sig'adi) -->
+        <div id="announcementBar" class="announcement-bar" hidden>
+            <i class="ri-megaphone-fill announcement-icon"></i>
+            <div id="announcementStage" class="announcement-stage"></div>
+        </div>
     </header>
 
     <main>
-        <!-- HERO -->
+        <!-- KINO SAHIFA SARLAVHASI -->
         <section class="kino-hero reveal">
-            <span class="eyebrow">TMDB ma'lumotlar bazasi</span>
-            <h1>Kino va Seriallar <em>Bazasi</em></h1>
-            <p class="kino-lead">
-                Dunyodagi eng so'nggi va mashhur kinolar hamda seriallarni kashf eting.
-                Qidiring, janr bo'yicha filtrlang va batafsil ma'lumot oling.
-            </p>
-            <div class="kino-search-wrap">
-                <i class="ri-search-line kino-search-icon"></i>
-                <input id="kinoSearch" type="text" class="kino-search-input" placeholder="Kino yoki serial qidirish..." autocomplete="off">
-                <button id="kinoSearchClear" class="kino-search-clear" hidden title="Tozalash">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
+            <span class="eyebrow">TMDB orqali</span>
+            <h1>Kinolar <em>&amp;</em> seriallar bazasi</h1>
+            <p class="lead">Mashhur va eng yuqori reytingli kino hamda seriallarni qidiring, ko'rib chiqing — barcha ma'lumotlar jonli ravishda TMDB'dan olinadi.</p>
         </section>
 
-        <!-- CONTENT -->
+        <!-- QIDIRUV + TABLAR -->
+        <section class="kino-toolbar reveal">
+            <form id="kinoSearchForm" class="kino-search">
+                <i class="ri-search-line"></i>
+                <input type="search" id="kinoSearchInput" placeholder="Kino yoki serial nomini qidiring..." autocomplete="off">
+                <button type="button" id="kinoSearchClear" class="kino-search-clear" hidden title="Tozalash"><i class="ri-close-line"></i></button>
+            </form>
+
+            <div class="kino-tabs" id="kinoMediaTabs" role="tablist">
+                <button type="button" class="kino-tab is-active" data-media="movie">Kinolar</button>
+                <button type="button" class="kino-tab" data-media="tv">Seriallar</button>
+            </div>
+
+            <div class="kino-chips" id="kinoCategoryChips"></div>
+        </section>
+
+        <!-- GRID -->
         <section class="kino-section reveal">
-            <!-- Tabs -->
-            <div class="kino-tabs" id="kinoTabs">
-                <button class="kino-tab is-active" data-type="movie">
-                    <i class="ri-movie-2-line"></i> Kinolar
-                </button>
-                <button class="kino-tab" data-type="tv">
-                    <i class="ri-tv-2-line"></i> Seriallar
-                </button>
-            </div>
-
-            <!-- Genre Filters -->
-            <div class="kino-genres-wrap">
-                <div class="kino-genres" id="kinoGenres">
-                    <button class="genre-btn is-active" data-genre="">Barchasi</button>
-                </div>
-            </div>
-
-            <!-- Results info -->
-            <div id="kinoResultsInfo" class="kino-results-info" hidden></div>
-
-            <!-- Loading -->
-            <div id="kinoLoading" class="kino-loading">
-                <div class="kino-spinner-wrap">
-                    <i class="ri-loader-4-line kino-spinner"></i>
-                </div>
-                <span>Yuklanmoqda...</span>
-            </div>
-
-            <!-- Empty -->
-            <div id="kinoEmpty" class="kino-empty" hidden>
-                <i class="ri-emotion-sad-line"></i>
-                <p>Hech narsa topilmadi</p>
-                <span>Boshqa so'z bilan qidirib ko'ring</span>
-            </div>
-
-            <!-- Grid -->
             <div id="kinoGrid" class="kino-grid"></div>
-
-            <!-- Load More -->
-            <div class="kino-load-more-wrap">
-                <button id="kinoLoadMore" class="btn btn-ghost kino-load-more" hidden>
-                    <i class="ri-arrow-down-s-line"></i> <span>Ko'proq yuklash</span>
-                </button>
-            </div>
+            <p id="kinoEmpty" class="kino-empty" hidden>Hech narsa topilmadi. Boshqa nom bilan qidirib ko'ring.</p>
+            <div id="kinoLoading" class="kino-loading"><i class="ri-loader-4-line"></i> Yuklanmoqda...</div>
+            <div id="kinoSentinel" class="kino-sentinel" aria-hidden="true"></div>
         </section>
     </main>
 
-    <!-- MODAL -->
-    <div id="kinoModal" class="kino-modal-overlay" hidden>
+    <!-- BATAFSIL MODAL -->
+    <div id="kinoModalOverlay" class="kino-modal-overlay" hidden>
         <div class="kino-modal">
-            <button class="kino-modal-close" id="kinoModalClose" title="Yopish">
-                <i class="ri-close-line"></i>
-            </button>
-            <div id="kinoModalContent" class="kino-modal-body"></div>
+            <button class="kino-modal-close" id="kinoModalClose" aria-label="Yopish"><i class="ri-close-line"></i></button>
+            <div id="kinoModalBody" class="kino-modal-body">
+                <p class="admin-loading">Yuklanmoqda...</p>
+            </div>
         </div>
     </div>
 
@@ -129,12 +132,21 @@
             <p>© 2025-26 Donylogic. Barcha huquqlar himoyalangan.</p>
         </div>
         <div id="quizlink">
-            <p>Tashqi saytlar mazmuni va huquqlariga Donylogic javobgar emas.</p>
-            <a href="index.html">Bosh sahifaga qaytish</a>
+            <p>Kino va serial ma'lumotlari TMDB (The Movie Database) tomonidan taqdim etiladi. Donylogic bu kontentning egasi emas.</p>
+            <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">themoviedb.org</a>
         </div>
     </footer>
 
-    <script src="script.js?v=12"></script>
-    <script src="kinoscript.js?v=1"></script>
+    <script>
+        window.gtranslateSettings = {
+            "default_language": "uz",
+            "languages": ["uz", "en", "ru"],
+            "wrapper_selector": ".gtranslate_wrapper"
+        };
+    </script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
+    <script src="script.js?v=15"></script>
+    <script type="module" src="comments.js?v=14"></script>
+    <script src="kino.js?v=1" defer></script>
 </body>
 </html>
