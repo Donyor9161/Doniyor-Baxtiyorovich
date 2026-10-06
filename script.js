@@ -281,70 +281,10 @@
         });
     }
 
-    /* ---------------- boot ekrani (systemd-uslubidagi "yuklanish jurnali") ----------------
-       Faqat BIR MARTA (sessionStorage) va faqat animatsiyaga qarshi bo'lmaganlarga ko'rsatiladi.
-       Vaqt asosida ishlaydi (haqiqiy tarmoq/Firebase holatiga bog'lanmagan) — shunda
-       sekin internet yoki bloklangan skriptlar tufayli ekran "osilib qolmaydi". */
-    function initBootScreen(){
-        const screen = document.getElementById("bootScreen");
-        const linesHost = document.getElementById("bootLines");
-        if (!screen || !linesHost) return;
-
-        const SEEN_KEY = "donylogic_boot_seen";
-        if (reduceMotion || sessionStorage.getItem(SEEN_KEY)){
-            screen.classList.add("is-off");
-            return;
-        }
-        sessionStorage.setItem(SEEN_KEY, "1");
-
-        // XAVFSIZLIK TAYMERI: nima bo'lishidan qat'iy nazar (JS xatosi, sekin qurilma va h.k.)
-        // 3.5 soniyadan keyin ekran MAJBURAN olib tashlanadi — hech qachon "osilib qolmaydi".
-        const failSafeTimer = setTimeout(forceReveal, 3500);
-        function forceReveal(){
-            clearTimeout(failSafeTimer);
-            screen.classList.add("is-hidden");
-            document.body.classList.remove("boot-locked");
-            setTimeout(() => screen.classList.add("is-off"), 550);
-        }
-
-        const theme = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
-        const okLines = [
-            "Starfield renderer ishga tushdi",
-            "Firebase ulanishi o'rnatildi",
-            `Tema: ${theme} — yuklandi`
-        ];
-
-        document.body.classList.add("boot-locked"); // scroll'ni vaqtincha to'xtatish uchun ilova qilinadi (kerak bo'lsa CSS'ga qo'shiladi)
-
-        let delay = 150;
-        const STEP_MS = 260;
-
-        okLines.forEach((text) => {
-            const el = document.createElement("div");
-            el.className = "boot-line";
-            el.innerHTML = `<span class="boot-ok">[ OK ]</span> ${text}`;
-            linesHost.appendChild(el);
-            setTimeout(() => el.classList.add("is-shown"), delay);
-            delay += STEP_MS;
-        });
-
-        const finalEl = document.createElement("div");
-        finalEl.className = "boot-line boot-final";
-        finalEl.innerHTML = `DONYLOGIC_OS v1.0 tayyor<span class="boot-cursor"></span>`;
-        linesHost.appendChild(finalEl);
-        setTimeout(() => finalEl.classList.add("is-shown"), delay);
-
-        const holdAfterFinal = 650;
-        setTimeout(forceReveal, delay + holdAfterFinal);
-    }
-
     function safe(fn, label){
         try { fn(); }
         catch (err){ console.error(`[donylogic] ${label} ishga tushmadi:`, err); }
     }
-
-    // Boot ekrani eng birinchi, sahifaning qolgan qismi fonda normal yuklanaverishi bilan bir vaqtda ishga tushadi.
-    safe(initBootScreen, "boot-screen");
 
     document.addEventListener("DOMContentLoaded", () => {
         safe(initTheme, "theme");
