@@ -163,6 +163,19 @@
         loadingEl.hidden = false;
         const myToken = ++state.requestToken;
 
+        // SOQCHI (watchdog): agar 10 soniyadan keyin ham javob kelmasa (masalan, tarmoq
+        // tiqilib qolsa yoki so'rov "osilib" qolsa), foydalanuvchiga buni ko'rsatamiz —
+        // "Yuklanmoqda..." yozuvi hech qachon abadiy osilib qolmasligi kerak.
+        const watchdog = setTimeout(() => {
+            if (myToken !== state.requestToken) return;
+            loadingEl.innerHTML = `<span>Ulanish juda uzoq davom etmoqda</span> <button type="button" class="kino-retry-btn" id="kinoRetryBtn">Qayta urinish</button>`;
+            document.getElementById("kinoRetryBtn")?.addEventListener("click", () => {
+                state.isLoading = false;
+                loadingEl.innerHTML = `<i class="ri-loader-4-line"></i> Yuklanmoqda...`;
+                loadMore();
+            });
+        }, 10000);
+
         try {
             const res = await fetch(buildListUrl());
             if (!res.ok) throw new Error(`TMDB ${res.status}`);
@@ -186,9 +199,11 @@
                 emptyEl.textContent = "Ma'lumotlarni yuklab bo'lmadi. Birozdan so'ng qayta urinib ko'ring.";
             }
         } finally {
+            clearTimeout(watchdog);
             if (myToken === state.requestToken){
                 state.isLoading = false;
                 loadingEl.hidden = true;
+                loadingEl.innerHTML = `<i class="ri-loader-4-line"></i> Yuklanmoqda...`;
             }
         }
     }
