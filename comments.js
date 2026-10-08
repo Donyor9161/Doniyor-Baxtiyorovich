@@ -66,6 +66,7 @@ let currentSlide = null;
 let currentUser = null;
 let currentUserRole = null;   // 'author' | 'admin' | 'manager' | null
 let currentUserBlocked = false;
+let currentBlockMessage = "";
 let allComments = [];
 let heartbeatTimer = null;
 let allAnnouncements = [];
@@ -206,7 +207,11 @@ onAuthStateChanged(auth, (user) => {
             currentUserRole = await resolveRole(user.uid);
             if (isAuthorGoogle(user)) currentUserRole = "author";
             const privateSnap = await getDoc(doc(db, "user_private", user.uid));
-            currentUserBlocked = privateSnap.exists() ? !!privateSnap.data().blocked : false;
+            const pdata = privateSnap.exists() ? privateSnap.data() : {};
+            const untilMs = pdata.blockedUntil?.toMillis?.() || 0;
+            // muddatli blok: muddat o'tgach avtomatik bekor bo'ladi
+            currentUserBlocked = !!pdata.blocked && (!untilMs || untilMs > Date.now());
+            currentBlockMessage = currentUserBlocked ? buildBlockMessage(pdata, untilMs) : "";
 
             const publicSnap = await getDoc(doc(db, "users", user.uid));
             const publicData = publicSnap.exists() ? publicSnap.data() : {};
@@ -243,6 +248,34 @@ onAuthStateChanged(auth, (user) => {
     renderComments();
 });
 
+function buildBlockMessage(pdata, untilMs){
+    let msg = "Siz saytda izoh qoldirishdan bloklangansiz";
+    if (untilMs) msg += ` (${new Date(untilMs).toLocaleString("uz-UZ", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })} gacha)`;
+    if (pdata.blockedReason) msg += `. Sabab: ${pdata.blockedReason}`;
+    return msg + ".";
+}
+
+/* ---------------- texnik ishlar banneri (admin paneldan yoqiladi) ---------------- */
+try {
+    onSnapshot(doc(db, "site_config", "maintenance"), (snap) => {
+        let banner = document.getElementById("maintenanceBanner");
+        const data = snap.exists() ? snap.data() : null;
+        if (!data || !data.enabled || !data.text){
+            banner?.remove();
+            return;
+        }
+        if (!banner){
+            banner = document.createElement("div");
+            banner.id = "maintenanceBanner";
+            banner.className = "maintenance-banner";
+            banner.setAttribute("role", "status");
+            document.body.prepend(banner);
+        }
+        banner.innerHTML = `<i class="ri-tools-fill"></i><span></span>`;
+        banner.querySelector("span").textContent = data.text;
+    }, (err) => console.error("[texnik-ishlar] o'qishda xatolik:", err));
+} catch (err){ console.error("[texnik-ishlar] ulanishda xatolik:", err); }
+
 function applyOwnRoleUI(){
     if (!userProfile || !userName || !commentForm || !commentsHint) return; // kino.html kabi sahifalarda bu elementlar yo'q
     const existingBadge = userProfile.querySelector(".role-badge");
@@ -260,7 +293,7 @@ function applyOwnRoleUI(){
     if (currentUserBlocked){
         commentForm.hidden = true;
         commentsHint.hidden = false;
-        commentsHint.textContent = "Siz saytda izoh qoldirishdan bloklangansiz.";
+        commentsHint.textContent = currentBlockMessage || "Siz saytda izoh qoldirishdan bloklangansiz.";
     } else {
         commentForm.hidden = false;
         commentsHint.hidden = true;
@@ -646,6 +679,7 @@ try {
     onSnapshot(q, (snapshot) => {
         allComments = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderComments();
+        window.dispatchEvent(new CustomEvent("donylogic:comments"));
     }, (err) => {
         console.error("[fikrlar] o'qishda xatolik:", err);
         if (commentsList) commentsList.innerHTML = `<p class="comments-empty">Fikrlarni yuklab bo'lmadi.</p>`;
@@ -664,11 +698,7 @@ try {
     onSnapshot(aq, (snapshot) => {
         allAnnouncements = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
         renderAnnouncementBar();
-        // admin panel ochiq bo'lsa, ro'yxatini ham yangilab tur
-        const listHost = document.querySelector(".announcement-admin-list");
-        const countTag = document.querySelector("[data-announce-count]");
-        if (listHost) renderAnnouncementAdminList(listHost);
-        if (countTag) countTag.textContent = `${allAnnouncements.length}/${MAX_ANNOUNCEMENTS}`;
+        window.dispatchEvent(new CustomEvent("donylogic:announcements")); // admin panel ochiq bo'lsa yangilanadi
 
         // "Bildirishnoma qilib yuborish" bosilganda notifiedAt yangilangan hujjatlarni topib,
         // ushbu tabda (ruxsat berilgan bo'lsa) OS darajasidagi bildirishnoma ko'rsatamiz.
@@ -700,6 +730,18 @@ try {
     console.error("[elon] ulanishda xatolik:", err);
 }
 
+// muddati tugagan e'lonlar karuselda ko'rsatilmaydi
+function activeAnnouncements(){
+    const now = Date.now();
+    return allAnnouncements.filter((a) => {
+        const ms = a.expiresAt?.toMillis?.();
+        return !ms || ms > now;
+    });
+}
+const ANN_COLOR_MAP = { cyan: "#4fd8ff", violet: "#9b82ff", gold: "#ffd166", red: "#ff6b6b", green: "#4ade80" };
+let shownAnnouncements = [];
+let lastActiveKey = "";
+
 function renderAnnouncementBar(){
     if (!announcementBar || !announcementStage) return;
 
@@ -710,7 +752,10 @@ function renderAnnouncementBar(){
     announcementStage.innerHTML = "";
     currentSlide = null;
 
-    if (!allAnnouncements.length){
+    shownAnnouncements = activeAnnouncements();
+    lastActiveKey = shownAnnouncements.map((a) => a.id + (a.text || "")).join("|");
+
+    if (!shownAnnouncements.length){
         announcementBar.hidden = true;
         return;
     }
@@ -721,20 +766,29 @@ function renderAnnouncementBar(){
 
     // 1 ta bo'lsa ham xuddi shu e'lon aylanib keladi; ko'p bo'lsa navbatma-navbat
     announcementRotateTimer = setInterval(() => {
-        announcementIndex = (announcementIndex + 1) % allAnnouncements.length;
+        announcementIndex = (announcementIndex + 1) % shownAnnouncements.length;
         showAnnouncement(announcementIndex);
     }, ANNOUNCEMENT_ROTATE_MS);
 }
 
+// muddati o'tib qolgan e'lonlarni ochiq sahifada ham o'z vaqtida yashirish
+setInterval(() => {
+    const key = activeAnnouncements().map((a) => a.id + (a.text || "")).join("|");
+    if (key !== lastActiveKey) renderAnnouncementBar();
+}, 30000);
+
 function showAnnouncement(idx){
-    const item = allAnnouncements[idx];
+    const item = shownAnnouncements[idx];
     if (!item || !announcementStage) return;
+
+    const color = ANN_COLOR_MAP[item.color] || ANN_COLOR_MAP.cyan;
+    const icon = /^ri-[a-z0-9-]+$/.test(item.icon || "") ? item.icon : "ri-megaphone-fill";
 
     const slide = document.createElement("div");
     slide.className = "announcement-slide is-entering";
-    slide.innerHTML = `<span>${escapeHTML(item.text || "")}</span>`;
+    slide.innerHTML = `<i class="${icon} announcement-icon" style="color:${color}"></i><span>${escapeHTML(item.text || "")}</span>`;
 
-    // eskisi pastga tushadi, yangisi shu zahoti tepadan uchib keladi
+    // eskisi pastga tushadi, yangisi shu zahoti tepadan uchib keladi (ikonka matn bilan birga)
     const old = currentSlide;
     announcementStage.appendChild(slide);
     if (old){
@@ -745,263 +799,27 @@ function showAnnouncement(idx){
     currentSlide = slide;
 }
 
-async function postAnnouncement(rawText, submitBtn){
-    if (!isAuthorGoogle(currentUser)) return;
-    const text = rawText.trim();
-    if (!text) return;
-
-    if (submitBtn) submitBtn.disabled = true;
-    try {
-        // 5 tadan oshsa — eng eskisini (ro'yxat boshidagi, chunki "asc" tartibda) o'chiramiz
-        if (allAnnouncements.length >= MAX_ANNOUNCEMENTS){
-            const toRemove = allAnnouncements.slice(0, allAnnouncements.length - MAX_ANNOUNCEMENTS + 1);
-            await Promise.all(toRemove.map((a) => deleteDoc(doc(db, "announcements", a.id))));
-        }
-        await addDoc(collection(db, "announcements"), {
-            text: text.slice(0, 200),
-            createdAt: serverTimestamp()
-        });
-    } catch (err){
-        console.error("[elon] qo'shishda xatolik:", err);
-        alert("E'lonni qo'shib bo'lmadi.");
-    } finally {
-        if (submitBtn) submitBtn.disabled = false;
-    }
-}
-
-async function deleteAnnouncement(id){
-    try { await deleteDoc(doc(db, "announcements", id)); }
-    catch (err){
-        console.error("[elon] o'chirishda xatolik:", err);
-        alert("E'lonni o'chirib bo'lmadi.");
-    }
-}
-
-function renderAnnouncementAdminList(host){
-    if (!host) return;
-    if (!allAnnouncements.length){
-        host.innerHTML = `<p class="announcement-admin-empty">Hozircha e'lonlar yo'q.</p>`;
-        return;
-    }
-    host.innerHTML = allAnnouncements.slice().reverse().map((a) => {
-        const created = a.createdAt?.toDate ? a.createdAt.toDate() : null;
-        return `
-            <div class="announcement-admin-item" data-id="${a.id}">
-                <span class="announcement-admin-text">${escapeHTML(a.text || "")}</span>
-                <span class="announcement-admin-time">${timeAgo(created)}</span>
-                <button class="announcement-admin-notify" data-id="${a.id}" title="Bildirishnoma qilib yuborish"><i class="ri-notification-3-line"></i></button>
-                <button class="announcement-admin-delete" data-id="${a.id}" title="O'chirish"><i class="ri-delete-bin-6-line"></i></button>
-            </div>
-        `;
-    }).join("");
-    host.querySelectorAll(".announcement-admin-delete").forEach((btn) => {
-        btn.addEventListener("click", () => deleteAnnouncement(btn.dataset.id));
-    });
-    host.querySelectorAll(".announcement-admin-notify").forEach((btn) => {
-        btn.addEventListener("click", () => pushAnnouncementNotification(btn));
-    });
-}
-
-async function pushAnnouncementNotification(btn){
-    const id = btn.dataset.id;
-    btn.disabled = true;
-    try {
-        await updateDoc(doc(db, "announcements", id), { notifiedAt: serverTimestamp() });
-        btn.classList.add("is-sent");
-        btn.innerHTML = '<i class="ri-check-line"></i>';
-        setTimeout(() => {
-            btn.classList.remove("is-sent");
-            btn.innerHTML = '<i class="ri-notification-3-line"></i>';
-            btn.disabled = false;
-        }, 1800);
-    } catch (err){
-        console.error("[elon] bildirishnoma yuborishda xato:", err);
-        alert("Bildirishnomani yuborib bo'lmadi.");
-        btn.disabled = false;
-    }
-}
-
 /* ==================================================================
-   ADMIN PANEL — faqat donylogicstudios@gmail.com uchun
+   ADMIN PANEL — alohida modul (admin.js), faqat muallif tugmani bosganda yuklanadi
    ================================================================== */
-adminPanelBtn?.addEventListener("click", openAdminPanel);
-
-async function openAdminPanel(){
+adminPanelBtn?.addEventListener("click", async () => {
     if (!isAuthorGoogle(currentUser)) return;
-
-    const overlay = document.createElement("div");
-    overlay.className = "admin-overlay";
-    overlay.innerHTML = `
-        <div class="admin-modal">
-            <div class="admin-modal-head">
-                <h3><i class="ri-shield-star-fill"></i> Admin panel</h3>
-                <button class="admin-close" aria-label="Yopish"><i class="ri-close-line"></i></button>
-            </div>
-            <div class="admin-modal-body">
-                <div class="admin-section">
-                    <div class="admin-section-title"><i class="ri-team-fill"></i> Foydalanuvchilar</div>
-                    <p class="admin-loading">Foydalanuvchilar yuklanmoqda...</p>
-                </div>
-
-                <hr class="admin-divider">
-
-                <div class="admin-section">
-                    <div class="admin-section-title">
-                        <i class="ri-megaphone-fill"></i> E'lonlar
-                        <span class="admin-count-tag" data-announce-count>${allAnnouncements.length}/${MAX_ANNOUNCEMENTS}</span>
-                    </div>
-                    <form class="announcement-form">
-                        <input type="text" maxlength="200" placeholder="Yangi e'lon matni (200 belgigacha)..." required>
-                        <button type="submit" class="btn btn-primary"><i class="ri-send-plane-2-line"></i> <span>E'lon qilish</span></button>
-                    </form>
-                    <div class="announcement-admin-list"></div>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    const close = () => overlay.remove();
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) close(); });
-    overlay.querySelector(".admin-close").addEventListener("click", close);
-
-    const announceForm = overlay.querySelector(".announcement-form");
-    announceForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const input = announceForm.querySelector("input");
-        const btn = announceForm.querySelector("button");
-        await postAnnouncement(input.value, btn);
-        input.value = "";
-    });
-    renderAnnouncementAdminList(overlay.querySelector(".announcement-admin-list"));
-
-    const usersSection = overlay.querySelectorAll(".admin-section")[0];
     try {
-        const users = await fetchAdminUsers();
-        renderAdminTable(usersSection, users);
-    } catch (err){
-        console.error("[admin] foydalanuvchilarni yuklashda xato:", err);
-        usersSection.querySelector(".admin-loading").textContent = `Yuklab bo'lmadi: ${err.message || ""}`;
-    }
-}
-
-// Ommaviy (/users) va maxfiy (/user_private) hujjatlarni uid bo'yicha birlashtiradi.
-// /user_private faqat admin (isAdmin()) yoki hujjat egasi tomonidan o'qilishi mumkin.
-async function fetchAdminUsers(){
-    const [pubSnap, privSnap] = await Promise.all([
-        getDocs(collection(db, "users")),
-        getDocs(collection(db, "user_private"))
-    ]);
-    const priv = new Map(privSnap.docs.map((d) => [d.id, d.data()]));
-    const users = pubSnap.docs.map((d) => ({ uid: d.id, ...d.data(), ...(priv.get(d.id) || {}) }));
-    users.sort((a, b) => (b.lastLogin?.toMillis?.() || 0) - (a.lastLogin?.toMillis?.() || 0));
-    return users;
-}
-
-function fmtDate(ts){
-    if (!ts?.toDate) return "—";
-    return ts.toDate().toLocaleString("uz-UZ", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-}
-
-function renderAdminTable(section, users){
-    const now = Date.now();
-
-    const rows = users.map((u) => {
-        const isSelf = u.email === AUTHOR_EMAIL;
-        const role = isSelf ? "author" : (u.role || (u.email === MANAGER_DEFAULT_EMAIL ? "manager" : null));
-        const lastMs = u.lastLogin?.toMillis?.() || 0;
-        const isRecentlyActive = now - lastMs < 5 * 60 * 1000;
-
-        const actions = isSelf ? `<span class="admin-self-tag">Siz</span>` : `
-            <div class="admin-actions">
-                <select class="admin-role-select" data-uid="${u.uid}">
-                    <option value="__none__" ${!role ? "selected" : ""}>Oddiy foydalanuvchi</option>
-                    <option value="manager" ${role === "manager" ? "selected" : ""}>Community-manager</option>
-                    <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
-                    <option value="ceo_alfgamex" ${role === "ceo_alfgamex" ? "selected" : ""}>CEO of AlfGameX</option>
-                </select>
-                <button class="admin-block-btn ${u.blocked ? "is-blocked" : ""}" data-uid="${u.uid}" data-blocked="${!!u.blocked}">
-                    <i class="ri-${u.blocked ? "lock-unlock-line" : "forbid-line"}"></i> ${u.blocked ? "Blokdan chiqarish" : "Bloklash"}
-                </button>
-            </div>
-        `;
-
-        return `
-            <tr class="${u.blocked ? "admin-row-blocked" : ""}">
-                <td class="admin-cell-user">
-                    <img src="${escapeHTML(u.photoURL || "")}" alt="" referrerpolicy="no-referrer">
-                    <span>${escapeHTML(u.displayName || "—")}</span>
-                    ${roleBadgeHTML(role)}
-                </td>
-                <td>${escapeHTML(u.email || "—")}</td>
-                <td>${fmtDate(u.createdAt)}</td>
-                <td>
-                    <span class="admin-activity-dot ${isRecentlyActive ? "is-online" : ""}"></span>
-                    ${fmtDate(u.lastLogin)}
-                </td>
-                <td>${u.blocked ? '<span class="admin-status-blocked">Bloklangan</span>' : '<span class="admin-status-ok">Faol</span>'}</td>
-                <td>${actions}</td>
-            </tr>
-        `;
-    }).join("");
-
-    section.innerHTML = `
-        <div class="admin-section-title"><i class="ri-team-fill"></i> Foydalanuvchilar <span class="admin-count-tag">${users.length}</span></div>
-        <div class="admin-table-wrap">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Foydalanuvchi</th>
-                        <th>Email</th>
-                        <th>Ro'yxatdan o'tgan</th>
-                        <th>Oxirgi faollik</th>
-                        <th>Holat</th>
-                        <th>Amallar</th>
-                    </tr>
-                </thead>
-                <tbody>${rows}</tbody>
-            </table>
-        </div>
-    `;
-
-    section.querySelectorAll(".admin-role-select").forEach((sel) => {
-        sel.addEventListener("change", async () => {
-            const uid = sel.dataset.uid;
-            const value = sel.value === "__none__" ? null : sel.value;
-            try {
-                await updateDoc(doc(db, "users", uid), { role: value, roleNotifyPending: true });
-                invalidateRole(uid);
-                renderComments();
-            } catch (err){
-                console.error("[admin] rol o'zgartirishda xato:", err);
-                alert("Rolni o'zgartirib bo'lmadi.");
-            }
+        const mod = await import("./admin.js?v=1");
+        mod.openAdminPanel({
+            db,
+            AUTHOR_EMAIL, MANAGER_DEFAULT_EMAIL, MAX_ANNOUNCEMENTS, ROLE_LABEL,
+            getCurrentUser: () => currentUser,
+            getComments: () => allComments,
+            getAnnouncements: () => allAnnouncements,
+            escapeHTML, timeAgo, roleBadgeHTML, invalidateRole,
+            rerenderComments: () => renderComments()
         });
-    });
-
-    section.querySelectorAll(".admin-block-btn").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-            const uid = btn.dataset.uid;
-            const nextBlocked = btn.dataset.blocked !== "true";
-            try {
-                await updateDoc(doc(db, "user_private", uid), { blocked: nextBlocked });
-                openAdminPanelRefresh(section);
-            } catch (err){
-                console.error("[admin] bloklashda xato:", err);
-                alert("Bajarib bo'lmadi.");
-            }
-        });
-    });
-}
-
-async function openAdminPanelRefresh(section){
-    try {
-        const users = await fetchAdminUsers();
-        renderAdminTable(section, users);
     } catch (err){
-        console.error("[admin] yangilashda xato:", err);
+        console.error("[admin] panelni yuklashda xato:", err);
+        alert("Admin panelni yuklab bo'lmadi.");
     }
-}
+});
 
 /* ---------------- donate: copy card numbers ---------------- */
 document.querySelectorAll("[data-copy-card]").forEach((btn) => {
