@@ -242,6 +242,10 @@ span:hover{
 }
 .announcement-slide{
     grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
     max-width: 100%;
     text-align: center;
     font-family: "Space Mono", monospace;
@@ -2550,4 +2554,274 @@ body.scroll-locked{ overflow: hidden; }
 .kino-modal-poster img.is-loaded,
 .kino-cast-avatar img.is-loaded{
     opacity: 1;
+}
+
+/* =========================================================
+   ADMIN PANEL — tablar, statistika, moderatsiya, jurnal
+   ========================================================= */
+.admin-modal{ max-width: 1040px; }
+.admin-tabs{
+    display: flex;
+    gap: 6px;
+    padding: 10px 22px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar{ display: none; }
+.admin-tab{
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 14px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font-family: "Saira", sans-serif;
+    font-weight: 600;
+    font-size: 0.84rem;
+    cursor: pointer;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.admin-tab:hover{ color: var(--text); }
+.admin-tab.is-active{
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+}
+.admin-pane{ display: none; }
+.admin-pane.is-active{ display: block; }
+.admin-note{
+    margin-top: 12px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* statistika kartochkalari */
+.adm-cards{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 26px;
+}
+.adm-card{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+}
+.adm-card i{ color: var(--cyan); font-size: 1.15rem; }
+.adm-card strong{
+    font-family: "Space Mono", monospace;
+    font-size: 1.5rem;
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.adm-card span{ font-size: 0.74rem; color: var(--muted); }
+
+.adm-chart{
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 170px;
+    padding: 10px 4px 0;
+    margin-top: 10px;
+}
+.adm-chart-col{
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+.adm-chart-bar{
+    width: 100%;
+    max-width: 34px;
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, var(--cyan), var(--violet));
+    transition: height .5s var(--ease);
+}
+.adm-chart-val{ font-family: "Space Mono", monospace; font-size: 0.66rem; color: var(--text); min-height: 12px; }
+.adm-chart-lbl{ font-family: "Space Mono", monospace; font-size: 0.58rem; color: var(--muted); }
+
+/* asboblar paneli, qidiruv, tugmalar */
+.adm-toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.adm-search{
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+}
+.adm-search i{ position: absolute; left: 12px; color: var(--muted); pointer-events: none; }
+.adm-search input{
+    width: 100%;
+    padding: 9px 12px 9px 34px;
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: "Saira", sans-serif;
+    font-size: 0.86rem;
+}
+.adm-search input:focus{ outline: none; border-color: var(--border-glow); }
+.adm-btn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    color: var(--text);
+    font-family: "Saira", sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.adm-btn:hover{ border-color: var(--border-glow); box-shadow: var(--shadow-cyan); }
+.adm-btn-primary{
+    background: linear-gradient(90deg, var(--cyan), var(--violet));
+    color: #05070d;
+    border-color: transparent;
+}
+.adm-btn-primary i{ color: #05070d; }
+.adm-btn-danger{ border-color: rgba(255,107,107,0.5); color: #ff6b6b; }
+.adm-btn-danger:hover{ border-color: #ff6b6b; box-shadow: 0 0 16px rgba(255,107,107,0.3); }
+.adm-icon-btn{
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color .2s var(--ease), border-color .2s var(--ease);
+}
+.adm-icon-btn:hover{ color: #ff6b6b; border-color: #ff6b6b; }
+.adm-icon-btn.is-ok:hover{ color: #4ade80; border-color: #4ade80; }
+.adm-sub{ display: block; font-size: 0.7rem; color: var(--muted); font-family: "Space Mono", monospace; }
+.adm-tag{
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--glass);
+    font-family: "Space Mono", monospace;
+    font-size: 0.64rem;
+    color: var(--cyan);
+    white-space: nowrap;
+}
+.adm-check{ display: inline-flex; align-items: center; gap: 8px; font-size: 0.84rem; cursor: pointer; }
+.adm-flash{ color: #4ade80; font-size: 0.82rem; font-family: "Space Mono", monospace; }
+
+/* izohlar moderatsiyasi */
+.adm-comment{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 12px;
+    background: var(--glass);
+    border: 1px solid var(--border);
+}
+.adm-comment > img{ width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.adm-comment-body{ flex: 1; min-width: 0; }
+.adm-comment-top{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.adm-comment-body p{ margin-top: 4px; font-size: 0.86rem; line-height: 1.55; word-break: break-word; white-space: pre-wrap; }
+
+/* e'lonlar formasi / tahrirlash */
+.adm-ann-form{ display: flex; flex-direction: column; gap: 10px; }
+.adm-ann-opts{ display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.adm-ann-edit{ display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.adm-ann-edit input[type=text]{
+    flex: 1; min-width: 160px; padding: 7px 10px; border-radius: 10px;
+    background: var(--glass); border: 1px solid var(--border); color: var(--text);
+    font-family: "Saira", sans-serif; font-size: 0.86rem;
+}
+.announcement-admin-item.is-expired{ opacity: 0.5; }
+.announcement-admin-item > i{ flex-shrink: 0; }
+
+/* sayt sozlamalari */
+.adm-row-form{ display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.adm-row-form input[type=number],
+.adm-row-form input[type=text]{
+    padding: 9px 12px; border-radius: 10px; background: var(--glass);
+    border: 1px solid var(--border); color: var(--text);
+    font-family: "Saira", sans-serif; font-size: 0.86rem;
+}
+.adm-row-form input[type=text]{ flex: 1; min-width: 180px; }
+.adm-row-form input:focus{ outline: none; border-color: var(--border-glow); }
+.adm-picks, .adm-pick-results{ display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+.adm-pick{
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 8px 12px; border-radius: 10px; background: var(--glass);
+    border: 1px solid var(--border); font-size: 0.84rem;
+}
+
+/* jurnal */
+.adm-audit{
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    padding: 9px 12px; margin-bottom: 6px; border-radius: 10px;
+    background: var(--glass); border: 1px solid var(--border); font-size: 0.82rem;
+}
+.adm-audit-time{ font-family: "Space Mono", monospace; font-size: 0.68rem; color: var(--muted); white-space: nowrap; }
+.adm-audit-text{ flex: 1; min-width: 160px; word-break: break-word; }
+
+/* bloklash dialogi */
+.adm-dialog-overlay{
+    position: absolute; inset: 0; z-index: 5;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    background: rgba(5,7,13,0.7); backdrop-filter: blur(4px);
+}
+.adm-dialog{
+    width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 14px;
+    padding: 22px; border-radius: 18px; background: var(--navy-soft);
+    border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.adm-dialog h4{ display: flex; align-items: center; gap: 8px; font-size: 1rem; color: #ff6b6b; }
+.adm-dialog label{ display: flex; flex-direction: column; gap: 6px; font-size: 0.8rem; color: var(--muted); }
+.adm-dialog label.adm-check{ flex-direction: row; color: var(--text); }
+.adm-dialog input[type=text]{
+    padding: 9px 12px; border-radius: 10px; background: var(--glass);
+    border: 1px solid var(--border); color: var(--text);
+    font-family: "Saira", sans-serif; font-size: 0.88rem;
+}
+.adm-dialog-actions{ display: flex; justify-content: flex-end; gap: 10px; }
+
+/* texnik ishlar banneri (barcha sahifalarda) */
+.maintenance-banner{
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 10px 16px; text-align: center;
+    background: linear-gradient(90deg, rgba(255,209,102,0.18), rgba(255,154,79,0.14));
+    border-bottom: 1px solid rgba(255,209,102,0.4);
+    font-family: "Space Mono", monospace; font-size: 0.78rem; line-height: 1.5;
+}
+.maintenance-banner i{ color: #ffd166; font-size: 1.05rem; flex-shrink: 0; }
+
+@media(max-width: 640px){
+    .admin-tabs{ padding: 8px 12px 0; }
+    .adm-cards{ grid-template-columns: repeat(2, 1fr); }
 }
