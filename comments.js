@@ -204,6 +204,7 @@ onAuthStateChanged(auth, (user) => {
         syncUserProfile(user).then(async ({ }) => {
             invalidateRole(user.uid);
             currentUserRole = await resolveRole(user.uid);
+            if (isAuthorGoogle(user)) currentUserRole = "author";
             const privateSnap = await getDoc(doc(db, "user_private", user.uid));
             currentUserBlocked = privateSnap.exists() ? !!privateSnap.data().blocked : false;
 
@@ -292,22 +293,47 @@ async function syncUserProfile(user){
     const privateRef = doc(db, "user_private", user.uid);
     const existing = await getDoc(userRef);
 
-    if (existing.exists()){
-        await setDoc(userRef, {
-            displayName: user.displayName || "Foydalanuvchi",
-            photoURL: user.photoURL || ""
-        }, { merge: true });
-        await setDoc(privateRef, {
-            lastLogin: serverTimestamp()
-        }, { merge: true });
-        return { isNew: false };
-    }
-
     // Rol faqat quyida taklif qilinadi — Firestore qoidasi buni haqiqiy,
     // tasdiqlangan auth token emailiga qarab serverda tasdiqlaydi yoki rad etadi.
     const proposedRole = user.email === AUTHOR_EMAIL
         ? "author"
         : (user.email === MANAGER_DEFAULT_EMAIL ? "manager" : null);
+
+    if (existing.exists()){
+        // Har bir qadam alohida try/catch ichida: bittasi muvaffaqiyatsiz bo'lsa ham
+        // qolgan UI (izoh formasi, admin tugmasi) ishlashda davom etadi.
+        try {
+            await setDoc(userRef, {
+                displayName: user.displayName || "Foydalanuvchi",
+                photoURL: user.photoURL || ""
+            }, { merge: true });
+        } catch (err){ console.error("[profil] ommaviy profilni yangilashda xato:", err); }
+
+        try {
+            const privSnap = await getDoc(privateRef);
+            if (!privSnap.exists()){
+                // Maxfiylik yangilanishidan OLDIN ro'yxatdan o'tgan foydalanuvchilar uchun
+                // yopiq hujjatni birinchi kirishda yaratamiz.
+                await setDoc(privateRef, {
+                    email: user.email || "",
+                    createdAt: serverTimestamp(),
+                    lastLogin: serverTimestamp(),
+                    blocked: false
+                });
+            } else {
+                await setDoc(privateRef, { lastLogin: serverTimestamp() }, { merge: true });
+            }
+        } catch (err){ console.error("[profil] maxfiy hujjatni yangilashda xato:", err); }
+
+        try {
+            const currentRole = existing.data().role || null;
+            if (proposedRole && (currentRole === null || (proposedRole === "author" && currentRole !== "author"))){
+                await updateDoc(userRef, { role: proposedRole });
+            }
+        } catch (err){ console.error("[profil] rolni belgilashda xato:", err); }
+
+        return { isNew: false };
+    }
 
     try {
         await runTransaction(db, async (tx) => {
