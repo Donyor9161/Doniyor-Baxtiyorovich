@@ -53,6 +53,8 @@
     const modalOverlay = document.getElementById("kinoModalOverlay");
     const modalBody = document.getElementById("kinoModalBody");
     const modalClose = document.getElementById("kinoModalClose");
+    const top10Section = document.getElementById("kinoTop10");
+    const top10Row = document.getElementById("kinoTop10Row");
 
     if (!grid) return; // bu sahifa kino.html emas
 
@@ -148,12 +150,23 @@
         }
     }
 
+    function skeletonHTML(count){
+        return Array.from({ length: count }, () => `<div class="kino-skeleton"></div>`).join("");
+    }
+
     function resetAndLoad(){
         state.page = 1;
         state.totalPages = 1;
-        grid.innerHTML = "";
         emptyEl.hidden = true;
-        loadMore();
+
+        // tab/chip/qidiruv almashganda to'satdan sakrab qolmasligi uchun — avval yumshoq
+        // so'nadi, keyin skelet-plitkalar bilan almashadi
+        grid.classList.add("is-switching");
+        setTimeout(() => {
+            grid.innerHTML = skeletonHTML(14);
+            grid.classList.remove("is-switching");
+            loadMore();
+        }, 160);
     }
 
     async function loadMore(){
@@ -187,8 +200,9 @@
             state.totalPages = data.total_pages || 1;
             const results = data.results || [];
 
-            if (state.page === 1 && !results.length){
-                emptyEl.hidden = false;
+            if (state.page === 1){
+                grid.innerHTML = ""; // skelet-plitkalarni tozalaymiz
+                if (!results.length) emptyEl.hidden = false;
             }
 
             renderCards(results);
@@ -196,6 +210,7 @@
         } catch (err){
             console.error("[kino] ro'yxatni yuklashda xato:", err);
             if (state.page === 1){
+                grid.innerHTML = "";
                 emptyEl.hidden = false;
                 emptyEl.textContent = "Ma'lumotlarni yuklab bo'lmadi. Birozdan so'ng qayta urinib ko'ring.";
             }
@@ -211,16 +226,18 @@
 
     function renderCards(items){
         const mediaType = state.mediaType;
-        const html = items.map((item) => {
+        const html = items.map((item, i) => {
             const title = item.title || item.name || "Nomsiz";
             const dateStr = item.release_date || item.first_air_date;
             const year = dateStr ? dateStr.slice(0, 4) : "—";
             const rating = item.vote_average ? item.vote_average.toFixed(1) : "—";
             const poster = item.poster_path
-                ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}" loading="lazy">`
+                ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}" loading="lazy" onload="this.classList.add('is-loaded')">`
                 : `<div class="kino-poster-fallback"><i class="ri-image-line"></i></div>`;
+            // har bir karta sal kechikib (stagger) paydo bo'ladi — bir vaqtda sakrab chiqmaydi
+            const delay = Math.min(i, 20) * 28;
             return `
-                <article class="kino-card" data-id="${item.id}" data-media="${mediaType}" tabindex="0" role="button" aria-label="${escapeHTML(title)}">
+                <article class="kino-card kino-card-enter" style="animation-delay:${delay}ms" data-id="${item.id}" data-media="${mediaType}" tabindex="0" role="button" aria-label="${escapeHTML(title)}">
                     <div class="kino-poster">
                         ${poster}
                         <span class="kino-rating"><i class="ri-star-fill"></i> ${rating}</span>
@@ -261,7 +278,20 @@
     async function openModal(id, mediaType){
         modalOverlay.hidden = false;
         document.body.classList.add("scroll-locked");
-        modalBody.innerHTML = `<p class="admin-loading">Yuklanmoqda...</p>`;
+        modalBody.innerHTML = `
+            <div class="kino-modal-skeleton">
+                <div class="kino-skeleton kino-modal-skeleton-backdrop"></div>
+                <div class="kino-modal-skeleton-row">
+                    <div class="kino-skeleton kino-modal-skeleton-poster"></div>
+                    <div class="kino-modal-skeleton-lines">
+                        <div class="kino-skeleton kino-modal-skeleton-line" style="width:70%"></div>
+                        <div class="kino-skeleton kino-modal-skeleton-line" style="width:40%"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+        // silliq ochilish animatsiyasi — bir freym kutamiz, shunda transition ishga tushadi
+        requestAnimationFrame(() => modalOverlay.classList.add("is-open"));
 
         try {
             const [detail, genreMap] = await Promise.all([
@@ -301,7 +331,7 @@
             : `style="background:var(--navy)"`;
 
         const posterHTML = item.poster_path
-            ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}">`
+            ? `<img src="${IMG_POSTER}${item.poster_path}" alt="${escapeHTML(title)}" onload="this.classList.add('is-loaded')">`
             : `<div class="kino-poster-fallback"><i class="ri-image-line"></i></div>`;
 
         const cast = (item.credits && item.credits.cast ? item.credits.cast.slice(0, 8) : []);
@@ -311,7 +341,7 @@
                 ${cast.map((c) => `
                     <div class="kino-cast-item">
                         <div class="kino-cast-avatar">
-                            ${c.profile_path ? `<img src="${IMG_PROFILE}${c.profile_path}" alt="${escapeHTML(c.name)}">` : `<i class="ri-user-3-line"></i>`}
+                            ${c.profile_path ? `<img src="${IMG_PROFILE}${c.profile_path}" alt="${escapeHTML(c.name)}" onload="this.classList.add('is-loaded')">` : `<i class="ri-user-3-line"></i>`}
                         </div>
                         <div class="kino-cast-name">${escapeHTML(c.name)}</div>
                         <div class="kino-cast-character">${escapeHTML(c.character || "")}</div>
@@ -346,9 +376,12 @@
     }
 
     function closeModal(){
-        modalOverlay.hidden = true;
+        modalOverlay.classList.remove("is-open");
         document.body.classList.remove("scroll-locked");
-        modalBody.innerHTML = "";
+        setTimeout(() => {
+            modalOverlay.hidden = true;
+            modalBody.innerHTML = "";
+        }, 280);
     }
     modalClose.addEventListener("click", closeModal);
     modalOverlay.addEventListener("click", (e) => {
@@ -358,7 +391,9 @@
         if (e.key === "Escape" && !modalOverlay.hidden) closeModal();
     });
 
-    /* ---------------- HERO KARUSEL (kunning trend kinolari, fon rasmi bilan) ---------------- */
+    /* ---------------- HERO KARUSEL + BUGUNGI TOP 10 ----------------
+       Ikkalasi ham bitta "trending/movie/day" so'rovidan foydalanadi — ortiqcha
+       so'rov yubormaslik uchun. */
     const carouselTrack = document.getElementById("kinoCarouselTrack");
     const carouselDots = document.getElementById("kinoCarouselDots");
     let carouselItems = [];
@@ -370,11 +405,15 @@
         try {
             const res = await fetch(`${TMDB_BASE}/trending/movie/day?api_key=${TMDB_API_KEY}&language=${LANG}`);
             const data = await res.json();
-            carouselItems = (data.results || []).filter((m) => m.backdrop_path).slice(0, 6);
-            if (!carouselItems.length){ carouselTrack.innerHTML = ""; return; }
-            renderCarousel();
+            const results = data.results || [];
+
+            carouselItems = results.filter((m) => m.backdrop_path).slice(0, 6);
+            if (carouselItems.length) renderCarousel();
+            else carouselTrack.innerHTML = "";
+
+            renderTop10(results.slice(0, 10));
         } catch (err){
-            console.error("[kino] karusel yuklanmadi:", err);
+            console.error("[kino] karusel/TOP10 yuklanmadi:", err);
             carouselTrack.innerHTML = "";
         }
     }
@@ -385,7 +424,9 @@
             const overview = m.overview ? (m.overview.length > 150 ? m.overview.slice(0, 150) + "…" : m.overview) : "";
             const rating = m.vote_average ? m.vote_average.toFixed(1) : "—";
             return `
-                <div class="kino-carousel-slide${i === 0 ? " is-active" : ""}" style="background-image:url('${IMG_BACKDROP_LARGE}${m.backdrop_path}')">
+                <div class="kino-carousel-slide${i === 0 ? " is-active" : ""}">
+                    <div class="kino-carousel-bg" style="background-image:url('${IMG_BACKDROP_LARGE}${m.backdrop_path}')"></div>
+                    <div class="kino-carousel-fade"></div>
                     <div class="kino-carousel-info">
                         <span class="kino-carousel-tag"><i class="ri-fire-fill"></i> Bugungi trend</span>
                         <h2>${escapeHTML(title)}</h2>
@@ -429,8 +470,34 @@
         }, 5500);
     }
 
+    /* ---------------- Bugungi TOP 10 (Netflix uslubidagi katta raqamlar) ---------------- */
+    function renderTop10(items){
+        if (!top10Section || !top10Row || !items.length) return;
+        top10Section.hidden = false;
+        top10Row.innerHTML = items.map((m, i) => {
+            const title = m.title || m.name || "";
+            const poster = m.poster_path
+                ? `<img src="${IMG_POSTER}${m.poster_path}" alt="${escapeHTML(title)}" loading="lazy" onload="this.classList.add('is-loaded')">`
+                : `<div class="kino-poster-fallback"><i class="ri-image-line"></i></div>`;
+            return `
+                <div class="kino-top10-item" data-id="${m.id}" tabindex="0" role="button" aria-label="${escapeHTML(title)}">
+                    <span class="kino-top10-rank">${i + 1}</span>
+                    <div class="kino-top10-poster">${poster}</div>
+                </div>
+            `;
+        }).join("");
+
+        top10Row.querySelectorAll(".kino-top10-item").forEach((el) => {
+            el.addEventListener("click", () => openModal(el.dataset.id, "movie"));
+            el.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openModal(el.dataset.id, "movie"); }
+            });
+        });
+    }
+
     /* ---------------- ishga tushirish ---------------- */
     renderChips();
+    grid.innerHTML = skeletonHTML(14);
     loadMore();
     initCarousel();
 })();
