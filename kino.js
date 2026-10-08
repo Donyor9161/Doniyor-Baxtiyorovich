@@ -407,7 +407,11 @@
             const data = await res.json();
             const results = data.results || [];
 
-            carouselItems = results.filter((m) => m.backdrop_path).slice(0, 6);
+            // Muharrir tanlovi (admin paneldan belgilanadi) — karuselda birinchi turadi
+            const picked = await fetchEditorPicks();
+            const pickedIds = new Set(picked.map((m) => m.id));
+            const trending = results.filter((m) => m.backdrop_path && !pickedIds.has(m.id));
+            carouselItems = [...picked, ...trending].slice(0, 6);
             if (carouselItems.length) renderCarousel();
             else carouselTrack.innerHTML = "";
 
@@ -415,6 +419,26 @@
         } catch (err){
             console.error("[kino] karusel/TOP10 yuklanmadi:", err);
             carouselTrack.innerHTML = "";
+        }
+    }
+
+    // Firestore REST orqali ochiq o'qiladi (qoida: site_config — read: true), shuning uchun
+    // bu klassik skriptga Firebase SDK ulash shart emas. Xato bo'lsa — jim o'tib ketadi.
+    async function fetchEditorPicks(){
+        try {
+            const url = "https://firestore.googleapis.com/v1/projects/donylogic-12f4b/databases/(default)/documents/site_config/picks";
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            const doc = await res.json();
+            const ids = (doc.fields?.ids?.arrayValue?.values || []).map((v) => Number(v.integerValue)).filter(Boolean).slice(0, 6);
+            if (!ids.length) return [];
+            const movies = await Promise.all(ids.map((id) =>
+                fetch(`${TMDB_BASE}/movie/${id}?api_key=${TMDB_API_KEY}&language=${LANG}`).then((r) => r.ok ? r.json() : null).catch(() => null)
+            ));
+            return movies.filter((m) => m && m.backdrop_path).map((m) => ({ ...m, _pick: true }));
+        } catch (err){
+            console.warn("[kino] muharrir tanlovi o'qilmadi:", err);
+            return [];
         }
     }
 
@@ -428,7 +452,7 @@
                     <div class="kino-carousel-bg" style="background-image:url('${IMG_BACKDROP_LARGE}${m.backdrop_path}')"></div>
                     <div class="kino-carousel-fade"></div>
                     <div class="kino-carousel-info">
-                        <span class="kino-carousel-tag"><i class="ri-fire-fill"></i> Bugungi trend</span>
+                        <span class="kino-carousel-tag">${m._pick ? '<i class="ri-vip-crown-2-fill"></i> Muharrir tanlovi' : '<i class="ri-fire-fill"></i> Bugungi trend'}</span>
                         <h2>${escapeHTML(title)}</h2>
                         ${overview ? `<p>${escapeHTML(overview)}</p>` : ""}
                         <div class="kino-carousel-actions">
