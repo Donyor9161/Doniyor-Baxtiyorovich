@@ -39,6 +39,11 @@
         requestToken: 0 // eski so'rovlar natijasi kech kelib, yangi natijani bosib ketmasligi uchun
     };
 
+    // TMDB har sahifada 20 ta natija beradi. Bir yuklashda shuncha sahifa olinadi (3 × 20 = 60 ta).
+    // TMDB bir ro'yxat uchun ko'pi bilan 500 sahifagacha (≈10 000 ta) beradi.
+    const PAGES_PER_LOAD = 3;
+    const TMDB_MAX_PAGES = 500;
+
     const genreCache = { movie: null, tv: null };
 
     const grid = document.getElementById("kinoGrid");
@@ -123,15 +128,15 @@
     });
 
     /* ---------------- TMDB so'rovlari ---------------- */
-    function buildListUrl(){
+    function buildListUrl(page){
         const base = `${TMDB_BASE}`;
         if (state.query){
-            return `${base}/search/${state.mediaType}?api_key=${TMDB_API_KEY}&language=${LANG}&query=${encodeURIComponent(state.query)}&page=${state.page}&include_adult=false`;
+            return `${base}/search/${state.mediaType}?api_key=${TMDB_API_KEY}&language=${LANG}&query=${encodeURIComponent(state.query)}&page=${page}&include_adult=false`;
         }
         if (state.category === "trending"){
-            return `${base}/trending/${state.mediaType}/week?api_key=${TMDB_API_KEY}&language=${LANG}&page=${state.page}`;
+            return `${base}/trending/${state.mediaType}/week?api_key=${TMDB_API_KEY}&language=${LANG}&page=${page}`;
         }
-        return `${base}/${state.mediaType}/${state.category}?api_key=${TMDB_API_KEY}&language=${LANG}&page=${state.page}`;
+        return `${base}/${state.mediaType}/${state.category}?api_key=${TMDB_API_KEY}&language=${LANG}&page=${page}`;
     }
 
     async function fetchGenres(mediaType){
@@ -190,23 +195,40 @@
             });
         }, 10000);
 
+        let ok = false;
         try {
-            const res = await fetch(buildListUrl());
-            if (!res.ok) throw new Error(`TMDB ${res.status}`);
-            const data = await res.json();
+            const first = state.page;
+            const pages = [];
+            for (let p = first; p < first + PAGES_PER_LOAD; p++){
+                if (p > TMDB_MAX_PAGES) break;
+                if (first > 1 && p > state.totalPages) break;
+                pages.push(p);
+            }
+            const responses = await Promise.all(pages.map((p) =>
+                fetch(buildListUrl(p))
+                    .then((r) => { if (!r.ok) throw new Error(`TMDB ${r.status}`); return r.json(); })
+                    .catch((err) => { if (p === first) throw err; return null; }) // qo'shimcha sahifa xatosi jiddiy emas
+            ));
 
             if (myToken !== state.requestToken) return; // bu orada boshqa so'rov boshlanib ketgan
 
-            state.totalPages = data.total_pages || 1;
-            const results = data.results || [];
+            state.totalPages = Math.min(responses[0].total_pages || 1, TMDB_MAX_PAGES);
 
-            if (state.page === 1){
+            // sahifalar chegarasida takrorlangan filmlarni olib tashlaymiz
+            const seen = new Set([...grid.querySelectorAll(".kino-card")].map((c) => c.dataset.id));
+            const results = [];
+            responses.forEach((d) => (d?.results || []).forEach((m) => {
+                if (!seen.has(String(m.id))){ seen.add(String(m.id)); results.push(m); }
+            }));
+
+            if (first === 1){
                 grid.innerHTML = ""; // skelet-plitkalarni tozalaymiz
                 if (!results.length) emptyEl.hidden = false;
             }
 
             renderCards(results);
-            state.page += 1;
+            state.page = first + pages.length;
+            ok = true;
         } catch (err){
             console.error("[kino] ro'yxatni yuklashda xato:", err);
             if (state.page === 1){
@@ -220,8 +242,16 @@
                 state.isLoading = false;
                 loadingEl.hidden = true;
                 loadingEl.innerHTML = `<i class="ri-loader-4-line"></i> Yuklanmoqda...`;
+                if (ok) requestAnimationFrame(fillViewport);
             }
         }
+    }
+
+    // IntersectionObserver faqat chegara kesishganda ishlaydi. Mayda kartalar ekranni to'ldirmasa
+    // "sentinel" ko'rinib turaveradi va yangi sahifa hech qachon so'ralmasdi — shuni shu yerda tekshiramiz.
+    function fillViewport(){
+        if (state.isLoading || state.page > state.totalPages) return;
+        if (sentinel.getBoundingClientRect().top < window.innerHeight + 600) loadMore();
     }
 
     function renderCards(items){
