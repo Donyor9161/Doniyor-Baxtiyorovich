@@ -330,7 +330,7 @@ function drawUsersTable(){
             <tr class="${u._blockedNow ? "admin-row-blocked" : ""}">
                 <td class="admin-cell-user">
                     <img src="${esc(u.photoURL || "")}" alt="" referrerpolicy="no-referrer">
-                    <span>${esc(u.displayName || "—")}</span>
+                    <span>${esc(u.displayName || "—")}${u.nickname ? ` <small class="adm-sub" style="display:inline">«${esc(u.nickname)}»</small>` : ""}</span>
                     ${ctx.roleBadgeHTML(u._role)}
                 </td>
                 <td>${esc(u.email || "—")}</td>
