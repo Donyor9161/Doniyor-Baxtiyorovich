@@ -51,7 +51,7 @@
             </form>
             <p class="hp-note">Sun'iy intellekt xato qilishi mumkin.</p>
         </section>`;
-    document.body.appendChild(root);
+    document.documentElement.appendChild(root); // <html> ga: har doim ekranga nisbatan qotib turadi
 
     const launcher = root.querySelector(".hp-launcher");
     const panel = root.querySelector(".hp-panel");
@@ -143,15 +143,20 @@
             });
             const data = await res.json().catch(() => ({}));
             if (res.status === 429) failed = "Juda ko'p so'rov yuborildi. Bir daqiqadan so'ng yana urinib ko'ring.";
-            else if (!res.ok || !data.reply) failed = "Kechirasiz, hozir javob bera olmayapman. Birozdan so'ng qayta urinib ko'ring.";
-            else {
+            else if (!res.ok || !data.reply){
+                // sayt egasi uchun: aniq xato kodi (konsolda ham chiqadi) — sozlashda sababini topish oson bo'ladi
+                const code = `${res.status}${data.error ? " " + data.error : ""}`;
+                console.warn("[yordamchi] Worker xatosi:", res.status, data);
+                failed = `Kechirasiz, hozir javob bera olmayapman. Birozdan so'ng qayta urinib ko'ring.\n(xato kodi: ${code})`;
+            } else {
                 typing.remove();
                 history.push({ role: "assistant", content: data.reply });
                 save();
                 addMsg("assistant", data.reply);
             }
         } catch (err){
-            failed = "Ulanishda xatolik yuz berdi. Internetni tekshirib, qayta urinib ko'ring.";
+            console.warn("[yordamchi] ulanish xatosi:", err);
+            failed = "Ulanishda xatolik yuz berdi. Internetni tekshirib, qayta urinib ko'ring.\n(xato kodi: network — Worker manzili yoki CORS noto'g'ri bo'lishi mumkin)";
         } finally {
             clearTimeout(timer);
             busy = false;
