@@ -59,6 +59,7 @@ const donationsTotalEl  = document.getElementById("donationsTotal");
 const commentsCountEl   = document.getElementById("commentsCount");
 const adminPanelBtn     = document.getElementById("adminPanelBtn");
 const notifyToggleBtn   = document.getElementById("notifyToggleBtn");
+const settingsBtn       = document.getElementById("settingsBtn");
 const announcementBar   = document.getElementById("announcementBar");
 const announcementStage  = document.getElementById("announcementStage");
 let currentSlide = null;
@@ -67,6 +68,7 @@ let currentUser = null;
 let currentUserRole = null;   // 'author' | 'admin' | 'manager' | null
 let currentUserBlocked = false;
 let currentBlockMessage = "";
+let currentNickname = "";
 let allComments = [];
 let heartbeatTimer = null;
 let allAnnouncements = [];
@@ -181,6 +183,7 @@ onAuthStateChanged(auth, (user) => {
         currentUser = null;
         currentUserRole = null;
         currentUserBlocked = false;
+        currentNickname = "";
         if (hasCommentUI){
             googleLoginBtn.hidden = false;
             githubLoginBtn.hidden = false;
@@ -215,6 +218,8 @@ onAuthStateChanged(auth, (user) => {
 
             const publicSnap = await getDoc(doc(db, "users", user.uid));
             const publicData = publicSnap.exists() ? publicSnap.data() : {};
+            currentNickname = publicData.nickname || "";
+            if (hasCommentUI) userName.textContent = currentNickname || user.displayName || "Foydalanuvchi";
 
             applyOwnRoleUI();
 
@@ -505,7 +510,7 @@ async function postComment(rawText, parentId, submitBtn){
     try {
         await addDoc(collection(db, "comments"), {
             uid: currentUser.uid,
-            name: currentUser.displayName || "Foydalanuvchi",
+            name: currentNickname || currentUser.displayName || "Foydalanuvchi",
             photo: currentUser.photoURL || "",
             text: text.slice(0, 500),
             parentId: parentId || null,
@@ -798,6 +803,32 @@ function showAnnouncement(idx){
     }
     currentSlide = slide;
 }
+
+/* ==================================================================
+   SOZLAMALAR — alohida modul (settings.js), tugma bosilganda yuklanadi
+   ================================================================== */
+settingsBtn?.addEventListener("click", async () => {
+    try {
+        const mod = await import("./settings.js?v=1");
+        mod.openSettings({
+            db,
+            getCurrentUser: () => currentUser,
+            getRole: () => currentUserRole,
+            getNickname: () => currentNickname,
+            getComments: () => allComments,
+            escapeHTML, roleBadgeHTML,
+            onNicknameSaved: (nick) => {
+                currentNickname = nick || "";
+                if (userName && currentUser) userName.textContent = currentNickname || currentUser.displayName || "Foydalanuvchi";
+            },
+            signOut: () => signOut(auth)
+        });
+    } catch (err){
+        console.error("[sozlamalar] yuklashda xato:", err);
+        alert("Sozlamalarni yuklab bo'lmadi.");
+    }
+});
+window.addEventListener("donylogic:notify-perm", () => updateNotifyBtnUI());
 
 /* ==================================================================
    ADMIN PANEL — alohida modul (admin.js), faqat muallif tugmani bosganda yuklanadi
