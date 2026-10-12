@@ -1,7 +1,10 @@
 /* =========================================================
    DONYLOGIC — sichqoncha ortidan quvlab yuradigan o'rgimchak
    - 8 ta oyoq: har biri ikki bo'g'imli (IK), qadam bosib yuradi
-   - sichqoncha kursori o'zgarmaydi, o'rgimchak faqat uning yonida yuradi
+   - sahifaning O'ZIDA yashaydi (sahifa koordinatalarida): scroll qilinganda sahifa bilan
+     birga suriladi, butun sayt uzunligi va kengligi bo'ylab yuradi
+   - kursor IZIDAN doim bir xil masofada ergashadi (kursor to'xtasa, shu masofada to'xtaydi)
+   - sichqoncha kursorining o'zi o'zgarmaydi
    - Sozlamalardan (settings.js) o'chirish / o'lchamini o'zgartirish mumkin
    - harakatsiz qolganda animatsiya sikli to'xtaydi (batareya tejaladi)
    ========================================================= */
@@ -32,8 +35,11 @@
     let A = 28, B = 38; // son va boldir uzunligi
     let colors = null;
     let legs = [];
-    const sp = { x: -100, y: 0, vx: 0, vy: 0, th: 0, spawned: false };
-    const target = { x: 0, y: 0, has: false };
+    const FOLLOW = 92;                 // kursor izidan ergashish masofasi (px, o'lchamga ko'paytiriladi)
+    const sp = { x: -100, y: 0, vx: 0, vy: 0, th: 0, spawned: false };   // SAHIFA koordinatalarida
+    const client = { x: 0, y: 0, has: false };                           // kursor (oynaga nisbatan)
+    const head = { x: 0, y: 0, has: false };                             // kursor (sahifaga nisbatan)
+    const trail = [];                                                    // kursor bosib o'tgan yo'l
 
     /* ---------------- sozlamalar ---------------- */
     function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
@@ -56,16 +62,19 @@
         if (canvas) return;
         canvas = document.createElement("canvas");
         canvas.setAttribute("aria-hidden", "true");
-        canvas.style.cssText = "position:fixed;inset:0;width:100%;height:100%;z-index:8000;pointer-events:none;";
-        document.body.appendChild(canvas);
+        canvas.style.cssText = "position:fixed;left:0;top:0;z-index:8000;pointer-events:none;";
+        document.documentElement.appendChild(canvas); // <html> ga qo'shiladi: body animatsiyalari ta'sir qilmaydi
         c2 = canvas.getContext("2d");
         resize();
     }
     function resize(){
         if (!canvas) return;
         dpr = Math.min(window.devicePixelRatio || 1, 2);
-        W = window.innerWidth; H = window.innerHeight;
+        // scrollbar hisobga olinmasligi uchun clientWidth/clientHeight (kursor koordinatalari bilan mos tushadi)
+        W = document.documentElement.clientWidth || window.innerWidth;
+        H = document.documentElement.clientHeight || window.innerHeight;
         canvas.width = W * dpr; canvas.height = H * dpr;
+        canvas.style.width = W + "px"; canvas.style.height = H + "px";
         c2.setTransform(dpr, 0, 0, dpr, 0, 0);
         if (sp.spawned) draw();
     }
@@ -95,18 +104,80 @@
         });
     }
 
+    /* ---------------- sahifa koordinatalari, kursor izi ---------------- */
+    function scrollPos(){
+        return [window.scrollX || window.pageXOffset || 0, window.scrollY || window.pageYOffset || 0];
+    }
+
+    // kursorni sahifa koordinatalariga o'tkazadi va yo'lini (iz) yozib boradi
+    function setHead(){
+        const [sx, sy] = scrollPos();
+        head.x = client.x + sx; head.y = client.y + sy; head.has = true;
+        const last = trail[trail.length - 1];
+        if (!last || Math.hypot(head.x - last.x, head.y - last.y) >= 5){
+            trail.push({ x: head.x, y: head.y });
+            let acc = 0; // keraksiz eski izlarni olib tashlaymiz
+            for (let i = trail.length - 1; i > 0; i--){
+                acc += Math.hypot(trail[i].x - trail[i - 1].x, trail[i].y - trail[i - 1].y);
+                if (acc > FOLLOW * S * 2.5){ trail.splice(0, i - 1); break; }
+            }
+        }
+    }
+
+    // iz bo'ylab kursordan FOLLOW masofa orqadagi nuqta — o'rgimchak shu yerga intiladi
+    function followTarget(){
+        const L = FOLLOW * S;
+        let acc = 0, px = head.x, py = head.y;
+        for (let i = trail.length - 1; i >= 0; i--){
+            const q = trail[i];
+            const seg = Math.hypot(px - q.x, py - q.y);
+            if (acc + seg >= L){
+                const t = (L - acc) / (seg || 1);
+                return { x: px + (q.x - px) * t, y: py + (q.y - py) * t };
+            }
+            acc += seg; px = q.x; py = q.y;
+        }
+        // iz hali qisqa — kursordan o'rgimchak turgan tomonda L masofada to'xtaydi
+        const dx = sp.x - head.x, dy = sp.y - head.y, d = Math.hypot(dx, dy) || 1;
+        return { x: head.x + dx / d * L, y: head.y + dy / d * L };
+    }
+
+    // oyna chetidan (kursorga qarab) kirib keladigan joyga qo'yadi
+    function respawn(ux, uy){
+        const n = Math.hypot(ux, uy) || 1;
+        ux /= n; uy /= n;
+        const [sx, sy] = scrollPos();
+        const m = 90 * S;
+        let t = Infinity;
+        if (ux > 0) t = Math.min(t, (sx + W + m - head.x) / ux); else if (ux < 0) t = Math.min(t, (sx - m - head.x) / ux);
+        if (uy > 0) t = Math.min(t, (sy + H + m - head.y) / uy); else if (uy < 0) t = Math.min(t, (sy - m - head.y) / uy);
+        if (!isFinite(t) || t < 0) t = Math.max(W, H);
+        sp.x = head.x + ux * t; sp.y = head.y + uy * t;
+        sp.vx = sp.vy = 0;
+        sp.th = Math.atan2(-uy, -ux);
+        sp.spawned = true;
+        placeFeet();
+    }
+
     /* ---------------- fizika ---------------- */
     function update(dt){
-        const dx = target.x - sp.x, dy = target.y - sp.y;
+        // sahifa uzun scroll qilinib o'rgimchak juda uzoqda va ekrandan tashqarida qolsa — chetdan qayta kirib keladi
+        const [sx, sy] = scrollPos();
+        const off = sp.x < sx - 150 || sp.x > sx + W + 150 || sp.y < sy - 150 || sp.y > sy + H + 150;
+        if (head.has && off && Math.hypot(sp.x - head.x, sp.y - head.y) > Math.max(W, H) * 0.8){
+            respawn(sp.x - head.x, sp.y - head.y);
+        }
+
+        const tg = head.has ? followTarget() : { x: sp.x, y: sp.y };
+        const dx = tg.x - sp.x, dy = tg.y - sp.y;
         const dist = Math.hypot(dx, dy);
-        const stop = 58 * S;
 
         let dvx = 0, dvy = 0;
-        if (target.has && dist > stop){
-            const speed = Math.min(700, 40 + (dist - stop) * 5.5);
+        if (head.has && dist > 2.5){
+            const speed = Math.min(1000, 35 + dist * 12);
             dvx = dx / dist * speed; dvy = dy / dist * speed;
         }
-        const k = Math.min(1, dt * 9);
+        const k = Math.min(1, dt * 14);
         sp.vx += (dvx - sp.vx) * k;
         sp.vy += (dvy - sp.vy) * k;
         sp.x += sp.vx * dt;
@@ -116,13 +187,13 @@
         // yo'nalish: yurganda harakat tomoniga, to'xtaganda kursorga qarab buriladi
         let want = sp.th;
         if (speed > 25) want = Math.atan2(sp.vy, sp.vx);
-        else if (target.has && dist > 1) want = Math.atan2(dy, dx);
+        else if (head.has) want = Math.atan2(head.y - sp.y, head.x - sp.x);
         let diff = want - sp.th;
         diff = Math.atan2(Math.sin(diff), Math.cos(diff));
         sp.th += diff * Math.min(1, dt * (speed > 25 ? 10 : 4));
 
         // davom etayotgan qadamlar
-        const stepDur = speed > 120 ? 0.11 : 0.17;
+        const stepDur = speed > 500 ? 0.08 : speed > 120 ? 0.11 : 0.17;
         legs.forEach((l) => {
             if (!l.stepping) return;
             l.t += dt / stepDur;
@@ -238,8 +309,13 @@
     function draw(){
         if (!c2) return;
         c2.clearRect(0, 0, W, H);
+        const [sx, sy] = scrollPos();
+        if (sp.x < sx - 140 || sp.x > sx + W + 140 || sp.y < sy - 140 || sp.y > sy + H + 140) return; // ekrandan tashqarida
+        c2.save();
+        c2.translate(-sx, -sy); // o'rgimchak sahifa koordinatalarida — scroll bilan birga suriladi
         legs.forEach(drawLeg);
         drawBody();
+        c2.restore();
     }
 
     /* ---------------- animatsiya sikli ---------------- */
@@ -248,7 +324,7 @@
         if (!enabled) return;
         const dt = Math.min(0.05, ((now - lastT) / 1000) || 0.016);
         lastT = now;
-        if (target.has && sp.spawned){ update(dt); draw(); }
+        if (head.has && sp.spawned){ update(dt); draw(); }
 
         const busy = Math.hypot(sp.vx, sp.vy) > 3 || legs.some((l) => l.stepping) || performance.now() - lastActive < 700;
         if (busy) raf = requestAnimationFrame(frame);
@@ -262,20 +338,27 @@
     }
 
     function spawn(){
-        sp.spawned = true;
-        const fromRight = target.x < W / 2; // kursorga qarama-qarshi chetdan kirib keladi
-        sp.x = fromRight ? W + 90 * S : -90 * S;
-        sp.y = Math.min(H - 40, Math.max(40, target.y + 140));
-        sp.th = fromRight ? Math.PI : 0;
-        sp.vx = sp.vy = 0;
-        placeFeet();
+        // kursorga qarama-qarshi chetdan kirib keladi
+        respawn(client.x < W / 2 ? 1 : -1, 0.15);
     }
 
     function onPointer(e){
-        target.x = e.clientX; target.y = e.clientY; target.has = true;
+        client.x = e.clientX; client.y = e.clientY; client.has = true;
         lastActive = performance.now();
+        setHead();
         if (!sp.spawned) spawn();
         wake();
+    }
+    // scroll qilinganda kursor sahifaga nisbatan siljiydi — izga qo'shamiz
+    function onScroll(){
+        if (!client.has) return;
+        lastActive = performance.now();
+        setHead();
+        wake();
+    }
+    function onResize(){
+        resize();
+        if (client.has) setHead();
     }
     function onVisibility(){
         if (document.hidden){ cancelAnimationFrame(raf); running = false; }
@@ -294,7 +377,8 @@
         buildLegs();
         window.addEventListener("pointermove", onPointer, { passive: true });
         window.addEventListener("pointerdown", onPointer, { passive: true });
-        window.addEventListener("resize", resize);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onResize);
         document.addEventListener("visibilitychange", onVisibility);
         window.addEventListener("donylogic:themechange", onTheme);
     }
@@ -303,11 +387,12 @@
         cancelAnimationFrame(raf); raf = 0; running = false;
         window.removeEventListener("pointermove", onPointer);
         window.removeEventListener("pointerdown", onPointer);
-        window.removeEventListener("resize", resize);
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onResize);
         document.removeEventListener("visibilitychange", onVisibility);
         window.removeEventListener("donylogic:themechange", onTheme);
         canvas?.remove(); canvas = null; c2 = null;
-        sp.spawned = false; sp.vx = sp.vy = 0; target.has = false;
+        sp.spawned = false; sp.vx = sp.vy = 0; head.has = false; client.has = false; trail.length = 0;
     }
 
     function applyPrefs(){
