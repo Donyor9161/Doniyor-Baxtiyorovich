@@ -16,7 +16,7 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 
 function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
 function lsSet(k, v){ try { localStorage.setItem(k, v); } catch {} }
-const spiderOn = () => { const v = lsGet(SPIDER_KEY); return v === "on" ? true : v === "off" ? false : (!isTouch && !reduceMotion); };
+const spiderOn = () => { const v = lsGet(SPIDER_KEY); return v === "on" ? true : v === "off" ? false : !reduceMotion; };
 const helperOn = () => lsGet(HELPER_KEY) !== "off";
 const sizeVal = () => ["sm", "md", "lg"].includes(lsGet(SIZE_KEY)) ? lsGet(SIZE_KEY) : "md";
 const prefsChanged = () => window.dispatchEvent(new CustomEvent("donylogic:prefs"));
@@ -68,6 +68,21 @@ export function openSettings(ctx){
             <p class="set-hint" id="setDataMsg">Izohlaringizga boshqalar yozgan javoblar ham ko'rinmay qoladi.</p>
         </section>` : "";
 
+    // sichqonchasiz qurilmalarda (telefon/planshet) o'rgimchak yo'q — uning sozlamalari ham ko'rsatilmaydi
+    const spiderRows = isTouch ? "" : `
+                    <div class="set-item">
+                        <div><strong>O'rgimchak</strong><small>Sichqoncha izidan ergashadi, oyoqlari suv to'lqini qoldiradi</small></div>
+                        <label class="set-switch"><input type="checkbox" id="setSpider" ${spiderOn() ? "checked" : ""}><span class="set-slider"></span></label>
+                    </div>
+                    <div class="set-item">
+                        <div><strong>O'rgimchak o'lchami</strong></div>
+                        <select id="setSpiderSize" class="admin-role-select" ${spiderOn() ? "" : "disabled"}>
+                            <option value="sm">Kichik</option>
+                            <option value="md">O'rta</option>
+                            <option value="lg">Katta</option>
+                        </select>
+                    </div>`;
+
     const overlay = document.createElement("div");
     overlay.className = "set-overlay";
     overlay.innerHTML = `
@@ -81,18 +96,7 @@ export function openSettings(ctx){
 
                 <section class="set-section">
                     <h4><i class="ri-magic-line"></i> Sayt effektlari</h4>
-                    <div class="set-item">
-                        <div><strong>O'rgimchak</strong><small>Sichqoncha ortidan quvlab yuradi</small></div>
-                        <label class="set-switch"><input type="checkbox" id="setSpider" ${spiderOn() ? "checked" : ""}><span class="set-slider"></span></label>
-                    </div>
-                    <div class="set-item">
-                        <div><strong>O'rgimchak o'lchami</strong></div>
-                        <select id="setSpiderSize" class="admin-role-select" ${spiderOn() ? "" : "disabled"}>
-                            <option value="sm">Kichik</option>
-                            <option value="md">O'rta</option>
-                            <option value="lg">Katta</option>
-                        </select>
-                    </div>
+                    ${spiderRows}
                     <div class="set-item">
                         <div><strong>AI yordamchi</strong><small>Pastki o'ng burchakdagi chat</small></div>
                         <label class="set-switch"><input type="checkbox" id="setHelper" ${helperOn() ? "checked" : ""}><span class="set-slider"></span></label>
@@ -109,7 +113,7 @@ export function openSettings(ctx){
         </div>`;
     document.body.appendChild(overlay);
     document.body.classList.add("scroll-locked");
-    overlay.querySelector("#setSpiderSize").value = sizeVal();
+    if (!isTouch) overlay.querySelector("#setSpiderSize").value = sizeVal();
 
     const onKey = (e) => { if (e.key === "Escape") close(); };
     const close = () => {
@@ -124,12 +128,12 @@ export function openSettings(ctx){
     /* ---- effektlar (shu qurilmada saqlanadi) ---- */
     const spiderBox = overlay.querySelector("#setSpider");
     const sizeSel = overlay.querySelector("#setSpiderSize");
-    spiderBox.addEventListener("change", () => {
+    spiderBox?.addEventListener("change", () => {
         lsSet(SPIDER_KEY, spiderBox.checked ? "on" : "off");
         sizeSel.disabled = !spiderBox.checked;
         prefsChanged();
     });
-    sizeSel.addEventListener("change", () => { lsSet(SIZE_KEY, sizeSel.value); prefsChanged(); });
+    sizeSel?.addEventListener("change", () => { lsSet(SIZE_KEY, sizeSel.value); prefsChanged(); });
     overlay.querySelector("#setHelper").addEventListener("change", (e) => {
         lsSet(HELPER_KEY, e.target.checked ? "on" : "off");
         prefsChanged();
