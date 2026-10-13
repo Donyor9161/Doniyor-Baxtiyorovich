@@ -809,7 +809,7 @@ function showAnnouncement(idx){
    ================================================================== */
 settingsBtn?.addEventListener("click", async () => {
     try {
-        const mod = await import("./settings.js?v=1");
+        const mod = await import("./settings.js?v=2");
         mod.openSettings({
             db,
             getCurrentUser: () => currentUser,
