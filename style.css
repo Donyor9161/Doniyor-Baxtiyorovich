@@ -3006,3 +3006,7 @@ body.scroll-locked{ overflow: hidden; }
     .hp-panel{ right: 8px; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); width: calc(100vw - 16px); height: min(78vh, 560px); height: min(78dvh, 560px); }
     .hp-launcher{ right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
 }
+
+/* chat <html> ga biriktirilgan — body shriftini meros olmaydi, shuning uchun shu yerda belgilanadi */
+.hp-root{ font-family: "Saira", sans-serif; }
+.hp-root button, .hp-root textarea{ font-family: inherit; }
