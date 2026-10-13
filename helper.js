@@ -8,7 +8,7 @@
     "use strict";
 
     // helper-worker.js ni Cloudflare'ga joylagach, shu yerga uning manzilini yozing:
-    const HELPER_ENDPOINT = "https://donylogic-helper.donylogicstudios.workers.dev";
+    const HELPER_ENDPOINT = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev";
 
     const PREF_KEY = "donylogic_helper";            // "off" bo'lsa yashirin
     const CHAT_KEY = "donylogic_helper_chat";
@@ -145,7 +145,7 @@
             if (res.status === 429) failed = "Juda ko'p so'rov yuborildi. Bir daqiqadan so'ng yana urinib ko'ring.";
             else if (!res.ok || !data.reply){
                 // sayt egasi uchun: aniq xato kodi (konsolda ham chiqadi) — sozlashda sababini topish oson bo'ladi
-                const code = `${res.status}${data.error ? " " + data.error : ""}`;
+                const code = `${res.status}${data.error ? " " + data.error : ""}${data.detail ? " — " + String(data.detail).slice(0, 220) : ""}`;
                 console.warn("[yordamchi] Worker xatosi:", res.status, data);
                 failed = `Kechirasiz, hozir javob bera olmayapman. Birozdan so'ng qayta urinib ko'ring.\n(xato kodi: ${code})`;
             } else {
