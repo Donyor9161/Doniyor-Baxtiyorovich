@@ -8,7 +8,7 @@
     "use strict";
 
     // helper-worker.js ni Cloudflare'ga joylagach, shu yerga uning manzilini yozing:
-    const HELPER_ENDPOINT = "https://YOUR-WORKER-NAME.YOUR-SUBDOMAIN.workers.dev";
+    const HELPER_ENDPOINT = "https://donylogic-helper.donylogicstudios.workers.dev";
 
     const PREF_KEY = "donylogic_helper";            // "off" bo'lsa yashirin
     const CHAT_KEY = "donylogic_helper_chat";
