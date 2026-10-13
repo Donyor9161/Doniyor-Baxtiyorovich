@@ -4,6 +4,8 @@
    - sahifaning O'ZIDA yashaydi (sahifa koordinatalarida): scroll qilinganda sahifa bilan
      birga suriladi, butun sayt uzunligi va kengligi bo'ylab yuradi
    - kursor IZIDAN doim bir xil masofada ergashadi (kursor to'xtasa, shu masofada to'xtaydi)
+   - oyoq yerga tekkan har bir joyda suvga bosilgandek kichik to'lqin paydo bo'ladi
+   - telefon/planshetlarda umuman ishlamaydi
    - sichqoncha kursorining o'zi o'zgarmaydi
    - Sozlamalardan (settings.js) o'chirish / o'lchamini o'zgartirish mumkin
    - harakatsiz qolganda animatsiya sikli to'xtaydi (batareya tejaladi)
@@ -17,6 +19,9 @@
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
+
+    // Telefon va planshetlarda (sichqoncha yo'q) o'rgimchak umuman ishlamaydi
+    if (isTouch) return;
 
     // koordinatalar tanaga nisbatan: x — oldinga, y — o'ng tomonga
     // hip — oyoq tanaga ulangan joy, rest — tinch holatdagi oyoq uchi
@@ -40,21 +45,23 @@
     const client = { x: 0, y: 0, has: false };                           // kursor (oynaga nisbatan)
     const head = { x: 0, y: 0, has: false };                             // kursor (sahifaga nisbatan)
     const trail = [];                                                    // kursor bosib o'tgan yo'l
+    const ripples = [];                                                  // oyoq tekkan joydagi suv to'lqinlari
+    const RIPPLE_LIFE = 0.8;                                             // to'lqin umri (soniya)
 
     /* ---------------- sozlamalar ---------------- */
     function lsGet(k){ try { return localStorage.getItem(k); } catch { return null; } }
     function readPrefs(){
         const v = lsGet(PREF_KEY);
-        // aniq tanlov bo'lmasa: faqat sichqonchali qurilmada va animatsiyaga qarshi bo'lmaganlarda yoqiladi
-        const on = v === "on" ? true : v === "off" ? false : (!isTouch && !reduceMotion);
+        // aniq tanlov bo'lmasa: animatsiyani kamaytirishni so'ragan foydalanuvchilarda o'chiq turadi
+        const on = v === "on" ? true : v === "off" ? false : !reduceMotion;
         return { enabled: on, S: SIZES[lsGet(SIZE_KEY)] || 1 };
     }
 
     function themeColors(){
         const light = document.documentElement.getAttribute("data-theme") === "light";
         return light
-            ? { leg: "#1b1f30", glow: "rgba(124,92,255,0.16)", bodyA: "#343b5c", bodyB: "#0b0d16", rim: "rgba(124,92,255,0.75)", eye: "#7c5cff", mark: "rgba(124,92,255,0.5)" }
-            : { leg: "#bcd9f3", glow: "rgba(79,216,255,0.2)",  bodyA: "#2a3a66", bodyB: "#070a14", rim: "rgba(79,216,255,0.8)",  eye: "#4fd8ff", mark: "rgba(79,216,255,0.45)" };
+            ? { leg: "#1b1f30", glow: "rgba(124,92,255,0.16)", bodyA: "#343b5c", bodyB: "#0b0d16", rim: "rgba(124,92,255,0.75)", eye: "#7c5cff", mark: "rgba(124,92,255,0.5)", rip: "124,92,255" }
+            : { leg: "#bcd9f3", glow: "rgba(79,216,255,0.2)",  bodyA: "#2a3a66", bodyB: "#070a14", rim: "rgba(79,216,255,0.8)",  eye: "#4fd8ff", mark: "rgba(79,216,255,0.45)", rip: "79,216,255" };
     }
 
     /* ---------------- canvas ---------------- */
@@ -159,6 +166,11 @@
         placeFeet();
     }
 
+    function addRipple(x, y){
+        if (ripples.length > 90) ripples.shift();
+        ripples.push({ x, y, age: 0 });
+    }
+
     /* ---------------- fizika ---------------- */
     function update(dt){
         // sahifa uzun scroll qilinib o'rgimchak juda uzoqda va ekrandan tashqarida qolsa — chetdan qayta kirib keladi
@@ -199,12 +211,19 @@
             l.t += dt / stepDur;
             if (l.t >= 1){
                 l.t = 1; l.stepping = false; l.fx = l.tx; l.fy = l.ty;
+                addRipple(l.tx, l.ty); // oyoq yerga tegdi — suvga bosilgandek to'lqin
             } else {
                 const e = l.t < 0.5 ? 2 * l.t * l.t : 1 - Math.pow(-2 * l.t + 2, 2) / 2;
                 l.fx = l.sx + (l.tx - l.sx) * e;
                 l.fy = l.sy + (l.ty - l.sy) * e;
             }
         });
+
+        // to'lqinlar eskirib o'chadi
+        for (let i = ripples.length - 1; i >= 0; i--){
+            ripples[i].age += dt;
+            if (ripples[i].age > RIPPLE_LIFE) ripples.splice(i, 1);
+        }
 
         // yangi qadamlar: eng uzoqda qolgan oyoq birinchi qadam bosadi
         const look = 0.15, thresh = (speed > 120 ? 14 : 18) * S, maxR = (A + B) * 0.9;
@@ -306,15 +325,43 @@
         c2.restore();
     }
 
+    // suvga bosilgandek: kengayib so'nadigan ikkita halqa va urilgan joydagi yarqiroq nuqta
+    function drawRipples(){
+        ripples.forEach((r) => {
+            const p = r.age / RIPPLE_LIFE;
+            const e = 1 - Math.pow(1 - p, 3);                  // easeOutCubic — avval tez, keyin sekin
+            const fade = Math.pow(1 - p, 1.6);
+
+            c2.strokeStyle = `rgba(${colors.rip},${(0.6 * fade).toFixed(3)})`;
+            c2.lineWidth = Math.max(0.4, (1.7 - p * 1.3) * S);
+            c2.beginPath(); c2.arc(r.x, r.y, (6 + 17 * e) * S, 0, 6.2832); c2.stroke();
+
+            const p2 = (r.age - 0.1) / (RIPPLE_LIFE - 0.1);     // ichki halqa biroz kechikib chiqadi
+            if (p2 > 0 && p2 < 1){
+                const e2 = 1 - Math.pow(1 - p2, 3);
+                c2.strokeStyle = `rgba(${colors.rip},${(0.4 * Math.pow(1 - p2, 1.6)).toFixed(3)})`;
+                c2.lineWidth = Math.max(0.3, (1.2 - p2) * S);
+                c2.beginPath(); c2.arc(r.x, r.y, (2.5 + 10 * e2) * S, 0, 6.2832); c2.stroke();
+            }
+            if (p < 0.22){                                      // urilgan lahzadagi yarqiroq nuqta
+                c2.fillStyle = `rgba(${colors.rip},${(0.75 * (1 - p / 0.22)).toFixed(3)})`;
+                c2.beginPath(); c2.arc(r.x, r.y, 2.2 * S * (1 - p * 2), 0, 6.2832); c2.fill();
+            }
+        });
+    }
+
     function draw(){
         if (!c2) return;
         c2.clearRect(0, 0, W, H);
         const [sx, sy] = scrollPos();
-        if (sp.x < sx - 140 || sp.x > sx + W + 140 || sp.y < sy - 140 || sp.y > sy + H + 140) return; // ekrandan tashqarida
         c2.save();
-        c2.translate(-sx, -sy); // o'rgimchak sahifa koordinatalarida — scroll bilan birga suriladi
-        legs.forEach(drawLeg);
-        drawBody();
+        c2.translate(-sx, -sy); // hamma narsa sahifa koordinatalarida — scroll bilan birga suriladi
+        drawRipples();
+        const off = sp.x < sx - 140 || sp.x > sx + W + 140 || sp.y < sy - 140 || sp.y > sy + H + 140;
+        if (!off){
+            legs.forEach(drawLeg);
+            drawBody();
+        }
         c2.restore();
     }
 
@@ -326,7 +373,7 @@
         lastT = now;
         if (head.has && sp.spawned){ update(dt); draw(); }
 
-        const busy = Math.hypot(sp.vx, sp.vy) > 3 || legs.some((l) => l.stepping) || performance.now() - lastActive < 700;
+        const busy = Math.hypot(sp.vx, sp.vy) > 3 || legs.some((l) => l.stepping) || ripples.length > 0 || performance.now() - lastActive < 700;
         if (busy) raf = requestAnimationFrame(frame);
         else running = false; // tinch holat — sikl to'xtaydi
     }
@@ -392,7 +439,7 @@
         document.removeEventListener("visibilitychange", onVisibility);
         window.removeEventListener("donylogic:themechange", onTheme);
         canvas?.remove(); canvas = null; c2 = null;
-        sp.spawned = false; sp.vx = sp.vy = 0; head.has = false; client.has = false; trail.length = 0;
+        sp.spawned = false; sp.vx = sp.vy = 0; head.has = false; client.has = false; trail.length = 0; ripples.length = 0;
     }
 
     function applyPrefs(){
