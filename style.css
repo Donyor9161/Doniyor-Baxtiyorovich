@@ -3010,3 +3010,52 @@ body.scroll-locked{ overflow: hidden; }
 /* chat <html> ga biriktirilgan — body shriftini meros olmaydi, shuning uchun shu yerda belgilanadi */
 .hp-root{ font-family: "Saira", sans-serif; }
 .hp-root button, .hp-root textarea{ font-family: inherit; }
+
+/* --- Logo atrofidagi aylanuvchi nurlar (Glow Rays) --- */
+.logo-glow-wrap {
+    position: relative;
+    display: inline-block;
+    padding: 6px; /* Nurlar logoga tegib ketmasligi uchun ozgina bo'sh joy */
+    border-radius: 12px;
+    overflow: hidden; /* Nur konteynerdan chiqib ketmasligi uchun */
+}
+
+/* Nurlarning umumiy tuzilishi */
+.ray {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 75%, var(--cyan) 90%, var(--violet) 100%);
+    animation: rotateRay 4s linear infinite;
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+/* Ikkinchi nur tezligi va boshlang'ich nuqtasi biroz farq qiladi */
+.ray-2 {
+    animation-delay: -2s; /* Ikkinchi nur birinchining ortidan ergashib keladi */
+    opacity: 0.5;
+}
+
+/* A aylanish animatsiyasi */
+@keyframes rotateRay {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Logo rasmi nurlar ostida qolib ketmasligi va ustida turishi uchun */
+#logo img {
+    position: relative;
+    z-index: 2;
+    width: 168px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 0 0 rgba(79,216,255,0)`[cite: 1]);
+    transition: filter .3s var(--ease), transform .3s var(--ease);
+}
