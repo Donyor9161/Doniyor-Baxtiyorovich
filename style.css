@@ -3011,51 +3011,78 @@ body.scroll-locked{ overflow: hidden; }
 .hp-root{ font-family: "Saira", sans-serif; }
 .hp-root button, .hp-root textarea{ font-family: inherit; }
 
-/* --- Logo atrofidagi aylanuvchi nurlar (Glow Rays) --- */
-.logo-glow-wrap {
+
+
+
+/* --- Logo ustidan gorizontal oqib o'tuvchi nurlar --- */
+.logo-sweep-wrap {
     position: relative;
     display: inline-block;
-    padding: 6px; /* Nurlar logoga tegib ketmasligi uchun ozgina bo'sh joy */
-    border-radius: 12px;
-    overflow: hidden; /* Nur konteynerdan chiqib ketmasligi uchun */
+    border-radius: 8px;
+    overflow: hidden; /* Nurlar logodan tashqariga chiqib ketishining oldini oladi */
 }
 
-/* Nurlarning umumiy tuzilishi */
-.ray {
+/* Nurlarning umumiy ko'rinishi */
+.horizontal-ray {
     position: absolute;
-    width: 200%;
-    height: 200%;
-    top: -50%;
-    left: -50%;
-    background: conic-gradient(from 0deg at 50% 50%, transparent 75%, var(--cyan) 90%, var(--violet) 100%);
-    animation: rotateRay 4s linear infinite;
+    top: 0;
+    bottom: 0;
+    width: 40px; /* Nur izining kengligi */
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(79, 216, 255, 0.8),
+        rgba(124, 92, 255, 0.9),
+        transparent
+    );
+    filter: blur(4px); /* Nur yumshoqroq va jozirali chiqishi uchun */
+    transform: skewX(-20deg); /* Gorizontal yo'nalishda biroz qiya (spiral/chiziqsimon) ko'rinish beradi */
     pointer-events: none;
-    opacity: 0.75;
+    z-index: 3;
+    opacity: 0;
+    animation: sweepHorizontal 3.5s ease-in-out infinite;
 }
 
-/* Ikkinchi nur tezligi va boshlang'ich nuqtasi biroz farq qiladi */
-.ray-2 {
-    animation-delay: -2s; /* Ikkinchi nur birinchining ortidan ergashib keladi */
-    opacity: 0.5;
+/* 1-nur */
+.h-ray-1 {
+    animation-delay: 0s;
 }
 
-/* A aylanish animatsiyasi */
-@keyframes rotateRay {
+/* Ketma-ket keladigan 2-nur */
+.h-ray-2 {
+    animation-delay: 1.5s; /* Birinchi nurdan biroz keyin boshlanadi */
+}
+
+/* Gorizontal harakat animatsiyasi */
+@keyframes sweepHorizontal {
     0% {
-        transform: rotate(0deg);
+        left: -60px;
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
     }
     100% {
-        transform: rotate(360deg);
+        left: 110%; /* Chapdan o'ngga to'liq o'tib ketadi */
+        opacity: 0;
     }
 }
 
-/* Logo rasmi nurlar ostida qolib ketmasligi va ustida turishi uchun */
+/* Logo rasmi o'z joyida qat'iy turadi, siljishmaydi */
 #logo img {
     position: relative;
     z-index: 2;
     width: 168px;
     height: auto;
     display: block;
-    filter: drop-shadow(0 0 0 rgba(79,216,255,0)`[cite: 1]);
+    filter: drop-shadow(0 0 0 rgba(79,216,255,0));
     transition: filter .3s var(--ease), transform .3s var(--ease);
+}
+
+#logo img:hover {
+    filter: drop-shadow(0 0 14px rgba(79,216,255,0.55));
+    transform: translateY(-1px);
 }
