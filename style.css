@@ -3014,51 +3014,59 @@ body.scroll-locked{ overflow: hidden; }
 
 
 
-/* --- Professional Neon Pulse Animatsiyasi --- */
-.logo-clean-wrap {
+/* --- Navbar uchun mukammal o'lchamdagi skaner nuri --- */
+.logo-scan-wrap {
     position: relative;
     display: inline-block;
-    border-radius: 10px;
-    padding: 2px;
+    border-radius: 6px;
+    overflow: hidden; /* Nur logodan tashqariga chiqib ketmasligi uchun */
 }
 
-/* Logoning atrofida ishlaydigan neon nur hoshiyasi */
-.neon-glow-line {
+/* Skaner nurining tuzilishi */
+.scan-ray {
     position: absolute;
-    inset: -3px;
-    border-radius: 12px;
-    background: linear-gradient(90deg, var(--cyan), var(--violet), var(--cyan));
-    background-size: 200% 100%;
-    z-index: 1;
-    opacity: 0;
-    filter: blur(2px);
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(79, 216, 255, 0.85),
+        rgba(124, 92, 255, 0.95),
+        transparent
+    );
+    filter: blur(3px);
+    transform: skewX(-25deg);
     pointer-events: none;
-    /* Har 3 soniyada bir ishlaydi, animatsiya davomiyligi 1.2 sekund */
-    animation: neonPulseCycle 3s infinite ease-in-out;
+    z-index: 3;
+    opacity: 0;
+    /* Har 3 soniyada takrorlanadi, animatsiya davomiyligi 1.2 sekund */
+    animation: scanCycle 3s infinite ease-in-out;
 }
 
-@keyframes neonPulseCycle {
+@keyframes scanCycle {
     0% {
+        left: -50px;
         opacity: 0;
-        background-position: 0% 50%;
     }
-    15% {
-        opacity: 1; /* Nur chaqnab chiqadi */
+    10% {
+        opacity: 1;
     }
+    /* 1.2 sekund ichida chapdan o'ngga to'liq o'tib ketadi */
     40% {
-        opacity: 0.8;
-        background-position: 100% 50%; /* Nur yon tomonga sirg'aladi */
+        left: 120%;
+        opacity: 1;
     }
-    50% {
-        opacity: 0; /* 1.2 sekund deganda animatsiya tugab, o'chadi (3s ning 40% qismi = 1.2s) */
+    42% {
+        opacity: 0;
     }
     100% {
+        left: 120%;
         opacity: 0;
-        background-position: 200% 50%;
     }
 }
 
-/* Logo rasmi o'z joyida qat'iy turadi, siljishmaydi */
+/* Logo o'lchami va joyi o'zgarmaydi */
 #logo img {
     position: relative;
     z-index: 2;
