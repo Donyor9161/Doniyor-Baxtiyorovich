@@ -3014,7 +3014,7 @@ body.scroll-locked{ overflow: hidden; }
 
 
 
-/* --- Navbar uchun mukammal o'lchamdagi skaner nuri --- */
+/* --- Navbar uchun moslashtirilgan nozik va silliq skaner nuri --- */
 .logo-scan-wrap {
     position: relative;
     display: inline-block;
@@ -3022,20 +3022,20 @@ body.scroll-locked{ overflow: hidden; }
     overflow: hidden; /* Nur logodan tashqariga chiqib ketmasligi uchun */
 }
 
-/* Skaner nurining tuzilishi */
+/* Skaner nurining tuzilishi (ingichka va chiroyli) */
 .scan-ray {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 30px;
+    width: 10px; /* Nur eni kichraytirildi (logo o'lchamiga moslab) */
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(79, 216, 255, 0.85),
-        rgba(124, 92, 255, 0.95),
+        rgba(79, 216, 255, 0.9),
+        rgba(124, 92, 255, 1),
         transparent
     );
-    filter: blur(3px);
+    filter: blur(2px); /* Blur kamaytirildi, shunda nur aniqroq ko'rinadi */
     transform: skewX(-25deg);
     pointer-events: none;
     z-index: 3;
@@ -3046,22 +3046,22 @@ body.scroll-locked{ overflow: hidden; }
 
 @keyframes scanCycle {
     0% {
-        left: -50px;
+        left: -30px;
         opacity: 0;
     }
     10% {
         opacity: 1;
     }
-    /* 1.2 sekund ichida chapdan o'ngga to'liq o'tib ketadi */
+    /* 1.2 sekund ichida logoning chapidan o'ngiga silliq o'tib ketadi */
     40% {
-        left: 120%;
+        left: 110%;
         opacity: 1;
     }
     42% {
         opacity: 0;
     }
     100% {
-        left: 120%;
+        left: 110%;
         opacity: 0;
     }
 }
