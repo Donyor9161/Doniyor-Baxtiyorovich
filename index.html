@@ -41,9 +41,14 @@
         <div id="navbar">
             <div id="logoRow">
                 <div id="logo">
-    <div class="logo-sweep-wrap">
-        <div class="horizontal-ray h-ray-1"></div>
-        <div class="horizontal-ray h-ray-2"></div>
+    <div class="logo-spiral-wrap">
+        <!-- Nurlar uchun aylanma spiral yo'l (SVG) -->
+        <svg class="spiral-path-svg" viewBox="0 0 180 60" fill="none">
+            <!-- Logoni o'rab o'tuvchi spiral trayektoriya -->
+            <path id="motionPath" d="M10,30 C10,5 90,-10 140,10 C180,30 160,55 90,50 C30,45 10,35 90,15 C130,5 165,30 170,45" />
+        </svg>
+        <div class="spiral-dot dot-1"></div>
+        <div class="spiral-dot dot-2"></div>
         <img src="DONY LOGO.svg" onclick="window.location.href='index.html'" style="cursor: pointer;" alt="Donylogic logo">
     </div>
 </div>
