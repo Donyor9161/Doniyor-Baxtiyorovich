@@ -3019,7 +3019,7 @@ body.scroll-locked{ overflow: hidden; }
     position: relative;
     display: inline-block;
     border-radius: 8px;
-    overflow: hidden; /* Nurlar logodan tashqariga chiqib ketishining oldini oladi */
+    overflow: hidden; /* Nurlar logodan tashqariga chiqib ketmasligini ta'minlaydi */
 }
 
 /* Nurlarning umumiy ko'rinishi */
@@ -3036,7 +3036,7 @@ body.scroll-locked{ overflow: hidden; }
         transparent
     );
     filter: blur(4px); /* Nur yumshoqroq va jozirali chiqishi uchun */
-    transform: skewX(-20deg); /* Gorizontal yo'nalishda biroz qiya (spiral/chiziqsimon) ko'rinish beradi */
+    transform: skewX(-20deg); /* Gorizontal yo'nalishda biroz qiya ko'rinish beradi */
     pointer-events: none;
     z-index: 3;
     opacity: 0;
